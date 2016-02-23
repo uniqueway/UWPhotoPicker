@@ -11,10 +11,12 @@
 #import "TWPhotoCollectionViewCell.h"
 #import "TWPhotoLoader.h"
 #import "SVProgressHUD.h"
+#import "UWPhotoReusableView.h"
+#import "UWPhotoPickerConfig.h"
 
 #define NavigationBarHeight 64
 
-static NSInteger MAX_SELECTION_COUNT = 3;
+static NSInteger MAX_SELECTION_COUNT = INFINITY;
 
 @interface TWPhotoPickerController ()<UICollectionViewDataSource, UICollectionViewDelegate> {
     CGFloat beginOriginY;
@@ -35,7 +37,7 @@ static NSInteger MAX_SELECTION_COUNT = 3;
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.navigationController setNavigationBarHidden:YES];
-    [self.view setBackgroundColor:[UIColor blackColor]];
+    [self.view setBackgroundColor:[UIColor whiteColor]];
     [self.view addSubview:self.topView];
     [self.view insertSubview:self.collectionView belowSubview:self.topView];
     self.imageDidSelectList = [@[] mutableCopy];
@@ -68,6 +70,10 @@ static NSInteger MAX_SELECTION_COUNT = 3;
 
 #pragma mark - UICollectionViewDataSource
 
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    return 2;
+}
+
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return [self.allPhotos count];
 }
@@ -81,6 +87,17 @@ static NSInteger MAX_SELECTION_COUNT = 3;
     return cell;
 }
 
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    UICollectionReusableView *reusableView = nil;
+    if (kind == UICollectionElementKindSectionHeader) {
+        
+        UWPhotoReusableView *view = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:NSStringFromClass([UWPhotoReusableView class]) forIndexPath:indexPath];
+        view.title = @"2014.1.1";
+        return view;
+    }
+    return reusableView;
+}
+
 #pragma mark - UICollectionViewDelegate
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -90,6 +107,7 @@ static NSInteger MAX_SELECTION_COUNT = 3;
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
     [self toggleIndex:indexPath];
 }
+
 
 
 #pragma mark - UIScrollViewDelegate
@@ -133,7 +151,6 @@ static NSInteger MAX_SELECTION_COUNT = 3;
         CGRect rect = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), NavigationBarHeight);
         self.topView = [[UIView alloc] initWithFrame:rect];
         self.topView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
-        self.topView.backgroundColor = [UIColor clearColor];
         self.topView.clipsToBounds = YES;
         self.topView.backgroundColor = [[UIColor colorWithRed:26.0/255 green:29.0/255 blue:33.0/255 alpha:1] colorWithAlphaComponent:.8f];
         
@@ -152,10 +169,13 @@ static NSInteger MAX_SELECTION_COUNT = 3;
         CGFloat titleWidth = 100;
         rect = CGRectMake((CGRectGetWidth(navView.bounds)-titleWidth)/2, 0, titleWidth, navHeight);
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:rect];
-        titleLabel.text = @"选择图片";
+        titleLabel.text = self.title;
+        if (!self.title) {
+            titleLabel.text = @"选择照片";
+        }
         titleLabel.textAlignment = NSTextAlignmentCenter;
         titleLabel.backgroundColor = [UIColor clearColor];
-        titleLabel.textColor = [UIColor whiteColor];
+        titleLabel.textColor = [UIColor blackColor];
         titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
         [navView addSubview:titleLabel];
         
@@ -167,27 +187,8 @@ static NSInteger MAX_SELECTION_COUNT = 3;
         [self.cropBtn addTarget:self action:@selector(pushToEditView) forControlEvents:UIControlEventTouchUpInside];
         [navView addSubview:self.cropBtn];
         
-        rect = CGRectMake(0, NavigationBarHeight, CGRectGetWidth(self.topView.bounds), NavigationBarHeight);
-        UIView *dragView = [[UIView alloc] initWithFrame:rect];
-        [self addButtonsToDragView:dragView];
-        [self.view addSubview:dragView];
     }
     return _topView;
-}
-
-- (void)addButtonsToDragView:(UIView *)view {
-    NSArray *list   = @[@"照片"];
-    CGFloat height  = CGRectGetHeight(view.frame);
-    CGFloat width   = CGRectGetWidth(view.frame)/list.count;
-    CGSize itemSize = (CGSize){width,height};
-    NSInteger index = 0;
-    for (NSString *title in list) {
-        UIButton *button = [self buttonWithTitle:title withSize:itemSize];
-        button.selected  = YES;
-        button.frame     = CGRectMake(width*index, 0, width, height);
-        [view addSubview:button];
-        index++;
-    }
 }
 
 - (UIButton *)buttonWithTitle:(NSString *)title withSize:(CGSize)size{
@@ -250,15 +251,19 @@ static NSInteger MAX_SELECTION_COUNT = 3;
         layout.sectionInset                 = UIEdgeInsetsMake(0, 0, 0, 0);
         layout.minimumInteritemSpacing      = spacing;
         layout.minimumLineSpacing           = spacing;
+        layout.headerReferenceSize = CGSizeMake(self.view.bounds.size.width, 30);
         
-        CGRect rect = CGRectMake(0, NavigationBarHeight*2, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds)-NavigationBarHeight*2);
+        CGRect rect = CGRectMake(0, 44, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) - NavigationBarHeight);
         _collectionView = [[UICollectionView alloc] initWithFrame:rect collectionViewLayout:layout];
         _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         _collectionView.dataSource = self;
         _collectionView.delegate = self;
-        _collectionView.backgroundColor = [UIColor clearColor];
-        
+        _collectionView.backgroundColor = UWPhotoBackgroudColor;
+        _collectionView.layoutMargins = UIEdgeInsetsZero;
         [_collectionView registerClass:[TWPhotoCollectionViewCell class] forCellWithReuseIdentifier:@"TWPhotoCollectionViewCell"];
+        [_collectionView registerClass:[UWPhotoReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:NSStringFromClass([UWPhotoReusableView class])];//注册header的view
+        
+
     }
     return _collectionView;
 }
