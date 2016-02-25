@@ -48,7 +48,6 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     [self.view insertSubview:self.collectionView belowSubview:self.topView];
     self.imageDidSelectList = [@[] mutableCopy];
     self.indexPathList      = [@[] mutableCopy];
-    [self loadPhotos];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
@@ -132,21 +131,6 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 - (void)pushToEditView {
     UWPhotoEditorViewController *view = [[UWPhotoEditorViewController alloc] initWithPhotoList:self.imageDidSelectList crop:self.cropBlock];
     [self.navigationController pushViewController:view animated:YES];
-}
-#pragma mark - private methods
-
-- (void)loadPhotos {
-    __weak __typeof(&*self)weakSelf = self;
-    self.photoData.isSingleMenu = YES;;
-    _photoData.menuIndex = UWMenuIndexAll;
-    [UWPhotoLoader loadAllPhotos:^(NSArray *photos, NSError *error) {
-        if (!error) {
-
-            [weakSelf.photoData loadPhotosWithAll:photos recommendPhotos:nil singleSelection:YES hasTitle:YES];
-        } else {
-            NSLog(@"Load Photos Error: %@", error);
-        }
-    }];
 }
 
 #pragma mark - getters & setters
