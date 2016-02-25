@@ -1,16 +1,16 @@
 {
-  "name": "TWPhotoPicker",
+  "name": "UWPhotoPicker",
   "version": "1.0.0",
   "summary": "A image picker like Instagram.",
   "description": "Present Image Picker like Instagram.You can crop a image using it.",
-  "homepage": "https://github.com/wenzhaot/InstagramPhotoPicker",
+  "homepage": "http://git.uniqueway.in/six/UWAImagePicker",
   "screenshots": "https://raw.githubusercontent.com/wenzhaot/InstagramPhotoPicker/master/Screenshots/Screenshot01.png",
   "license": "MIT",
   "authors": {
     "wenzhaot": "tanwenzhao1025@gmail.com"
   },
   "source": {
-    "git": "https://github.com/wenzhaot/InstagramPhotoPicker.git",
+    "git": "http://git.uniqueway.in/six/UWAImagePicker.git",
     "tag": "1.0.0"
   },
   "platforms": {
@@ -18,8 +18,8 @@
   },
   "requires_arc": true,
   "source_files": [
-    "TWPhotoPicker/*",
-    "TWPhotoPicker/instagramFilter/*/*.{h,m}"
+    "UWPhotoPicker/*",
+    "UWPhotoPicker/instagramFilter/*/*.{h,m}"
   ],
   "frameworks": [
     "Foundation",
@@ -27,7 +27,7 @@
     "UIKit"
   ],
   "resources": [
-    "TWPhotoPicker/Resources/*",
-    "TWPhotoPicker/instagramFilter/filterIcon/*"
+    "UWPhotoPicker/Resources/*",
+    "UWPhotoPicker/instagramFilter/filterIcon/*"
   ]
 }

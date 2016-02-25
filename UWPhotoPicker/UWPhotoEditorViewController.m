@@ -15,6 +15,11 @@
 
 #import <mach/mach_time.h>
 
+
+#define SCREEN_WIDTH CGRectGetWidth([UIScreen mainScreen].bounds)
+#define SCREEN_HEIGHT CGRectGetHeight([UIScreen mainScreen].bounds)
+#define NavigationBarHeight 64
+
 @interface UWPhotoEditorViewController()<UICollectionViewDataSource, UICollectionViewDelegate,UWImageScrollViewDelegate>
 @property (nonatomic, strong) NSMutableArray *list;
 @property (nonatomic, strong) NSMutableArray *thumbnailImageList;

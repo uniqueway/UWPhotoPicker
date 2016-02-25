@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-#import "TWPhotoPickerController.h"
+#import "UWPhotoPickerController.h"
 
 @interface ViewController ()
 @property (strong, nonatomic) IBOutlet UIImageView *imageView;
@@ -23,7 +23,7 @@
 //    NSMutableArray *imageList = [@[] mutableCopy];
     __block CGFloat y = 50;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        TWPhotoPickerController *photoPicker = [[TWPhotoPickerController alloc] init];
+        UWPhotoPickerController *photoPicker = [[UWPhotoPickerController alloc] init];
         photoPicker.cropBlock = ^(NSArray *list) {
             CGFloat size = [[UIScreen mainScreen] bounds].size.width;
             NSInteger index = 0;

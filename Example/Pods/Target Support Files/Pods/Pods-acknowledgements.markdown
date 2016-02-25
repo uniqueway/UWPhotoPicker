@@ -43,7 +43,7 @@ A different license may apply to other resources included in this package,
 including Freepik Icons. Please consult their 
 respective headers for the terms of their individual licenses.
 
-## TWPhotoPicker
+## UWPhotoPicker
 
 Copyright (c) 2014 wenzhaot
 

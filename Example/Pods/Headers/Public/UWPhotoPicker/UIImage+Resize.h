@@ -1,0 +1,1 @@
+../../../../../UWPhotoPicker/UIImage+Resize.h

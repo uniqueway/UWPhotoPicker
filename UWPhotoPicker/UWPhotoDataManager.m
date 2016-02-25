@@ -8,7 +8,7 @@
 
 #import "UWPhotoDataManager.h"
 #import <Photos/Photos.h>
-#import "NSDate+UWPhoto.h"
+
 
 @interface UWPhotoDataManager ()
 
@@ -37,9 +37,7 @@
 }
 
 - (void)handleTitle {
-    for (PHAsset *asset in self.allPhotos) {
-        [self.allPhotosTitles addObject:[asset.creationDate uw_DateFormatByDot]];
-    }
+    
 }
 
 - (UWPhoto *)photoAtIndex:(NSIndexPath *)indexPath {
