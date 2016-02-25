@@ -149,7 +149,6 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     }];
 }
 
-
 #pragma mark - getters & setters
 
 - (UIView *)topView {
