@@ -1,14 +1,14 @@
 //
-//  TWImageLoader.m
+//  UWImageLoader.m
 //  Pods
 //
 //  Created by Emar on 4/30/15.
 //
 //
 
-#import "TWPhotoLoader.h"
+#import "UWPhotoLoader.h"
 
-@interface TWPhotoLoader ()
+@interface UWPhotoLoader ()
 @property (strong, nonatomic) NSMutableArray *allPhotos;
 @property (strong, nonatomic) ALAssetsLibrary *assetsLibrary;
 @property (readwrite, copy, nonatomic) void(^loadBlock)(NSArray *photos, NSError *error);
@@ -16,28 +16,28 @@
 
 
 
-@implementation TWPhotoLoader
+@implementation UWPhotoLoader
 
-+ (TWPhotoLoader *)sharedLoader {
-    static TWPhotoLoader *loader;
++ (UWPhotoLoader *)sharedLoader {
+    static UWPhotoLoader *loader;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        loader = [[TWPhotoLoader alloc] init];
+        loader = [[UWPhotoLoader alloc] init];
     });
     return loader;
 }
 
 + (void)loadAllPhotos:(void (^)(NSArray *photos, NSError *error))completion {
 
-    [[TWPhotoLoader sharedLoader].allPhotos removeAllObjects]; /* added this line to remove assets duplication*/
-    [[TWPhotoLoader sharedLoader] setLoadBlock:completion];
-    [[TWPhotoLoader sharedLoader] startLoading];
+    [[UWPhotoLoader sharedLoader].allPhotos removeAllObjects]; /* added this line to remove assets duplication*/
+    [[UWPhotoLoader sharedLoader] setLoadBlock:completion];
+    [[UWPhotoLoader sharedLoader] startLoading];
 }
 
 - (void)startLoading {
     ALAssetsGroupEnumerationResultsBlock assetsEnumerationBlock = ^(ALAsset *result, NSUInteger index, BOOL *stop) {
         if (result) {
-            TWPhoto *photo = [TWPhoto new];
+            UWPhoto *photo = [UWPhoto new];
             photo.asset = result;
             [self.allPhotos insertObject:photo atIndex:0];
         }

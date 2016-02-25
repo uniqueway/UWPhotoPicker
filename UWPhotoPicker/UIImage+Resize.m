@@ -9,7 +9,7 @@
 
 @implementation UIImage (ResizeCategory)
 
--(UIImage*)resizedImageToSize:(CGSize)dstSize
+-(UIImage*)uw_resizedImageToSize:(CGSize)dstSize
 {
 	CGImageRef imgRef = self.CGImage;
 	// the below values are regardless of orientation : for UIImages from Camera, width>height (landscape)
@@ -108,7 +108,7 @@
 
 
 
--(UIImage*)resizedImageToFitInSize:(CGSize)boundingSize scaleIfSmaller:(BOOL)scale
+-(UIImage*)uw_resizedImageToFitInSize:(CGSize)boundingSize scaleIfSmaller:(BOOL)scale
 {
 	// get the image size (independant of imageOrientation)
 	CGImageRef imgRef = self.CGImage;
@@ -147,7 +147,7 @@
 		}
 	}
 		
-	return [self resizedImageToSize:dstSize];
+	return [self uw_resizedImageToSize:dstSize];
 }
 
 @end

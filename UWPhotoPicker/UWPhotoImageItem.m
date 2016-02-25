@@ -1,17 +1,17 @@
 //
-//  TWPhotoImageItem.m
+//  UWPhotoImageItem.m
 //  Pods
 //
 //  Created by Madao on 12/8/15.
 //
 //
 
-#import "TWPhotoImageItem.h"
+#import "UWPhotoImageItem.h"
 
-@interface TWPhotoImageItem ()
+@interface UWPhotoImageItem ()
 @end
 
-@implementation TWPhotoImageItem
+@implementation UWPhotoImageItem
 
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];

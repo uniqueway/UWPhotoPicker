@@ -3,7 +3,7 @@
 #import <UIKit/UIKit.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 
-@interface TWPhoto : NSObject
+@interface UWPhoto : NSObject
 
 @property (nonatomic, strong) UIImage *thumbnailImage;
 @property (nonatomic, strong) UIImage *originalImage;

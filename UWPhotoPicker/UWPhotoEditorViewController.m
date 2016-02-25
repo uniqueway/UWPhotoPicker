@@ -1,32 +1,28 @@
 //
-//  TWPhotoEditorViewController.m
+//  UWPhotoEditorViewController.m
 //  Pods
 //
 //  Created by Madao on 11/6/15.
 //
 //
 
-#import "TWPhotoEditorViewController.h"
-#import "TWPhotoFilterCollectionViewCell.h"
-#import "TWPhoto.h"
-#import "TWImageScrollView.h"
-#import "TWPhotoImageItem.h"
+#import "UWPhotoEditorViewController.h"
+#import "UWPhotoFilterCollectionViewCell.h"
+#import "UWPhoto.h"
+#import "UWImageScrollView.h"
+#import "UWPhotoImageItem.h"
 #import <SVProgressHUD.h>
 
 #import <mach/mach_time.h>
 
-#define SCREEN_WIDTH CGRectGetWidth([UIScreen mainScreen].bounds)
-#define SCREEN_HEIGHT CGRectGetHeight([UIScreen mainScreen].bounds)
-static CGFloat const NavigationBarHeight = 64;
-
-@interface TWPhotoEditorViewController()<UICollectionViewDataSource, UICollectionViewDelegate,TWImageScrollViewDelegate>
+@interface UWPhotoEditorViewController()<UICollectionViewDataSource, UICollectionViewDelegate,UWImageScrollViewDelegate>
 @property (nonatomic, strong) NSMutableArray *list;
 @property (nonatomic, strong) NSMutableArray *thumbnailImageList;
 @property (strong, nonatomic) UIView *topView;
 @property (strong, nonatomic) UICollectionView *collectionView;
 //@property (strong, nonatomic) UIView *imageListView;
 @property (nonatomic, assign) BOOL isEdited;
-@property (strong, nonatomic) TWImageScrollView *imageScrollView;
+@property (strong, nonatomic) UWImageScrollView *imageScrollView;
 @property (nonatomic, assign) NSInteger currentType;
 @property (nonatomic, strong) NSArray *filterList;
 @property (nonatomic, strong) NSArray *filterNameList;
@@ -38,7 +34,7 @@ static CGFloat const NavigationBarHeight = 64;
 
 @end
 
-@implementation TWPhotoEditorViewController
+@implementation UWPhotoEditorViewController
 - (id)initWithPhotoList:(NSArray *)list crop:(cropBlock)crop {
     self              = [super init];
     self.currentType  = 0;
@@ -69,7 +65,7 @@ static CGFloat const NavigationBarHeight = 64;
 
 }
 
-#pragma mark - TWImageScrollViewDelegate
+#pragma mark - UWImageScrollViewDelegate
 - (void)contentDidEdit:(BOOL)flag {
     self.isEdited = flag;
 }
@@ -82,8 +78,8 @@ static CGFloat const NavigationBarHeight = 64;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"TWPhotoFilterCollectionViewCell";
-    TWPhotoFilterCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
+    static NSString *CellIdentifier = @"UWPhotoFilterCollectionViewCell";
+    UWPhotoFilterCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
     NSString *filterName = [self.filterNameList objectAtIndex:indexPath.row];
     cell.title.text = filterName;
     filterName = [filterName stringByAppendingString:@".jpg"];
@@ -98,7 +94,7 @@ static CGFloat const NavigationBarHeight = 64;
     self.isEdited = YES;
     NSInteger newType = [self.filterList[indexPath.row] integerValue];
     if (newType != self.currentType) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:TWPhotoEditorViewControllerNotification object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:UWPhotoEditorViewControllerNotification object:nil];
     }
     self.currentType  = newType;
     [self.imageScrollView switchFilter:self.currentType];
@@ -115,7 +111,7 @@ static CGFloat const NavigationBarHeight = 64;
 
 #pragma mark - Helper
 - (void)loadCurrentImage {
-    TWPhoto *photo = self.list[self.currentIndex];
+    UWPhoto *photo = self.list[self.currentIndex];
     
     [self.imageScrollView displayImage:photo.originalImage];
     self.currentType  = 0;
@@ -147,7 +143,7 @@ static CGFloat const NavigationBarHeight = 64;
     NSInteger index = self.currentIndex;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         __block UIImage *image = weakSelf.imageScrollView.capture;
-        TWPhoto *photo = weakSelf.list[index];
+        UWPhoto *photo = weakSelf.list[index];
         NSURL *url = photo.asset.defaultRepresentation.url;
         if (!url) {
             url = [NSURL URLWithString:@""];
@@ -155,7 +151,7 @@ static CGFloat const NavigationBarHeight = 64;
         dispatch_async(dispatch_get_main_queue(), ^{
             if (self.cropBlock) {
                 if (self.currentType != 0) {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:TWPhotoEditorUploadEditedImageNotification object:nil];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:UWPhotoEditorUploadEditedImageNotification object:nil];
                 }
                 weakSelf.cropBlock(@[@{@"image":image,@"url": url}]);
             }
@@ -230,7 +226,7 @@ static CGFloat const NavigationBarHeight = 64;
         
         
         rect = CGRectMake(0, handleHeight, SCREEN_WIDTH, SCREEN_WIDTH);
-        self.imageScrollView = [[TWImageScrollView alloc] initWithFrame:rect];
+        self.imageScrollView = [[UWImageScrollView alloc] initWithFrame:rect];
         self.imageScrollView.backgroundColor = [UIColor blackColor];
         self.imageScrollView.scrollDelegate  = self;
         [self.topView addSubview:self.imageScrollView];
@@ -473,7 +469,7 @@ static CGFloat const NavigationBarHeight = 64;
         _collectionView.delegate = self;
         _collectionView.backgroundColor = [UIColor whiteColor];
 //        _collectionView.hidden = (self.list.count > 1);
-        [_collectionView registerClass:[TWPhotoFilterCollectionViewCell class] forCellWithReuseIdentifier:@"TWPhotoFilterCollectionViewCell"];
+        [_collectionView registerClass:[UWPhotoFilterCollectionViewCell class] forCellWithReuseIdentifier:@"UWPhotoFilterCollectionViewCell"];
         
     }
     return _collectionView;
@@ -494,13 +490,13 @@ static CGFloat const NavigationBarHeight = 64;
 //        _imageListView = [[UIView alloc] initWithFrame:CGRectMake(0, y, SCREEN_WIDTH, height)];
 //        _imageListView.hidden = !(self.list.count > 1);
 //        CGFloat x = 0;
-//        for (TWPhoto *photo in self.list) {
+//        for (UWPhoto *photo in self.list) {
 //            x += itemSize + padding;
 //            if (index == 0) {
 //                x = 10;
 //            }
 //            CGRect rect = CGRectMake(x, (height - itemSize)/2, itemSize, itemSize);;
-//            TWPhotoImageItem *item = [[TWPhotoImageItem alloc] initWithFrame:rect];
+//            UWPhotoImageItem *item = [[UWPhotoImageItem alloc] initWithFrame:rect];
 //            if (index == 0) {
 //                item.layer.borderWidth  = 4.f;
 //            }

@@ -6,11 +6,11 @@
 //
 //
 
-#import "TWPhoto.h"
+#import "UWPhoto.h"
 
 static NSString * const IMAGE_SAVE_PATH = @"UNWIMAGE";
 
-@implementation TWPhoto
+@implementation UWPhoto
 
 - (UIImage *)thumbnailImage {
     if (!_thumbnailImage) {

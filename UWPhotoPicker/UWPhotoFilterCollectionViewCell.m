@@ -1,12 +1,12 @@
 //
-//  TWPhotoFilterCollectionViewCell.m
+//  UWPhotoFilterCollectionViewCell.m
 //  Pods
 //
 //  Created by Madao on 11/7/15.
 //
 //
 
-#import "TWPhotoFilterCollectionViewCell.h"
+#import "UWPhotoFilterCollectionViewCell.h"
 
 #define DEFAULT_COLOR [UIColor clearColor]
 #define SELECTED_COLOR [UIColor colorWithRed:127.0/255.0 green:184.0/255.0 blue:54.0/255.0 alpha:1]
@@ -14,7 +14,7 @@
 #define TITLE_FONT [UIFont fontWithName:@"STHeitiSC-Light" size:10]
 #define PADDING 3.f
 
-@implementation TWPhotoFilterCollectionViewCell
+@implementation UWPhotoFilterCollectionViewCell
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         self.content = [[UIView alloc] initWithFrame:self.bounds];

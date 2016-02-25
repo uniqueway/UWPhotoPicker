@@ -1,18 +1,18 @@
 //
-//  TWPhotoCollectionViewCell.m
+//  UWPhotoCollectionViewCell.m
 //  InstagramPhotoPicker
 //
 //  Created by Emar on 12/4/14.
 //  Copyright (c) 2014 wenzhaot. All rights reserved.
 //
 
-#import "TWPhotoCollectionViewCell.h"
+#import "UWPhotoCollectionViewCell.h"
 #import "UWPhotoPickerConfig.h"
 
 #define DEFAULT_COLOR [UIColor clearColor]
 #define SELECTED_COLOR [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5]
 
-@implementation TWPhotoCollectionViewCell
+@implementation UWPhotoCollectionViewCell
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {

@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TWPhoto.h"
+#import "UWPhoto.h"
 
-@interface TWPhotoLoader : NSObject
+@interface UWPhotoLoader : NSObject
 
 + (void)loadAllPhotos:(void (^)(NSArray *photos, NSError *error))completion;
 

@@ -1,19 +1,19 @@
 //
-//  TWImageScrollView.m
+//  UWImageScrollView.m
 //  InstagramPhotoPicker
 //
 //  Created by Emar on 12/4/14.
 //  Copyright (c) 2014 wenzhaot. All rights reserved.
 //
 
-#import "TWImageScrollView.h"
+#import "UWImageScrollView.h"
 #import <GPUImage/GPUImage.h>
 #import "UIImage+Resize.h"
 
 #define rad(angle) ((angle) / 180.0 * M_PI)
 static const CGFloat MAX_SIZE = 1500;
 
-@interface TWImageScrollView ()<UIScrollViewDelegate>
+@interface UWImageScrollView ()<UIScrollViewDelegate>
 {
     CGSize _imageSize;
     NSInteger currentFilterType;
@@ -34,7 +34,7 @@ static const CGFloat MAX_SIZE = 1500;
 
 @end
 
-@implementation TWImageScrollView
+@implementation UWImageScrollView
 
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -88,12 +88,12 @@ static const CGFloat MAX_SIZE = 1500;
     CGSize maxSize = CGSizeMake(MAX_SIZE, MAX_SIZE);
     CGImageRelease(ref);
     ref = NULL;
-    cropped = [cropped resizedImageToFitInSize:maxSize scaleIfSmaller:YES];
+    cropped = [cropped uw_resizedImageToFitInSize:maxSize scaleIfSmaller:YES];
     return cropped;
 }
 
 
-static CGRect TWScaleRect(CGRect rect, CGFloat scale)
+static CGRect UWScaleRect(CGRect rect, CGFloat scale)
 {
     return CGRectMake(rect.origin.x * scale, rect.origin.y * scale, rect.size.width * scale, rect.size.height * scale);
 }
@@ -104,7 +104,7 @@ static CGRect TWScaleRect(CGRect rect, CGFloat scale)
     CGFloat sizeScale = self.imageView.image.size.width / self.imageView.frame.size.width;
     sizeScale *= self.zoomScale;
     CGRect visibleRect = [self convertRect:self.bounds toView:self.imageView];
-    return visibleRect = TWScaleRect(visibleRect, sizeScale);
+    return visibleRect = UWScaleRect(visibleRect, sizeScale);
 }
 
 - (CGAffineTransform)_orientationTransformedRectOfImage:(UIImage *)img
@@ -142,7 +142,7 @@ static CGRect TWScaleRect(CGRect rect, CGFloat scale)
 //    return cropped;
 //}
 //
-//static CGRect TWScaleRect(CGRect rect, CGFloat scale)
+//static CGRect UWScaleRect(CGRect rect, CGFloat scale)
 //{
 //    return CGRectMake(rect.origin.x * scale, rect.origin.y * scale, rect.size.width * scale, rect.size.width * scale);
 //}
@@ -157,7 +157,7 @@ static CGRect TWScaleRect(CGRect rect, CGFloat scale)
 //    }
 //    sizeScale *= self.zoomScale;
 //    CGRect visibleRect = [self convertRect:self.bounds toView:self.imageView];
-//    visibleRect = TWScaleRect(visibleRect, sizeScale);
+//    visibleRect = UWScaleRect(visibleRect, sizeScale);
 //    return visibleRect;
 //}
 //

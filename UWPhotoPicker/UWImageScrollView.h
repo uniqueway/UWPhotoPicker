@@ -1,5 +1,5 @@
 //
-//  TWImageScrollView.h
+//  UWImageScrollView.h
 //  InstagramPhotoPicker
 //
 //  Created by Emar on 12/4/14.
@@ -11,13 +11,13 @@
 //#import "IFImageFilter.h"
 //#import "InstaFilters.h"
 
-@protocol TWImageScrollViewDelegate <NSObject>
+@protocol UWImageScrollViewDelegate <NSObject>
 - (void)contentDidEdit:(BOOL)flag;
 @end
 
-@interface TWImageScrollView : UIScrollView
+@interface UWImageScrollView : UIScrollView
 
-@property (nonatomic, weak) id<TWImageScrollViewDelegate> scrollDelegate;
+@property (nonatomic, weak) id<UWImageScrollViewDelegate> scrollDelegate;
 
 - (void)displayImage:(UIImage *)image;
 - (UIImage *)capture;

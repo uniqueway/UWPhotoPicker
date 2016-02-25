@@ -1,15 +1,15 @@
 //
-//  TWPhotoPickerController.m
+//  UWPhotoPickerController.m
 //  InstagramPhotoPicker
 //
 //  Created by Emar on 12/4/14.
 //  Copyright (c) 2014 wenzhaot. All rights reserved.
 //
 
-#import "TWPhotoPickerController.h"
-#import "TWPhotoEditorViewController.h"
-#import "TWPhotoCollectionViewCell.h"
-#import "TWPhotoLoader.h"
+#import "UWPhotoPickerController.h"
+#import "UWPhotoEditorViewController.h"
+#import "UWPhotoCollectionViewCell.h"
+#import "UWPhotoLoader.h"
 #import "SVProgressHUD.h"
 #import "UWPhotoReusableView.h"
 #import "UWPhotoPickerConfig.h"
@@ -18,7 +18,7 @@
 
 static NSInteger MAX_SELECTION_COUNT = INFINITY;
 
-@interface TWPhotoPickerController ()<UICollectionViewDataSource, UICollectionViewDelegate> {
+@interface UWPhotoPickerController ()<UICollectionViewDataSource, UICollectionViewDelegate> {
     CGFloat beginOriginY;
 }
 @property (strong, nonatomic) UIView *topView;
@@ -27,16 +27,22 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 @property (strong, nonatomic) NSMutableArray *imageDidSelectList;
 @property (strong, nonatomic) NSMutableArray *indexPathList;
 @property (strong, nonatomic) UIButton *cropBtn;
-@property (strong, nonatomic) NSArray *allPhotos;
+
+@property (nonatomic, assign) UWPickerStatus status;
+
+
 @end
 
-@implementation TWPhotoPickerController
+@implementation UWPhotoPickerController
+
+
 
 #pragma mark - life cycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.navigationController setNavigationBarHidden:YES];
+    self.automaticallyAdjustsScrollViewInsets = NO;
     [self.view setBackgroundColor:[UIColor whiteColor]];
     [self.view addSubview:self.topView];
     [self.view insertSubview:self.collectionView belowSubview:self.topView];
@@ -49,9 +55,8 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     return UIStatusBarStyleLightContent;
 }
 
-
 - (void)toggleIndex:(NSIndexPath *)indexPath {
-    TWPhoto *photo = [self.allPhotos objectAtIndex:indexPath.row];
+    UWPhoto *photo = [self.photoData photoAtIndex:indexPath];
     if ([self.indexPathList containsObject:indexPath]) {
         [self.imageDidSelectList removeObject:photo];
         [self.indexPathList removeObject:indexPath];
@@ -59,7 +64,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
         return;
     }
     if (self.imageDidSelectList.count >= MAX_SELECTION_COUNT) {
-        [SVProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"最多选择%lu个",MAX_SELECTION_COUNT]];
+        [SVProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"最多选择%lu个",(long)MAX_SELECTION_COUNT]];
         [self.collectionView reloadData];
         return;
     }
@@ -71,17 +76,19 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 #pragma mark - UICollectionViewDataSource
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return 2;
+    
+    return [self.photoData numberOfSections];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return [self.allPhotos count];
+    
+    return [self.photoData numberOfItemsInSection:section];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"TWPhotoCollectionViewCell";
-    TWPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
-    TWPhoto *photo = [self.allPhotos objectAtIndex:indexPath.row];
+    static NSString *CellIdentifier = @"UWPhotoCollectionViewCell";
+    UWPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
+    UWPhoto *photo = [self.photoData photoAtIndex:indexPath];
     cell.imageView.image = photo.thumbnailImage;
     cell.selected = ([self.indexPathList containsObject:indexPath]);
     return cell;
@@ -92,7 +99,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     if (kind == UICollectionElementKindSectionHeader) {
         
         UWPhotoReusableView *view = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:NSStringFromClass([UWPhotoReusableView class]) forIndexPath:indexPath];
-        view.title = @"2014.1.1";
+        view.title = [self.photoData titleInSection:indexPath.section];
         return view;
     }
     return reusableView;
@@ -108,8 +115,6 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     [self toggleIndex:indexPath];
 }
 
-
-
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
@@ -124,15 +129,15 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 }
 
 - (void)pushToEditView {
-    TWPhotoEditorViewController *view = [[TWPhotoEditorViewController alloc] initWithPhotoList:self.imageDidSelectList crop:self.cropBlock];
+    UWPhotoEditorViewController *view = [[UWPhotoEditorViewController alloc] initWithPhotoList:self.imageDidSelectList crop:self.cropBlock];
     [self.navigationController pushViewController:view animated:YES];
 }
 #pragma mark - private methods
 
 - (void)loadPhotos {
-    [TWPhotoLoader loadAllPhotos:^(NSArray *photos, NSError *error) {
+    [UWPhotoLoader loadAllPhotos:^(NSArray *photos, NSError *error) {
         if (!error) {
-            self.allPhotos = [NSArray arrayWithArray:photos];
+//            self.allPhotos = [NSArray arrayWithArray:photos];
             [self.collectionView reloadData];
         } else {
             NSLog(@"Load Photos Error: %@", error);
@@ -253,17 +258,14 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
         layout.minimumLineSpacing           = spacing;
         layout.headerReferenceSize = CGSizeMake(self.view.bounds.size.width, 30);
         
-        CGRect rect = CGRectMake(0, 44, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) - NavigationBarHeight);
+        CGRect rect = CGRectMake(0, NavigationBarHeight, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) - NavigationBarHeight);
         _collectionView = [[UICollectionView alloc] initWithFrame:rect collectionViewLayout:layout];
         _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         _collectionView.dataSource = self;
         _collectionView.delegate = self;
         _collectionView.backgroundColor = UWPhotoBackgroudColor;
-        _collectionView.layoutMargins = UIEdgeInsetsZero;
-        [_collectionView registerClass:[TWPhotoCollectionViewCell class] forCellWithReuseIdentifier:@"TWPhotoCollectionViewCell"];
+        [_collectionView registerClass:[UWPhotoCollectionViewCell class] forCellWithReuseIdentifier:@"UWPhotoCollectionViewCell"];
         [_collectionView registerClass:[UWPhotoReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:NSStringFromClass([UWPhotoReusableView class])];//注册header的view
-        
-
     }
     return _collectionView;
 }
