@@ -45,6 +45,15 @@
     return self;
 }
 
+- (void)setPhoto:(UWPhoto *)photo {
+    _photo = photo;
+    __weak __typeof(&*self)weakSelf = self;
+
+    _photo.finishedLoadImage = ^{
+        weakSelf.imageView.image = weakSelf.photo.image;
+    };
+}
+
 - (void)setSelected:(BOOL)selected {
     [super setSelected:selected];
 //    _icon.layer.borderWidth = selected ? 3 : 0;

@@ -35,8 +35,6 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 
 @implementation UWPhotoPickerController
 
-
-
 #pragma mark - life cycle
 
 - (void)viewDidLoad {
@@ -88,7 +86,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     static NSString *CellIdentifier = @"UWPhotoCollectionViewCell";
     UWPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
     UWPhoto *photo = [self.photoData photoAtIndex:indexPath];
-    cell.imageView.image = photo.image;
+    cell.photo = photo;
     cell.selected = ([self.indexPathList containsObject:indexPath]);
     cell.backgroundColor = [UIColor redColor];
     return cell;
