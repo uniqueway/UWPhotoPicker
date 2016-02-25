@@ -8,38 +8,40 @@
 
 #import "UWPhoto.h"
 
-static NSString * const IMAGE_SAVE_PATH = @"UNWIMAGE";
+
 
 @implementation UWPhoto
 
-- (UIImage *)thumbnailImage {
-    if (!_thumbnailImage) {
-        if (self.asset) {
-            _thumbnailImage = [UIImage imageWithCGImage:self.asset.thumbnail];
-        } else {
-            _thumbnailImage = [UIImage imageWithContentsOfFile:[self localPath:[NSString stringWithFormat:@"%@!s270",self.imageName]]];
-        }
-    }
-    return _thumbnailImage;
+- (void)loadImageWithAssetRequestID:(PHImageRequestID)requestId {
+    
 }
 
-- (NSString *)localPath:(NSString *)imageName {
-    NSArray *path          = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentPath = [path objectAtIndex:0];
-    NSString *imageDocPath = [documentPath stringByAppendingPathComponent:IMAGE_SAVE_PATH];
-    return [[imageDocPath stringByAppendingString:@"/"] stringByAppendingString:imageName];
+
+
+- (void)loadImageWithAsset:(PHAsset *)asset targetSize:(CGSize)targetSize{
+    PHImageManager *imageManager = [PHImageManager defaultManager];
+    PHImageRequestOptions *options = [PHImageRequestOptions new];
+    options.networkAccessAllowed = YES;
+    options.resizeMode = PHImageRequestOptionsResizeModeFast;
+    options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+    options.synchronous = NO;
+    options.progressHandler = ^(double progress, NSError *error, BOOL *stop, NSDictionary *info) {
+      
+    };
+    _assetRequestID = [imageManager requestImageForAsset:asset targetSize:targetSize contentMode:PHImageContentModeAspectFill options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+             self.image = result;
+            if (self.finishedLoadImage) {
+                self.finishedLoadImage();
+            }
+        });
+       
+    }];
 }
 
-- (UIImage *)originalImage {
-    if (!_originalImage) {
-        if (self.asset) {
-            _originalImage = [UIImage imageWithCGImage:self.asset.defaultRepresentation.fullResolutionImage
-                                                 scale:self.asset.defaultRepresentation.scale
-                                           orientation:(UIImageOrientation)self.asset.defaultRepresentation.orientation];
-        } else {
-            _originalImage = [UIImage imageWithContentsOfFile:[self localPath:[NSString stringWithFormat:@"%@.jpg",self.imageName]]];
-        }
-    }
-    return _originalImage;
+
+- (void)setAsset:(PHAsset *)asset {
+    _asset = asset;
+    [self loadImageWithAsset:asset targetSize:CGSizeMake(200, 200)];
 }
 @end

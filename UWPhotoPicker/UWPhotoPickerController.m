@@ -89,8 +89,9 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     static NSString *CellIdentifier = @"UWPhotoCollectionViewCell";
     UWPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
     UWPhoto *photo = [self.photoData photoAtIndex:indexPath];
-    cell.imageView.image = photo.thumbnailImage;
+    cell.imageView.image = photo.image;
     cell.selected = ([self.indexPathList containsObject:indexPath]);
+    cell.backgroundColor = [UIColor redColor];
     return cell;
 }
 
@@ -118,8 +119,8 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
+    
 }
-
 
 
 #pragma mark - event response
@@ -135,17 +136,18 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 #pragma mark - private methods
 
 - (void)loadPhotos {
+    __weak __typeof(&*self)weakSelf = self;
+    self.photoData.isSingleMenu = YES;;
+    _photoData.menuIndex = UWMenuIndexAll;
     [UWPhotoLoader loadAllPhotos:^(NSArray *photos, NSError *error) {
         if (!error) {
-//            self.allPhotos = [NSArray arrayWithArray:photos];
-            [self.collectionView reloadData];
+
+            [weakSelf.photoData loadPhotosWithAll:photos recommendPhotos:nil singleSelection:YES hasTitle:YES];
         } else {
             NSLog(@"Load Photos Error: %@", error);
         }
     }];
-    
 }
-
 
 
 #pragma mark - getters & setters
@@ -268,6 +270,17 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
         [_collectionView registerClass:[UWPhotoReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:NSStringFromClass([UWPhotoReusableView class])];//注册header的view
     }
     return _collectionView;
+}
+
+- (UWPhotoDataManager *)photoData {
+    if (!_photoData) {
+        __weak __typeof(&*self)weakSelf = self;
+        _photoData = [[UWPhotoDataManager alloc] init];
+        _photoData.finishedLoading = ^{
+            [weakSelf.collectionView reloadData];
+        };
+    }
+    return _photoData;
 }
 
 @end

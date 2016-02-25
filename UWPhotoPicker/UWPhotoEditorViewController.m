@@ -118,7 +118,7 @@
 - (void)loadCurrentImage {
     UWPhoto *photo = self.list[self.currentIndex];
     
-    [self.imageScrollView displayImage:photo.originalImage];
+    [self.imageScrollView displayImage:photo.image];
     self.currentType  = 0;
 //    [self.imageScrollView.videoCamera switchFilter:self.currentType];
     [self.collectionView reloadData];
@@ -141,7 +141,7 @@
 
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
-
+/*
 - (void)nextOrSubmitAction {
     BOOL isLast    = self.currentIndex == self.list.count-1;
     __weak __typeof__(self) weakSelf = self;
@@ -186,6 +186,7 @@
     
     
 }
+ //*/
 - (UIView *)topView {
     if (_topView == nil) {
         CGFloat handleHeight = 44;

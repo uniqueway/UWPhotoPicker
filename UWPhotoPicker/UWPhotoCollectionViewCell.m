@@ -16,9 +16,11 @@
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        self.backgroundColor = [UIColor redColor]; //UWPhotoBackgroudColor;
+        self.backgroundColor = UWPhotoBackgroudColor;
+        self.clipsToBounds = YES;
         self.imageView = [[UIImageView alloc] initWithFrame:self.bounds];
         self.imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        self.imageView.contentMode = UIViewContentModeScaleAspectFill;
         
         [self.contentView addSubview:self.imageView];
         

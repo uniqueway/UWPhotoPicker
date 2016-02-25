@@ -8,7 +8,7 @@
 
 #import "UWPhotoDataManager.h"
 #import <Photos/Photos.h>
-
+#import "NSDate+UWPhotoPicker.h"
 
 @interface UWPhotoDataManager ()
 
@@ -28,8 +28,10 @@
     _hasTitle = hasTitle;
     if (self.recommendPhotos.count > 0) {
         _isSingleMenu = NO;
+        _menuIndex = UWMenuIndexRecommed;
     }else {
         _isSingleMenu = YES;
+        _menuIndex = UWMenuIndexAll;
     }
     if (_hasTitle) {
         [self handleTitle];
@@ -37,7 +39,26 @@
 }
 
 - (void)handleTitle {
+    self.allPhotosTitles = [NSMutableArray array];
+    self.recommendTitles = [NSMutableArray array];
     
+    for (NSArray *group in self.allPhotos) {
+        for (UWPhoto *photo in group) {
+            NSString *title = [photo.asset.creationDate uwpp_DateFormatByDot];
+            [self.allPhotosTitles addObject:title];
+        }
+    }
+    
+    for (NSArray *group in self.recommendPhotos) {
+        for (UWPhoto *photo in group) {
+            NSString *title = [photo.asset.creationDate uwpp_DateFormatByDot];
+            [self.recommendTitles addObject:title];
+        }
+    }
+    
+    if (self.finishedLoading) {
+        self.finishedLoading();
+    }
 }
 
 - (UWPhoto *)photoAtIndex:(NSIndexPath *)indexPath {
