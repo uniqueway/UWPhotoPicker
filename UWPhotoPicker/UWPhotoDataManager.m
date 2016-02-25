@@ -43,17 +43,15 @@
     self.recommendTitles = [NSMutableArray array];
     
     for (NSArray *group in self.allPhotos) {
-        for (UWPhoto *photo in group) {
-            NSString *title = [photo.asset.creationDate uwpp_DateFormatByDot];
-            [self.allPhotosTitles addObject:title];
-        }
+        UWPhoto *photo = group.firstObject;
+        NSString *title = [photo.asset.creationDate uwpp_DateFormatByDot];
+        [self.allPhotosTitles addObject:title];
     }
     
     for (NSArray *group in self.recommendPhotos) {
-        for (UWPhoto *photo in group) {
-            NSString *title = [photo.asset.creationDate uwpp_DateFormatByDot];
-            [self.recommendTitles addObject:title];
-        }
+        UWPhoto *photo = group.firstObject;
+        NSString *title = [photo.asset.creationDate uwpp_DateFormatByDot];
+        [self.recommendTitles addObject:title];
     }
     
     if (self.finishedLoading) {
