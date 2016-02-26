@@ -58,7 +58,7 @@
 
 
 - (void)setPhoto:(UWPhoto *)photo {
-
+    _imageView.image = photo.image;
     _photo = photo;
 }
 
