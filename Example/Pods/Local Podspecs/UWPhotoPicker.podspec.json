@@ -1,6 +1,6 @@
 {
   "name": "UWPhotoPicker",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "summary": "A image picker like Instagram.",
   "description": "Present Image Picker like Instagram.You can crop a image using it.",
   "homepage": "http://git.uniqueway.in/six/UWAImagePicker",
@@ -10,8 +10,7 @@
     "wenzhaot": "tanwenzhao1025@gmail.com"
   },
   "source": {
-    "git": "http://git.uniqueway.in/six/UWAImagePicker.git",
-    "tag": "1.0.0"
+    "git": "http://git.uniqueway.in/six/UWAImagePicker.git"
   },
   "platforms": {
     "ios": "7.0"
