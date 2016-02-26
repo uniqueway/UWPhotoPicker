@@ -11,5 +11,6 @@
 
 #define UWPhotoBackgroudColor [UIColor colorWithRed:0.952 green:0.949 blue:0.941 alpha:1];
 
+#define UWPhotoPickerLoadingDidFinishedNotification @"UWPhotoPickerLoadingDidFinishedNotification"
 
 #endif /* UWPhotoPickerConfig_h */

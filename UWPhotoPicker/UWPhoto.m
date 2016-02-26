@@ -7,7 +7,7 @@
 //
 
 #import "UWPhoto.h"
-
+#import "UWPhotoPickerConfig.h"
 
 
 @implementation UWPhoto
@@ -31,17 +31,27 @@
     _assetRequestID = [imageManager requestImageForAsset:asset targetSize:targetSize contentMode:PHImageContentModeAspectFill options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         dispatch_async(dispatch_get_main_queue(), ^{
              self.image = result;
-            if (self.finishedLoadImage) {
-                self.finishedLoadImage();
-            }
+            
         });
        
     }];
 }
 
+- (void)imageFinishLoading {
+    NSAssert([[NSThread currentThread] isMainThread], @"这个必须在主线程调用");
+    [self performSelector:@selector(postImageFinishedNotification) withObject:nil withObject:0];
+}
+
+- (void)postImageFinishedNotification {
+    [[NSNotificationCenter defaultCenter] postNotificationName:UWPhotoPickerLoadingDidFinishedNotification
+                                                        object:self];
+}
 
 - (void)setAsset:(PHAsset *)asset {
     _asset = asset;
     [self loadImageWithAsset:asset targetSize:CGSizeMake(200, 200)];
 }
+
+
+
 @end

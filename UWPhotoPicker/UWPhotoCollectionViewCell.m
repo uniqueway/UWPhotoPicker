@@ -40,10 +40,22 @@
         self.icon = icon;
         self.icon.hidden = YES;
         [self.coverView addSubview:self.icon];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleMWPhotoLoadingDidEndNotification:)
+                                                     name:UWPhotoPickerLoadingDidFinishedNotification
+                                                   object:nil];
 
     }
     return self;
 }
+
+- (void)handleMWPhotoLoadingDidEndNotification:(NSNotification *)notification {
+    UWPhoto *photo = [notification object];
+    if (photo == _photo) {
+        _imageView.image = _photo.image;
+    }
+}
+
 
 - (void)setPhoto:(UWPhoto *)photo {
     self.imageView.image = nil;
