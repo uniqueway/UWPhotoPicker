@@ -12,8 +12,9 @@
 @interface UWPhotoCollectionViewCell : UICollectionViewCell
 
 @property (nonatomic, strong) UWPhoto *photo;
-@property (strong, nonatomic) UIImageView *imageView;
-@property (nonatomic, strong) UIView *coverView;
-@property (nonatomic, strong) UIImageView *icon;
+@property (nonatomic, strong) NSIndexPath *indexPath;
+@property (nonatomic, assign) BOOL isSelected;
+@property (nonatomic, copy)   void(^selectedBlock)(BOOL isSelected, NSIndexPath *indexPath);
+
 
 @end

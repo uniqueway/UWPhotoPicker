@@ -23,7 +23,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 }
 @property (strong, nonatomic) UIView *topView;
 @property (strong, nonatomic) UIImageView *maskView;
-@property (strong, nonatomic) UICollectionView *collectionView;
+@property (weak, nonatomic) UICollectionView *collectionView;
 @property (strong, nonatomic) NSMutableArray *imageDidSelectList;
 @property (strong, nonatomic) NSMutableArray *indexPathList;
 @property (strong, nonatomic) UIButton *cropBtn;
@@ -42,32 +42,42 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     [self.navigationController setNavigationBarHidden:YES];
     self.automaticallyAdjustsScrollViewInsets = NO;
     [self.view setBackgroundColor:[UIColor whiteColor]];
+    [self.collectionView reloadData];
     [self.view addSubview:self.topView];
-    [self.view insertSubview:self.collectionView belowSubview:self.topView];
     self.imageDidSelectList = [@[] mutableCopy];
     self.indexPathList      = [@[] mutableCopy];
+    __weak __typeof(&*self)weakSelf = self;
+    _photoData.finishedLoading = ^{
+        [weakSelf.collectionView reloadData];
+    };
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return UIStatusBarStyleLightContent;
 }
 
-- (void)toggleIndex:(NSIndexPath *)indexPath {
+
+- (void)handlePhotoStatusAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)isSelected {
     UWPhoto *photo = [self.photoData photoAtIndex:indexPath];
-    if ([self.indexPathList containsObject:indexPath]) {
+    if (isSelected) {
+        if (_photoData.isSingleSelection) {
+            
+            NSIndexPath *preIndexPath = (NSIndexPath *)self.indexPathList.firstObject;
+            UWPhotoCollectionViewCell *cell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+            cell.isSelected = NO;
+            
+            [self.imageDidSelectList removeAllObjects];
+            [self.indexPathList removeAllObjects];
+//            [self.collectionView reloadData];
+        }
+        [self.imageDidSelectList addObject:photo];
+        [self.indexPathList addObject:indexPath];
+        [self.collectionView reloadData];
+    }else {
         [self.imageDidSelectList removeObject:photo];
         [self.indexPathList removeObject:indexPath];
         [self.collectionView reloadData];
-        return;
     }
-    if (self.imageDidSelectList.count >= MAX_SELECTION_COUNT) {
-        [SVProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"最多选择%lu个",(long)MAX_SELECTION_COUNT]];
-        [self.collectionView reloadData];
-        return;
-    }
-    [self.imageDidSelectList addObject:photo];
-    [self.indexPathList addObject:indexPath];
-    [self.collectionView reloadData];
 }
 
 #pragma mark - UICollectionViewDataSource
@@ -87,8 +97,12 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     UWPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
     UWPhoto *photo = [self.photoData photoAtIndex:indexPath];
     cell.photo = photo;
-    cell.selected = ([self.indexPathList containsObject:indexPath]);
-    cell.backgroundColor = [UIColor redColor];
+    cell.indexPath = indexPath;
+    cell.isSelected = ([self.indexPathList containsObject:indexPath]);
+    cell.selectedBlock = ^(BOOL isSelectdd, NSIndexPath *indexPath) {
+        [self handlePhotoStatusAtIndexPath:indexPath selected:isSelectdd];
+    };
+    
     return cell;
 }
 
@@ -106,12 +120,9 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 #pragma mark - UICollectionViewDelegate
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    [self toggleIndex:indexPath];
+
 }
 
-- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
-    [self toggleIndex:indexPath];
-}
 
 #pragma mark - UIScrollViewDelegate
 
@@ -230,7 +241,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 }
 
 - (UICollectionView *)collectionView {
-    if (_collectionView == nil) {
+    if (!_collectionView) {
         CGFloat colum = 4.0, spacing = 2.0;
         CGFloat value = floorf((CGRectGetWidth(self.view.bounds) - (colum - 1) * spacing) / colum);
         
@@ -242,24 +253,22 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
         layout.headerReferenceSize = CGSizeMake(self.view.bounds.size.width, 30);
         
         CGRect rect = CGRectMake(0, NavigationBarHeight, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) - NavigationBarHeight);
-        _collectionView = [[UICollectionView alloc] initWithFrame:rect collectionViewLayout:layout];
-        _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        _collectionView.dataSource = self;
-        _collectionView.delegate = self;
-        _collectionView.backgroundColor = UWPhotoBackgroudColor;
-        [_collectionView registerClass:[UWPhotoCollectionViewCell class] forCellWithReuseIdentifier:@"UWPhotoCollectionViewCell"];
-        [_collectionView registerClass:[UWPhotoReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:NSStringFromClass([UWPhotoReusableView class])];//注册header的view
+        UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:rect collectionViewLayout:layout];
+        collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        collectionView.dataSource = self;
+        collectionView.delegate = self;
+        collectionView.backgroundColor = UWPhotoBackgroudColor;
+        [collectionView registerClass:[UWPhotoCollectionViewCell class] forCellWithReuseIdentifier:@"UWPhotoCollectionViewCell"];
+        [collectionView registerClass:[UWPhotoReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:NSStringFromClass([UWPhotoReusableView class])];
+        [self.view addSubview:collectionView];
+        _collectionView = collectionView;
     }
     return _collectionView;
 }
 
 - (UWPhotoDataManager *)photoData {
     if (!_photoData) {
-        __weak __typeof(&*self)weakSelf = self;
         _photoData = [[UWPhotoDataManager alloc] init];
-        _photoData.finishedLoading = ^{
-            [weakSelf.collectionView reloadData];
-        };
     }
     return _photoData;
 }

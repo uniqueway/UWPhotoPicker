@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "UWPhotoPickerController.h"
+#import "NSDate+UWPhotoPicker.h"
 
 @interface ViewController ()
 @property (strong, nonatomic) IBOutlet UIImageView *imageView;
@@ -22,8 +23,23 @@
     [self.view addSubview:v];
 //    NSMutableArray *imageList = [@[] mutableCopy];
     __block CGFloat y = 50;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        PHFetchOptions *options = [[PHFetchOptions alloc] init];
+        NSMutableArray *temp = [NSMutableArray array];
+        options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
+        PHFetchResult *fetchresults = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeImage options:options];
+        [fetchresults enumerateObjectsUsingBlock:^(PHAsset *asset, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([asset isKindOfClass:[PHAsset class]]) {
+                [temp addObject:asset];
+            }
+        }];
+        NSArray *result = [self groupPhotosBy1Day:temp];
+        
+        
         UWPhotoPickerController *photoPicker = [[UWPhotoPickerController alloc] init];
+        [photoPicker.photoData loadPhotosWithAll:result recommendPhotos:nil singleSelection:YES hasTitle:YES];
         photoPicker.cropBlock = ^(NSArray *list) {
             CGFloat size = [[UIScreen mainScreen] bounds].size.width;
             NSInteger index = 0;
@@ -53,8 +69,41 @@
         [navCon setNavigationBarHidden:YES];
         
         [self presentViewController:navCon animated:YES completion:NULL];
+        
     });
+    
 
+
+}
+
+- (NSArray *)groupPhotosBy1Day:(NSArray < PHAsset *> *)photos {
+    NSMutableArray *days = [NSMutableArray array];
+    NSMutableArray *temp = [NSMutableArray array];
+    NSDate *pre = nil;
+    
+    for (PHAsset *asset in photos) {
+        UWPhoto *photo = [[UWPhoto alloc] init];
+        photo.asset = asset;
+        if (!pre) {
+            [temp addObject:photo];
+        }else {
+            NSString *title = [asset.creationDate uwpp_DateFormatByDot];
+            NSString *preTitle = [pre uwpp_DateFormatByDot];
+            if ([title isEqualToString:preTitle]) {
+                [temp addObject:photo];
+                if (asset == photos.lastObject) {
+                    [days addObject:temp];
+                    temp = nil;
+                }
+            }else {
+                [days addObject:temp];
+                temp = nil;
+                temp = [NSMutableArray arrayWithObject:photo];
+            }
+        }
+        pre = asset.creationDate;
+    }
+    return days;
 }
 
 - (void)didReceiveMemoryWarning {

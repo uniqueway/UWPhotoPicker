@@ -20,5 +20,6 @@ typedef NS_ENUM(NSInteger, UWPickerStatus) {
 @property (nonatomic, copy) void(^selectedPhotos)(NSArray *list);
 @property (nonatomic, copy) void(^cropBlock)(NSArray *list);
 @property (nonatomic, strong) UWPhotoDataManager *photoData;
+@property (nonatomic, assign) NSInteger limit;
 
 @end
