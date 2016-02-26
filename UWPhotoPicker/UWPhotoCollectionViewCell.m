@@ -58,13 +58,8 @@
 
 
 - (void)setPhoto:(UWPhoto *)photo {
-    self.imageView.image = nil;
-    _photo = photo;
-    __weak __typeof(&*self)weakSelf = self;
 
-    _photo.finishedLoadImage = ^{
-        weakSelf.imageView.image = weakSelf.photo.image;
-    };
+    _photo = photo;
 }
 
 - (void)setSelected:(BOOL)selected {
