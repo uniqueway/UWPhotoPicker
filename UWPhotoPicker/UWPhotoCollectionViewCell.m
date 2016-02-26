@@ -46,6 +46,7 @@
 }
 
 - (void)setPhoto:(UWPhoto *)photo {
+    self.imageView.image = nil;
     _photo = photo;
     __weak __typeof(&*self)weakSelf = self;
 
