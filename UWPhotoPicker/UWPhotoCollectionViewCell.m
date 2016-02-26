@@ -12,6 +12,12 @@
 #define DEFAULT_COLOR [UIColor clearColor]
 #define SELECTED_COLOR [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5]
 
+@interface UWPhotoCollectionViewCell ()
+
+@property (nonatomic, strong) UIButton *selectedButton;
+
+@end
+
 @implementation UWPhotoCollectionViewCell
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -56,6 +62,10 @@
     }
 }
 
+- (void)selectionButtonPressed {
+    _selectedButton.selected = !_selectedButton.selected;
+    //FIXME:
+}
 
 - (void)setPhoto:(UWPhoto *)photo {
     _imageView.image = photo.image;
@@ -67,6 +77,21 @@
 //    _icon.layer.borderWidth = selected ? 3 : 0;
     _icon.hidden = !selected;
     self.coverView.backgroundColor = selected ? SELECTED_COLOR : DEFAULT_COLOR;
+}
+
+- (UIButton *)selectedButton {
+    if (!_selectedButton) {
+        _selectedButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _selectedButton.contentMode = UIViewContentModeTopRight;
+        _selectedButton.adjustsImageWhenHighlighted = NO;
+        [_selectedButton setImage:[UIImage imageNamed:@"UWPhotoPickerUnselected@1x"] forState:UIControlStateNormal];
+        [_selectedButton setImage:[UIImage imageNamed:@"UWPhotoPickerSelected@1x"] forState:UIControlStateSelected];
+        [_selectedButton addTarget:self action:@selector(selectionButtonPressed) forControlEvents:UIControlEventTouchDown];
+        _selectedButton.hidden = YES;
+        _selectedButton.frame = CGRectMake(0, 0, 44, 44);
+        [self addSubview:_selectedButton];
+    }
+    return _selectedButton;
 }
 
 @end
