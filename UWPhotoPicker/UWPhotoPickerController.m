@@ -63,7 +63,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
         if (_photoData.isSingleSelection) {
             
             NSIndexPath *preIndexPath = (NSIndexPath *)self.indexPathList.firstObject;
-            UWPhotoCollectionViewCell *cell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+            UWPhotoCollectionViewCell *cell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:preIndexPath];
             cell.isSelected = NO;
             
             [self.imageDidSelectList removeAllObjects];

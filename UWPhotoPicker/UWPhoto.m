@@ -30,8 +30,10 @@
     };
     _assetRequestID = [imageManager requestImageForAsset:asset targetSize:targetSize contentMode:PHImageContentModeAspectFill options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.image = result;
-            [self imageFinishLoading];
+            self.photoImage = result;
+            if (self.ImageDidFinished) {
+                self.ImageDidFinished(self);
+            }
         });
        
     }];

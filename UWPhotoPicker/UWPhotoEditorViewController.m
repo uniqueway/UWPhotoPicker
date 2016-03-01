@@ -118,7 +118,7 @@
 - (void)loadCurrentImage {
     UWPhoto *photo = self.list[self.currentIndex];
     
-    [self.imageScrollView displayImage:photo.image];
+    [self.imageScrollView displayImage:photo.photoImage];
     self.currentType  = 0;
 //    [self.imageScrollView.videoCamera switchFilter:self.currentType];
     [self.collectionView reloadData];

@@ -53,7 +53,7 @@ static NSInteger buttonWidth = 16;
 - (void)handleMWPhotoLoadingDidEndNotification:(NSNotification *)notification {
     UWPhoto *photo = [notification object];
     if (photo == _photo) {
-        _imageView.image = _photo.image;
+        _imageView.image = _photo.photoImage;
     }
 }
 
@@ -67,8 +67,14 @@ static NSInteger buttonWidth = 16;
 
 #pragma mark - set/get
 - (void)setPhoto:(UWPhoto *)photo {
-    _imageView.image = photo.image;
+    _imageView.image = photo.photoImage;
     _photo = photo;
+    __weak typeof(&*self) weakself = self;
+    _photo.ImageDidFinished = ^(id<UWPhotoDatable> photo) {
+        if (photo == _photo) {
+            weakself.imageView.image = weakself.photo.photoImage;
+        }
+    };
 }
 
 - (void)setIsSelected:(BOOL)isSelected {
