@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "UWPhoto.h"
+#import "UWPhotoDatable.h"
 
 typedef NS_ENUM(NSInteger, UWMenuIndex) {
     UWMenuIndexAll,
@@ -29,9 +29,9 @@ typedef NS_ENUM(NSInteger, UWPhotoListType) {
 @property (nonatomic, assign) UWMenuIndex menuIndex;
 @property (nonatomic, copy) void(^finishedLoading)(void);
 
-- (void)loadPhotosWithAll:(NSArray <UWPhoto *> *)allPhotos recommendPhotos:(NSArray <UWPhoto *> *)recommendPhotos singleSelection:(BOOL)isSingleSelection hasTitle:(BOOL)hasTitle;
+- (void)loadPhotosWithAll:(NSArray <id <UWPhotoDatable> > *)allPhotos recommendPhotos:(NSArray <id <UWPhotoDatable> > *)recommendPhotos singleSelection:(BOOL)isSingleSelection hasTitle:(BOOL)hasTitle;
 
-- (UWPhoto *)photoAtIndex:(NSIndexPath *)indexPath;
+- (id <UWPhotoDatable>)photoAtIndex:(NSIndexPath *)indexPath;
 - (NSInteger)numberOfSections;
 - (NSInteger)numberOfItemsInSection:(NSInteger)section;
 - (NSString *)titleInSection:(NSInteger)section;

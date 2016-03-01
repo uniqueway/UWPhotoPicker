@@ -8,6 +8,7 @@
 
 #import "UWPhotoCollectionViewCell.h"
 #import "UWPhotoPickerConfig.h"
+#import "UWPhotoDatable.h"
 
 #define DEFAULT_COLOR [UIColor clearColor]
 #define SELECTED_COLOR [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5]
@@ -51,7 +52,7 @@ static NSInteger buttonWidth = 16;
 }
 
 - (void)handleMWPhotoLoadingDidEndNotification:(NSNotification *)notification {
-    UWPhoto *photo = [notification object];
+    id <UWPhotoDatable> photo = [notification object];
     if (photo == _photo) {
         _imageView.image = _photo.photoImage;
     }
@@ -66,7 +67,7 @@ static NSInteger buttonWidth = 16;
 
 
 #pragma mark - set/get
-- (void)setPhoto:(UWPhoto *)photo {
+- (void)setPhoto:(id <UWPhotoDatable>)photo {
     _imageView.image = photo.photoImage;
     _photo = photo;
     __weak typeof(&*self) weakself = self;

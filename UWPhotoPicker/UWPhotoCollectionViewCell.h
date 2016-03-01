@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "UWPhoto.h"
+#import "UWPhotoDatable.h"
 
 @interface UWPhotoCollectionViewCell : UICollectionViewCell
 
-@property (nonatomic, strong) UWPhoto *photo;
+@property (nonatomic, strong) id <UWPhotoDatable> photo;
 @property (nonatomic, strong) NSIndexPath *indexPath;
 @property (nonatomic, assign) BOOL isSelected;
 @property (nonatomic, copy)   void(^selectedBlock)(BOOL isSelected, NSIndexPath *indexPath);
