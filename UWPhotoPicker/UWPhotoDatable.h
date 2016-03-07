@@ -12,9 +12,8 @@
 
 @protocol UWPhotoDatable <NSObject>
 
-@property (nonatomic, strong) UIImage *photoImage;
-@property (nonatomic, strong) UIImage *thumbnailImage;
-@property (nonatomic, copy)   void(^ImageDidFinished)(id<UWPhotoDatable> photo);
+@property (nonatomic, strong) UIImage *image;
+@property (nonatomic, copy)   void(^imageDidFinished)(id<UWPhotoDatable> photo);
 @property (nonatomic, strong) PHAsset *asset;
 
 @end

@@ -7,8 +7,7 @@
 @interface UWPhoto : NSObject<UWPhotoDatable>
 
 
-@property (nonatomic, strong) UIImage *photoImage;
-@property (nonatomic, strong) UIImage *thumbnailImage;
+@property (nonatomic, strong) UIImage *image;
 @property (nonatomic, copy)   void(^ImageDidFinished)(id<UWPhotoDatable> photo);
 
 
