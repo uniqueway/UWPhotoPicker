@@ -8,7 +8,7 @@
 
 
 @property (nonatomic, strong) UIImage *image;
-@property (nonatomic, copy)   void(^ImageDidFinished)(id<UWPhotoDatable> photo);
+@property (nonatomic, copy)   void(^imageDidFinished)(id<UWPhotoDatable> photo);
 
 
 @property (nonatomic, strong) PHAsset *asset; // 来自相册
