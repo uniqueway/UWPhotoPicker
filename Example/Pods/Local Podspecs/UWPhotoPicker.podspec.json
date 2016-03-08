@@ -1,6 +1,6 @@
 {
   "name": "UWPhotoPicker",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "summary": "A image picker like Instagram.",
   "description": "Present Image Picker like Instagram.You can crop a image using it.",
   "homepage": "http://git.uniqueway.in/six/UWAImagePicker",
@@ -13,7 +13,7 @@
     "git": "http://git.uniqueway.in/six/UWAImagePicker.git"
   },
   "platforms": {
-    "ios": "7.0"
+    "ios": "8.0"
   },
   "requires_arc": true,
   "source_files": [
@@ -28,5 +28,12 @@
   "resources": [
     "UWPhotoPicker/Resources/*",
     "UWPhotoPicker/instagramFilter/filterIcon/*"
+  ],
+  "subspecs": [
+    {
+      "name": "SegmentControl",
+      "public_header_files": "UWPhotoPicker/SegmentControl/*.h",
+      "source_files": "UWPhotoPicker/SegmentControl/*.{h,m}"
+    }
   ]
 }

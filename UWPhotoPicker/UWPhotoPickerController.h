@@ -22,4 +22,6 @@ typedef NS_ENUM(NSInteger, UWPickerStatus) {
 @property (nonatomic, strong) UWPhotoDataManager *photoData;
 @property (nonatomic, assign) NSInteger limit;
 
+
+
 @end

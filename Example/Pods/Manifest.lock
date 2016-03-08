@@ -1,7 +1,9 @@
 PODS:
   - GPUImage (0.1.7)
   - SVProgressHUD (1.1.3)
-  - UWPhotoPicker (1.0.2)
+  - UWPhotoPicker (1.0.4):
+    - UWPhotoPicker/SegmentControl (= 1.0.4)
+  - UWPhotoPicker/SegmentControl (1.0.4)
 
 DEPENDENCIES:
   - GPUImage
@@ -15,6 +17,6 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   GPUImage: 733a5f0fab92df9de1c37ba9df520a833ccb406d
   SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
-  UWPhotoPicker: 9e7d288c3a0a9066a94234144a1f58e2e639ef2a
+  UWPhotoPicker: 5a0bd75bfb4812c317f0a3a2e2707e9c163f886b
 
 COCOAPODS: 0.39.0

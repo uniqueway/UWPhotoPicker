@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "UWPhotoPickerController.h"
 #import "NSDate+UWPhotoPicker.h"
+#import "UWPhoto.h"
 
 @interface ViewController ()
 @property (strong, nonatomic) IBOutlet UIImageView *imageView;
@@ -39,7 +40,7 @@
         
         
         UWPhotoPickerController *photoPicker = [[UWPhotoPickerController alloc] init];
-        [photoPicker.photoData loadPhotosWithAll:result recommendPhotos:nil singleSelection:YES hasTitle:YES];
+        [photoPicker.photoData loadPhotosWithAll:result recommendPhotos:result singleSelection:YES hasTitle:YES];
         photoPicker.cropBlock = ^(NSArray *list) {
             CGFloat size = [[UIScreen mainScreen] bounds].size.width;
             NSInteger index = 0;

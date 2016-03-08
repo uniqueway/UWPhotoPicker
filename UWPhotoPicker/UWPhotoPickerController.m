@@ -13,8 +13,10 @@
 #import "SVProgressHUD.h"
 #import "UWPhotoReusableView.h"
 #import "UWPhotoPickerConfig.h"
+#import "SDSegmentedControl.h"
 
 #define NavigationBarHeight 64
+static CGFloat kBottomSegmentHeight = 45;
 
 static NSInteger MAX_SELECTION_COUNT = INFINITY;
 
@@ -27,9 +29,9 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 @property (strong, nonatomic) NSMutableArray *imageDidSelectList;
 @property (strong, nonatomic) NSMutableArray *indexPathList;
 @property (strong, nonatomic) UIButton *cropBtn;
-
 @property (nonatomic, assign) UWPickerStatus status;
 
+@property (nonatomic, strong) SDSegmentedControl *segmentedControl;
 
 @end
 
@@ -50,6 +52,8 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     _photoData.finishedLoading = ^{
         [weakSelf.collectionView reloadData];
     };
+    [self.view addSubview:self.segmentedControl];
+    self.segmentedControl.selectedSegmentIndex = 0;
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
@@ -142,6 +146,9 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     [self.navigationController pushViewController:view animated:YES];
 }
 
+- (void)segmentValueChanged:(SDSegmentedControl *)sender {
+    self.photoData.menuIndex = sender.selectedSegmentIndex == 0?  UWMenuIndexRecommed : UWMenuIndexAll;
+}
 #pragma mark - getters & setters
 
 - (UIView *)topView {
@@ -252,11 +259,11 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
         layout.minimumLineSpacing           = spacing;
         layout.headerReferenceSize = CGSizeMake(self.view.bounds.size.width, 30);
         
-        CGRect rect = CGRectMake(0, NavigationBarHeight, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) - NavigationBarHeight);
+        CGRect rect = CGRectMake(0, NavigationBarHeight, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) -NavigationBarHeight-5);
         UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:rect collectionViewLayout:layout];
-        collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         collectionView.dataSource = self;
         collectionView.delegate = self;
+        collectionView.contentInset = UIEdgeInsetsMake(0, 0, kBottomSegmentHeight, 0);
         collectionView.backgroundColor = UWPhotoBackgroudColor;
         [collectionView registerClass:[UWPhotoCollectionViewCell class] forCellWithReuseIdentifier:@"UWPhotoCollectionViewCell"];
         [collectionView registerClass:[UWPhotoReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:NSStringFromClass([UWPhotoReusableView class])];
@@ -271,6 +278,29 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
         _photoData = [[UWPhotoDataManager alloc] init];
     }
     return _photoData;
+}
+
+- (SDSegmentedControl *)segmentedControl {
+    if (!_segmentedControl) {
+        CGFloat width = 70;
+        _segmentedControl = [[SDSegmentedControl alloc] init];
+        _segmentedControl.frame = CGRectMake(0, CGRectGetHeight(self.view.bounds)- kBottomSegmentHeight, CGRectGetWidth(self.view.bounds), kBottomSegmentHeight);
+        [_segmentedControl setBackgroundColor:[UIColor whiteColor]];
+        _segmentedControl.titleFont = [UIFont systemFontOfSize:14];
+        _segmentedControl.arrowPosition = SDSegmentedArrowPositionTop;
+        _segmentedControl.arrowHeightFactor *= -1.0;
+        _segmentedControl.interItemSpace = 0;
+        
+        [_segmentedControl insertSegmentWithTitle:@"推荐" atIndex:0 animated:NO];
+        [_segmentedControl insertSegmentWithTitle:@"所有照片" atIndex:1 animated:NO];
+        [_segmentedControl insertSegmentWithTitle:@"" atIndex:2 animated:NO];
+        [_segmentedControl setWidth:width forSegmentAtIndex:0];
+        [_segmentedControl setWidth:width forSegmentAtIndex:1];
+        [_segmentedControl setWidth:CGRectGetWidth(self.view.bounds) - width*2 forSegmentAtIndex:2];
+        [_segmentedControl setEnabled:NO forSegmentAtIndex:2];
+        [_segmentedControl addTarget:self action:@selector(segmentValueChanged:) forControlEvents:UIControlEventValueChanged];
+    }
+    return _segmentedControl;
 }
 
 @end
