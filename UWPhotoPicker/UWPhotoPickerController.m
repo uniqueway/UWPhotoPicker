@@ -110,13 +110,16 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     cell.photo = photo;
     cell.indexPath = indexPath;
     cell.isSelected = ([self.indexPathList containsObject:indexPath]);
+    
+    cell.selectedBlock = ^(BOOL isSelected, NSIndexPath *indexPath) {
+        [self handlePhotoStatusAtIndexPath:indexPath selected:isSelected];
+    };
     return cell;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
     UICollectionReusableView *reusableView = nil;
     if (kind == UICollectionElementKindSectionHeader) {
-        
         UWPhotoReusableView *view = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:NSStringFromClass([UWPhotoReusableView class]) forIndexPath:indexPath];
         view.title = [self.photoData titleInSection:indexPath.section];
         return view;
@@ -127,18 +130,14 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 #pragma mark - UICollectionViewDelegate
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    UWPhotoCollectionViewCell *cell = (UWPhotoCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
-    cell.isSelected = !cell.isSelected;
-    [self handlePhotoStatusAtIndexPath:indexPath selected:cell.isSelected];
+    
 }
-
 
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     
 }
-
 
 #pragma mark - event response
 

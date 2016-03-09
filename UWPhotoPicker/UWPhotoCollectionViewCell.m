@@ -14,7 +14,7 @@
 #define SELECTED_COLOR [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5]
 
 static NSInteger buttonMargin = 5;
-static NSInteger buttonWidth = 16;
+static NSInteger buttonWidth = 30;
 
 @interface UWPhotoCollectionViewCell ()
 
@@ -48,7 +48,7 @@ static NSInteger buttonWidth = 16;
 - (void)layoutSubviews {
     [super layoutSubviews];
     _imageView.frame = self.bounds;
-    _selectedButton.frame = CGRectMake(self.bounds.size.width - _selectedButton.frame.size.width - buttonMargin, buttonMargin, buttonWidth, buttonWidth);
+    _selectedButton.frame = CGRectMake(self.bounds.size.width - _selectedButton.frame.size.width , 0, buttonWidth, buttonWidth);
 }
 
 - (void)handleMWPhotoLoadingDidEndNotification:(NSNotification *)notification {
@@ -59,7 +59,7 @@ static NSInteger buttonWidth = 16;
 }
 
 - (void)selectionButtonPressed {
-    _selectedButton.selected = !_selectedButton.selected;
+    self.isSelected = !self.isSelected;
     if (self.selectedBlock) {
         self.selectedBlock(_selectedButton.selected, self.indexPath);
     }
@@ -87,12 +87,10 @@ static NSInteger buttonWidth = 16;
     if (!_selectedButton) {
         _selectedButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _selectedButton.adjustsImageWhenHighlighted = NO;
-
         [_selectedButton setImage:[UIImage imageNamed:@"UWPhotoPickerUnselected"] forState:UIControlStateNormal];
         [_selectedButton setImage:[UIImage imageNamed:@"UWPhotoPickerSelected"] forState:UIControlStateSelected];
-        _selectedButton.userInteractionEnabled = NO;
-//        [_selectedButton addTarget:self action:@selector(selectionButtonPressed) forControlEvents:UIControlEventTouchDown];
-        _selectedButton.frame = CGRectMake(0, 0, 16, 16);
+        [_selectedButton addTarget:self action:@selector(selectionButtonPressed) forControlEvents:UIControlEventTouchDown];
+        _selectedButton.frame = CGRectMake(0, 0, 30, 30);
         [self.contentView addSubview:_selectedButton];
     }
     return _selectedButton;
