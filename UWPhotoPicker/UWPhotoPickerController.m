@@ -128,9 +128,10 @@ static CGFloat kCountLabelWidth = 22.f;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    UWPhoto *photo = [self.photoData photoAtIndex:indexPath];
     static NSString *CellIdentifier = @"UWPhotoCollectionViewCell";
     UWPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
-    UWPhoto *photo = [self.photoData photoAtIndex:indexPath];
+    cell.isLineWhenSelected = _photoData.isSingleSelection;
     cell.photo = photo;
     cell.indexPath = indexPath;
     cell.selectedBlock = ^(BOOL isSelected, NSIndexPath *indexPath) {

@@ -34,8 +34,6 @@ static NSInteger buttonWidth = 30;
         self.imageView.contentMode = UIViewContentModeScaleAspectFill;
         
         [self.contentView addSubview:self.imageView];
-        self.selectedButton.selected = NO;
-        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(handleMWPhotoLoadingDidEndNotification:)
                                                      name:UWPhotoPickerLoadingDidFinishedNotification
@@ -48,7 +46,12 @@ static NSInteger buttonWidth = 30;
 - (void)layoutSubviews {
     [super layoutSubviews];
     _imageView.frame = self.bounds;
-    _selectedButton.frame = CGRectMake(self.bounds.size.width - _selectedButton.frame.size.width , 0, buttonWidth, buttonWidth);
+    if (_isLineWhenSelected) {
+        self.selectedButton.frame = self.bounds;
+    }else {
+        self.selectedButton.frame = CGRectMake(self.bounds.size.width - _selectedButton.frame.size.width , 0, buttonWidth, buttonWidth);
+    }
+    
 }
 
 - (void)handleMWPhotoLoadingDidEndNotification:(NSNotification *)notification {
@@ -89,8 +92,14 @@ static NSInteger buttonWidth = 30;
     if (!_selectedButton) {
         _selectedButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _selectedButton.adjustsImageWhenHighlighted = NO;
-        [_selectedButton setImage:[UIImage imageNamed:@"UWPhotoPickerUnselected"] forState:UIControlStateNormal];
-        [_selectedButton setImage:[UIImage imageNamed:@"UWPhotoPickerSelected"] forState:UIControlStateSelected];
+        _selectedButton.backgroundColor = [UIColor clearColor];
+        if (_isLineWhenSelected) {
+            [_selectedButton setImage:[UIImage imageNamed:@"UWPhotoPickerLineSelected"] forState:UIControlStateSelected];
+            _selectedButton.contentMode = UIViewContentModeScaleToFill;
+        }else {
+            [_selectedButton setImage:[UIImage imageNamed:@"UWPhotoPickerUnselected"] forState:UIControlStateNormal];
+            [_selectedButton setImage:[UIImage imageNamed:@"UWPhotoPickerSelected"] forState:UIControlStateSelected];
+        }
         [_selectedButton addTarget:self action:@selector(selectionButtonPressed) forControlEvents:UIControlEventTouchDown];
         _selectedButton.frame = CGRectMake(0, 0, 30, 30);
         [self.contentView addSubview:_selectedButton];

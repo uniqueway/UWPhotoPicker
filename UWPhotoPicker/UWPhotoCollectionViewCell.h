@@ -15,6 +15,6 @@
 @property (nonatomic, strong) NSIndexPath *indexPath;
 @property (nonatomic, assign) BOOL isSelected;
 @property (nonatomic, copy)   void(^selectedBlock)(BOOL isSelected, NSIndexPath *indexPath);
-
+@property (nonatomic, assign) BOOL isLineWhenSelected;
 
 @end
