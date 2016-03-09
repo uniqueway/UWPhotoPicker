@@ -60,6 +60,7 @@ static NSInteger buttonWidth = 30;
 
 - (void)selectionButtonPressed {
     self.isSelected = !self.isSelected;
+    _photo.isSelected = self.isSelected;
     if (self.selectedBlock) {
         self.selectedBlock(_selectedButton.selected, self.indexPath);
     }
@@ -70,6 +71,7 @@ static NSInteger buttonWidth = 30;
 - (void)setPhoto:(id <UWPhotoDatable>)photo {
     _imageView.image = photo.image;
     _photo = photo;
+    self.isSelected = _photo.isSelected;
     __weak typeof(&*self) weakself = self;
     _photo.imageDidFinished = ^(id<UWPhotoDatable> photo) {
         if (photo == _photo) {

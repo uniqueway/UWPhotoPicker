@@ -20,6 +20,7 @@
 static CGFloat kBottomSegmentHeight = 45;
 static CGFloat kSegmentItemWidth = 70;
 static NSInteger MAX_SELECTION_COUNT = INFINITY;
+static CGFloat kCountLabelWidth = 22.f;
 
 @interface UWPhotoPickerController ()<UICollectionViewDataSource, UICollectionViewDelegate> {
     CGFloat beginOriginY;
@@ -27,13 +28,15 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 @property (strong, nonatomic) UIView *topView;
 @property (strong, nonatomic) UIImageView *maskView;
 @property (weak, nonatomic) UICollectionView *collectionView;
-@property (strong, nonatomic) NSMutableArray *imageDidSelectList;
-@property (strong, nonatomic) NSMutableArray *indexPathList;
+
+@property (strong, nonatomic) NSMutableSet *modelChangedList;
+@property (nonatomic, weak)   UWPhotoCollectionViewCell *selecedCell;
 @property (strong, nonatomic) UIButton *cropBtn;
 @property (nonatomic, assign) UWPickerStatus status;
 
 @property (nonatomic, strong) SDSegmentedControl *segmentedControl;
 @property (nonatomic, strong) UILabel *countLabel;
+@property (nonatomic, assign) NSInteger selectedCount;
 
 @end
 
@@ -48,46 +51,67 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     [self.view setBackgroundColor:[UIColor whiteColor]];
     [self.collectionView reloadData];
     [self.view addSubview:self.topView];
-    self.imageDidSelectList = [@[] mutableCopy];
-    self.indexPathList      = [@[] mutableCopy];
+    self.modelChangedList = [NSMutableSet set];
     __weak __typeof(&*self)weakSelf = self;
     _photoData.finishedLoading = ^{
+        [weakSelf calculateCountOfSelectedPhotos];
         [weakSelf.collectionView reloadData];
     };
     [self.view addSubview:self.segmentedControl];
     self.segmentedControl.selectedSegmentIndex = 0;
 }
 
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleLightContent;
-}
-
-
 - (void)handlePhotoStatusAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)isSelected {
-    UWPhoto *photo = [self.photoData photoAtIndex:indexPath];
-    if (isSelected) {
-        if (_photoData.isSingleSelection) {
-            
-            NSIndexPath *preIndexPath = (NSIndexPath *)self.indexPathList.firstObject;
-            UWPhotoCollectionViewCell *cell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:preIndexPath];
-            cell.isSelected = NO;
-            [self.imageDidSelectList removeAllObjects];
-            [self.indexPathList removeAllObjects];
+    
+    id <UWPhotoDatable> photo = [self.photoData photoAtIndex:indexPath];
+    self.photoData.selectedCount += isSelected ? 1 : -1;
+
+    if (_photoData.isSingleSelection) { // 单选时，取消上一个图片选中状态，移除所有图片
+        UWPhotoCollectionViewCell *cell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+        if (cell != self.selecedCell) {
+            self.selecedCell.isSelected = NO;
+            self.selecedCell = cell;
+        }else {
+            cell.isSelected = YES;
         }
-        [self.imageDidSelectList addObject:photo];
-        [self.indexPathList addObject:indexPath];
+    }
+    
+    // 单选时，不包含就选移出所有，再添加新的；多选的时候包含当前model，移出当前model，改的只有是否选中状态，并且成对出现，第二次出现时，并未对此model做修改
+    if (_photoData.isSingleSelection) {
+        if (![self.modelChangedList containsObject:photo]) {
+            [self.modelChangedList removeAllObjects];
+            [self.modelChangedList addObject:photo];
+        }
     }else {
-        [self.imageDidSelectList removeObject:photo];
-        [self.indexPathList removeObject:indexPath];
+        if ([self.modelChangedList containsObject:photo]) {
+            [self.modelChangedList removeObject:photo];
+        }else {
+            [self.modelChangedList addObject:photo];
+        }
     }
     [self calculateCountOfSelectedPhotos];
 }
 
 #pragma mark - event
-
+/// 选择的图片个数
 - (void)calculateCountOfSelectedPhotos {
     if (!_photoData.isSingleSelection) {
-        self.countLabel.text = [NSString stringWithFormat:@"已选: %@",@(self.imageDidSelectList.count)];
+        // 动画
+        if (self.photoData.selectedCount == 0) {
+            [UIView animateWithDuration:0.3 animations:^{
+                self.countLabel.alpha = 0;
+            }];
+        }else if (self.countLabel.alpha == 0) {
+            [UIView animateWithDuration:0.3 animations:^{
+                self.countLabel.alpha = 1;
+            }];
+        }
+        // 赋值
+        if (_photoData.countLocation == UWPhotoCountLocationBottom) {
+            self.countLabel.text = [NSString stringWithFormat:@"已选: %@",@(self.photoData.selectedCount)];
+        }else {
+            self.countLabel.text = @(self.photoData.selectedCount).stringValue;
+        }
     }
 }
 
@@ -109,8 +133,6 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     UWPhoto *photo = [self.photoData photoAtIndex:indexPath];
     cell.photo = photo;
     cell.indexPath = indexPath;
-    cell.isSelected = ([self.indexPathList containsObject:indexPath]);
-    
     cell.selectedBlock = ^(BOOL isSelected, NSIndexPath *indexPath) {
         [self handlePhotoStatusAtIndexPath:indexPath selected:isSelected];
     };
@@ -146,8 +168,11 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 }
 
 - (void)pushToEditView {
-    UWPhotoEditorViewController *view = [[UWPhotoEditorViewController alloc] initWithPhotoList:self.imageDidSelectList crop:self.cropBlock];
-    [self.navigationController pushViewController:view animated:YES];
+
+    if (self.selectedPhotos) {
+        NSArray *tmp = [self.modelChangedList allObjects];
+        self.selectedPhotos(tmp);
+    }
 }
 
 - (void)segmentValueChanged:(SDSegmentedControl *)sender {
@@ -179,24 +204,25 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
         CGFloat titleWidth = 100;
         rect = CGRectMake((CGRectGetWidth(navView.bounds)-titleWidth)/2, 0, titleWidth, navHeight);
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:rect];
-        titleLabel.text = self.title;
-        if (!self.title) {
-            titleLabel.text = @"选择封面";
-        }
+        titleLabel.text = _photoData.title;
         titleLabel.textAlignment = NSTextAlignmentCenter;
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.textColor = [UIColor blackColor];
         titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
         [navView addSubview:titleLabel];
         
-        rect = CGRectMake(CGRectGetWidth(navView.bounds)-80, 0, 80, CGRectGetHeight(navView.bounds));
-        self.cropBtn = [[UIButton alloc] initWithFrame:rect];
-        [self.cropBtn setTitle:@"确定" forState:UIControlStateNormal];
-        [self.cropBtn.titleLabel setFont:[UIFont boldSystemFontOfSize:15.0f]];
-        [self.cropBtn setTitleColor:UWHEX(0x00a2a0) forState:UIControlStateNormal];
-        [self.cropBtn addTarget:self action:@selector(pushToEditView) forControlEvents:UIControlEventTouchUpInside];
-        [navView addSubview:self.cropBtn];
-        
+        if (_photoData.hasRightButton) {
+            rect = CGRectMake(CGRectGetWidth(navView.bounds)-45, 0, 40, CGRectGetHeight(navView.bounds));
+            self.cropBtn = [[UIButton alloc] initWithFrame:rect];
+            [self.cropBtn setTitle:@"确定" forState:UIControlStateNormal];
+            [self.cropBtn.titleLabel setFont:[UIFont boldSystemFontOfSize:15.0f]];
+            [self.cropBtn setTitleColor:UWHEX(0x00a2a0) forState:UIControlStateNormal];
+            [self.cropBtn addTarget:self action:@selector(pushToEditView) forControlEvents:UIControlEventTouchUpInside];
+            [navView addSubview:self.cropBtn];
+        }
+        if (_photoData.countLocation == UWPhotoCountLocationTop) {
+            [navView addSubview:self.countLabel];
+        }
     }
     return _topView;
 }
@@ -293,15 +319,25 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 
 - (UILabel *)countLabel {
     if (!_countLabel) {
+        BOOL isTop = _photoData.countLocation == UWPhotoCountLocationTop;
         _countLabel = [[UILabel alloc] init];
-        _countLabel.backgroundColor = [UIColor clearColor];
-        _countLabel.textAlignment = NSTextAlignmentRight;
+        _countLabel.backgroundColor = isTop ? [self.cropBtn titleColorForState:UIControlStateNormal] : [UIColor clearColor];
+        _countLabel.textAlignment = isTop? NSTextAlignmentCenter : NSTextAlignmentRight;
         _countLabel.font = [UIFont boldSystemFontOfSize:12];
-        _countLabel.textColor = UWHEX(0x3c3931);
-        CGFloat startX = CGRectGetWidth(self.view.bounds) - 100;
-        _countLabel.frame = CGRectMake(startX, 0, 85, kBottomSegmentHeight);
-        [_segmentedControl addSubview:_countLabel];
-        [_segmentedControl bringSubviewToFront:_countLabel];
+        _countLabel.textColor = isTop ? [UIColor whiteColor] : UWHEX(0x3c3931);
+        _countLabel.alpha = 0;
+        CGFloat allWidth = CGRectGetWidth(self.view.bounds);
+        if (isTop) {
+            _countLabel.frame = CGRectMake(allWidth-45- kCountLabelWidth, CGRectGetMidY(_cropBtn.frame) - kCountLabelWidth/2, kCountLabelWidth, kCountLabelWidth);
+            _countLabel.layer.cornerRadius = kCountLabelWidth/2;
+            _countLabel.layer.masksToBounds = YES;
+            _countLabel.textColor = [UIColor whiteColor];
+            _countLabel.textAlignment = NSTextAlignmentCenter;
+        }else {
+            [_segmentedControl addSubview:_countLabel];
+            [_segmentedControl bringSubviewToFront:_countLabel];
+            _countLabel.frame = CGRectMake(allWidth - 100 , 0, 85, kBottomSegmentHeight);
+        }
     }
     return _countLabel;
 }

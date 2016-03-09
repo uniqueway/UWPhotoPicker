@@ -15,5 +15,6 @@
 @property (nonatomic, strong) UIImage *image;
 @property (nonatomic, copy)   void(^imageDidFinished)(id<UWPhotoDatable> photo);
 @property (nonatomic, strong) PHAsset *asset;
+@property (nonatomic, assign) BOOL isSelected;
 
 @end

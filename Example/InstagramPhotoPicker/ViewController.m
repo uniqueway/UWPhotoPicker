@@ -40,7 +40,10 @@
         
         
         UWPhotoPickerController *photoPicker = [[UWPhotoPickerController alloc] init];
-        [photoPicker.photoData loadPhotosWithAll:result recommendPhotos:result singleSelection:NO hasTitle:YES];
+        [photoPicker.photoData loadPhotosWithAll:result recommendPhotos:result singleSelection:NO hasSectionTitle:YES];
+        photoPicker.photoData.hasRightButton = YES;
+        photoPicker.photoData.countLocation = UWPhotoCountLocationTop;
+        photoPicker.photoData.title = @"选择照片";
         photoPicker.cropBlock = ^(NSArray *list) {
             CGFloat size = [[UIScreen mainScreen] bounds].size.width;
             NSInteger index = 0;

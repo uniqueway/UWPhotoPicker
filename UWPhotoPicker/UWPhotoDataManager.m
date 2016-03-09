@@ -21,11 +21,12 @@
 
 @implementation UWPhotoDataManager
 
-- (void)loadPhotosWithAll:(NSArray *)allPhotos recommendPhotos:(NSArray *)recommendPhotos singleSelection:(BOOL)isSingleSelection hasTitle:(BOOL)hasTitle{
+- (void)loadPhotosWithAll:(NSArray *)allPhotos recommendPhotos:(NSArray *)recommendPhotos singleSelection:(BOOL)isSingleSelection hasSectionTitle:(BOOL)hasSectionTitle{
     self.allPhotos = allPhotos;
     self.recommendPhotos = recommendPhotos;
     _isSingleSelection = isSingleSelection;
-    _hasTitle = hasTitle;
+    _hasSectionTitle = hasSectionTitle;
+    _selectedCount = 0;
     if (self.recommendPhotos.count > 0) {
         _isSingleMenu = NO;
         _menuIndex = UWMenuIndexRecommed;
@@ -33,8 +34,14 @@
         _isSingleMenu = YES;
         _menuIndex = UWMenuIndexAll;
     }
-    if (_hasTitle) {
+    if (_hasSectionTitle) {
         [self handleTitle];
+    }
+}
+
+- (void)changeSelectedStatus:(NSArray<NSIndexPath *> *)indexPaths {
+    for (NSIndexPath *indexPath in indexPaths) {
+        id <UWPhotoDatable> model = [self photoAtIndex:indexPath];
     }
 }
 
@@ -46,12 +53,24 @@
         id <UWPhotoDatable> photo = group.firstObject;
         NSString *title = [photo.asset.creationDate uwpp_DateFormatByDot];
         [self.allPhotosTitles addObject:title];
+        for (id<UWPhotoDatable>photo in group) {
+            if (photo.isSelected) {
+                _selectedCount++;
+            }
+        }
     }
     
     for (NSArray *group in self.recommendPhotos) {
         id <UWPhotoDatable> photo = group.firstObject;
         NSString *title = [photo.asset.creationDate uwpp_DateFormatByDot];
         [self.recommendTitles addObject:title];
+        if (_selectedCount == 0) {
+            for (id<UWPhotoDatable>photo in group) {
+                if (photo.isSelected) {
+                    _selectedCount++;
+                }
+            }
+        }
     }
     
     if (self.finishedLoading) {
@@ -60,7 +79,7 @@
 }
 
 - (id <UWPhotoDatable>)photoAtIndex:(NSIndexPath *)indexPath {
-    if (!_hasTitle) {
+    if (!_hasSectionTitle) {
         if (indexPath.row < self.allPhotos.count) {
             return self.allPhotos[indexPath.row];
         }else {
@@ -81,7 +100,7 @@
 }
 
 - (NSInteger)numberOfSections {
-    if (!_hasTitle) {
+    if (!_hasSectionTitle) {
         return 1;
     }
     if (_menuIndex == UWMenuIndexRecommed) {
@@ -93,7 +112,7 @@
 }
 
 - (NSInteger)numberOfItemsInSection:(NSInteger)section {
-    if (!_hasTitle) {
+    if (!_hasSectionTitle) {
         return self.allPhotosTitles.count;
     }
     if (_menuIndex == UWMenuIndexAll) {
