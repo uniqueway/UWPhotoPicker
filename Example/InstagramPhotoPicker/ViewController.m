@@ -40,7 +40,7 @@
         
         
         UWPhotoPickerController *photoPicker = [[UWPhotoPickerController alloc] init];
-        [photoPicker.photoData loadPhotosWithAll:result recommendPhotos:result singleSelection:YES hasTitle:YES];
+        [photoPicker.photoData loadPhotosWithAll:result recommendPhotos:result singleSelection:NO hasTitle:YES];
         photoPicker.cropBlock = ^(NSArray *list) {
             CGFloat size = [[UIScreen mainScreen] bounds].size.width;
             NSInteger index = 0;

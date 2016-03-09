@@ -79,12 +79,15 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
         [self.imageDidSelectList removeObject:photo];
         [self.indexPathList removeObject:indexPath];
     }
+    [self calculateCountOfSelectedPhotos];
 }
 
 #pragma mark - event
 
-- (void)calculateSelectedPhotosCount {
-    
+- (void)calculateCountOfSelectedPhotos {
+    if (!_photoData.isSingleSelection) {
+        self.countLabel.text = [NSString stringWithFormat:@"已选: %@",@(self.imageDidSelectList.count)];
+    }
 }
 
 #pragma mark - UICollectionViewDataSource
@@ -311,9 +314,10 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
         _countLabel.textAlignment = NSTextAlignmentRight;
         _countLabel.font = [UIFont boldSystemFontOfSize:12];
         _countLabel.textColor = UWHEX(0x3c3931);
-        CGFloat startX = CGRectGetWidth(self.view.frame) - kSegmentItemWidth*2;
-        _countLabel.frame = CGRectMake(startX, 0, startX - 30, kBottomSegmentHeight);
+        CGFloat startX = CGRectGetWidth(self.view.bounds) - 100;
+        _countLabel.frame = CGRectMake(startX, 0, 85, kBottomSegmentHeight);
         [_segmentedControl addSubview:_countLabel];
+        [_segmentedControl bringSubviewToFront:_countLabel];
     }
     return _countLabel;
 }
