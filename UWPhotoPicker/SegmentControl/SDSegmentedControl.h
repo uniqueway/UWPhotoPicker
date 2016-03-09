@@ -40,6 +40,8 @@ typedef enum {
 
 @property (assign,nonatomic) UIScrollView *scrollView;
 
+- (instancetype)initWithTitles:(NSArray <NSString *> *)titles width:(CGFloat)width;
+
 @end
 
 @interface SDSegmentView : UIButton

@@ -15,6 +15,7 @@
 #import "UWPhotoPickerConfig.h"
 #import "SDSegmentedControl.h"
 
+
 #define NavigationBarHeight 64
 static CGFloat kBottomSegmentHeight = 45;
 static CGFloat kSegmentItemWidth = 70;
@@ -238,9 +239,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     
     CGRect rect = CGRectZero;
     rect.size = size_;
-    
     UIColor *color = [UIColor colorWithCGColor:cgColor_];
-    
     UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect:rect];
     [color setFill];
     [rectanglePath fill];
@@ -286,22 +285,8 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 
 - (SDSegmentedControl *)segmentedControl {
     if (!_segmentedControl) {
-
-        _segmentedControl = [[SDSegmentedControl alloc] init];
+        _segmentedControl = [[SDSegmentedControl alloc] initWithTitles:@[@"推荐", @"所有照片"] width:kSegmentItemWidth];
         _segmentedControl.frame = CGRectMake(0, CGRectGetHeight(self.view.bounds)- kBottomSegmentHeight, CGRectGetWidth(self.view.bounds), kBottomSegmentHeight);
-        [_segmentedControl setBackgroundColor:[UIColor whiteColor]];
-        _segmentedControl.titleFont = [UIFont systemFontOfSize:14];
-        _segmentedControl.arrowPosition = SDSegmentedArrowPositionTop;
-        _segmentedControl.arrowHeightFactor *= -1.0;
-        _segmentedControl.interItemSpace = 0;
-        
-        [_segmentedControl insertSegmentWithTitle:@"推荐" atIndex:0 animated:NO];
-        [_segmentedControl insertSegmentWithTitle:@"所有照片" atIndex:1 animated:NO];
-        [_segmentedControl insertSegmentWithTitle:@"" atIndex:2 animated:NO];
-        [_segmentedControl setWidth:kSegmentItemWidth forSegmentAtIndex:0];
-        [_segmentedControl setWidth:kSegmentItemWidth forSegmentAtIndex:1];
-        [_segmentedControl setWidth:CGRectGetWidth(self.view.bounds) - kSegmentItemWidth*2 forSegmentAtIndex:2];
-        [_segmentedControl setEnabled:NO forSegmentAtIndex:2];
         [_segmentedControl addTarget:self action:@selector(segmentValueChanged:) forControlEvents:UIControlEventValueChanged];
     }
     return _segmentedControl;

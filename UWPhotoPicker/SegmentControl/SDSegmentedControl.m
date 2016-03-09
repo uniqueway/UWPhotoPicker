@@ -68,6 +68,28 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     return self;
 }
 
+- (instancetype)initWithTitles:(NSArray<NSString *> *)titles width:(CGFloat)width {
+    self = [self init];
+    if (self ) {
+        self.backgroundColor = [UIColor whiteColor];
+        self.titleFont = [UIFont systemFontOfSize:14];
+        self.arrowPosition = SDSegmentedArrowPositionTop;
+        self.arrowHeightFactor *= -1.0;
+        self.interItemSpace = 0;
+        [titles enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [self insertSegmentWithTitle:obj atIndex:idx animated:NO];
+            [self setWidth:width forSegmentAtIndex:idx];
+        }];
+        CGFloat allWidth = [[UIScreen mainScreen] bounds].size.width;
+        if (width * titles.count < allWidth) {
+            [self insertSegmentWithTitle:@"" atIndex:titles.count animated:NO];
+            [self setWidth:(allWidth - width*titles.count) forSegmentAtIndex:titles.count];
+            [self setEnabled:NO forSegmentAtIndex:titles.count];
+        }
+    }
+    return self;
+}
+
 - (void)awakeFromNib
 {
     [self commonInit];
