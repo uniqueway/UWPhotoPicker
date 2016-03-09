@@ -17,7 +17,7 @@
 
 #define NavigationBarHeight 64
 static CGFloat kBottomSegmentHeight = 45;
-
+static CGFloat kSegmentItemWidth = 70;
 static NSInteger MAX_SELECTION_COUNT = INFINITY;
 
 @interface UWPhotoPickerController ()<UICollectionViewDataSource, UICollectionViewDelegate> {
@@ -32,6 +32,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 @property (nonatomic, assign) UWPickerStatus status;
 
 @property (nonatomic, strong) SDSegmentedControl *segmentedControl;
+@property (nonatomic, strong) UILabel *countLabel;
 
 @end
 
@@ -69,19 +70,21 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
             NSIndexPath *preIndexPath = (NSIndexPath *)self.indexPathList.firstObject;
             UWPhotoCollectionViewCell *cell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:preIndexPath];
             cell.isSelected = NO;
-            
             [self.imageDidSelectList removeAllObjects];
             [self.indexPathList removeAllObjects];
-//            [self.collectionView reloadData];
         }
         [self.imageDidSelectList addObject:photo];
         [self.indexPathList addObject:indexPath];
-        [self.collectionView reloadData];
     }else {
         [self.imageDidSelectList removeObject:photo];
         [self.indexPathList removeObject:indexPath];
-        [self.collectionView reloadData];
     }
+}
+
+#pragma mark - event
+
+- (void)calculateSelectedPhotosCount {
+    
 }
 
 #pragma mark - UICollectionViewDataSource
@@ -103,10 +106,6 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     cell.photo = photo;
     cell.indexPath = indexPath;
     cell.isSelected = ([self.indexPathList containsObject:indexPath]);
-    cell.selectedBlock = ^(BOOL isSelectdd, NSIndexPath *indexPath) {
-        [self handlePhotoStatusAtIndexPath:indexPath selected:isSelectdd];
-    };
-    
     return cell;
 }
 
@@ -124,7 +123,9 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 #pragma mark - UICollectionViewDelegate
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-
+    UWPhotoCollectionViewCell *cell = (UWPhotoCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    cell.isSelected = !cell.isSelected;
+    [self handlePhotoStatusAtIndexPath:indexPath selected:cell.isSelected];
 }
 
 
@@ -177,7 +178,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:rect];
         titleLabel.text = self.title;
         if (!self.title) {
-            titleLabel.text = @"选择照片";
+            titleLabel.text = @"选择封面";
         }
         titleLabel.textAlignment = NSTextAlignmentCenter;
         titleLabel.backgroundColor = [UIColor clearColor];
@@ -187,9 +188,9 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
         
         rect = CGRectMake(CGRectGetWidth(navView.bounds)-80, 0, 80, CGRectGetHeight(navView.bounds));
         self.cropBtn = [[UIButton alloc] initWithFrame:rect];
-        [self.cropBtn setTitle:@"编辑" forState:UIControlStateNormal];
-        [self.cropBtn.titleLabel setFont:[UIFont systemFontOfSize:14.0f]];
-        [self.cropBtn setTitleColor:[UIColor cyanColor] forState:UIControlStateNormal];
+        [self.cropBtn setTitle:@"确定" forState:UIControlStateNormal];
+        [self.cropBtn.titleLabel setFont:[UIFont boldSystemFontOfSize:15.0f]];
+        [self.cropBtn setTitleColor:UWHEX(0x00a2a0) forState:UIControlStateNormal];
         [self.cropBtn addTarget:self action:@selector(pushToEditView) forControlEvents:UIControlEventTouchUpInside];
         [navView addSubview:self.cropBtn];
         
@@ -282,7 +283,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 
 - (SDSegmentedControl *)segmentedControl {
     if (!_segmentedControl) {
-        CGFloat width = 70;
+
         _segmentedControl = [[SDSegmentedControl alloc] init];
         _segmentedControl.frame = CGRectMake(0, CGRectGetHeight(self.view.bounds)- kBottomSegmentHeight, CGRectGetWidth(self.view.bounds), kBottomSegmentHeight);
         [_segmentedControl setBackgroundColor:[UIColor whiteColor]];
@@ -294,13 +295,27 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
         [_segmentedControl insertSegmentWithTitle:@"推荐" atIndex:0 animated:NO];
         [_segmentedControl insertSegmentWithTitle:@"所有照片" atIndex:1 animated:NO];
         [_segmentedControl insertSegmentWithTitle:@"" atIndex:2 animated:NO];
-        [_segmentedControl setWidth:width forSegmentAtIndex:0];
-        [_segmentedControl setWidth:width forSegmentAtIndex:1];
-        [_segmentedControl setWidth:CGRectGetWidth(self.view.bounds) - width*2 forSegmentAtIndex:2];
+        [_segmentedControl setWidth:kSegmentItemWidth forSegmentAtIndex:0];
+        [_segmentedControl setWidth:kSegmentItemWidth forSegmentAtIndex:1];
+        [_segmentedControl setWidth:CGRectGetWidth(self.view.bounds) - kSegmentItemWidth*2 forSegmentAtIndex:2];
         [_segmentedControl setEnabled:NO forSegmentAtIndex:2];
         [_segmentedControl addTarget:self action:@selector(segmentValueChanged:) forControlEvents:UIControlEventValueChanged];
     }
     return _segmentedControl;
+}
+
+- (UILabel *)countLabel {
+    if (!_countLabel) {
+        _countLabel = [[UILabel alloc] init];
+        _countLabel.backgroundColor = [UIColor clearColor];
+        _countLabel.textAlignment = NSTextAlignmentRight;
+        _countLabel.font = [UIFont boldSystemFontOfSize:12];
+        _countLabel.textColor = UWHEX(0x3c3931);
+        CGFloat startX = CGRectGetWidth(self.view.frame) - kSegmentItemWidth*2;
+        _countLabel.frame = CGRectMake(startX, 0, startX - 30, kBottomSegmentHeight);
+        [_segmentedControl addSubview:_countLabel];
+    }
+    return _countLabel;
 }
 
 @end

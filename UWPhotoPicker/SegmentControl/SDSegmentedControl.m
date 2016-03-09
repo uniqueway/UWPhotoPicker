@@ -4,14 +4,10 @@
 //  Contributed by Marius Rackwitz on 19/10/12
 //
 
-#ifdef NSFoundationVersionNumber_iOS_6_1
-#define SD_IS_IOS7 (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1)
-#else
-#define SD_IS_IOS7 NO
-#endif
 
 #import "SDSegmentedControl.h"
 #import <QuartzCore/QuartzCore.h>
+#import "UWPhotoPickerConfig.h"
 
 #pragma mark - Constants
 
@@ -109,31 +105,16 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
 
     // Init layer
     self.layer.backgroundColor = UIColor.clearColor.CGColor;
-    if (!SD_IS_IOS7)
-    {
-        self.backgroundColor = [UIColor colorWithRed:0.961 green:0.961 blue:0.961 alpha:1];
-        self.shadowColor = UIColor.blackColor;
-        self.shadowRadius = .8;
-        self.shadowOpacity = .6;
-        self.shadowOffset = CGSizeMake(0, 1);
-    }
-    else
-    {
+    
         self.backgroundColor = [UIColor clearColor];
-    }
+
 
     // Init border bottom layer
     [self.layer addSublayer:_borderBottomLayer = CAShapeLayer.layer];
-    if (!SD_IS_IOS7)
-    {
-        self.borderColor = UIColor.whiteColor;
-        self.borderWidth = .5;
-    }
-    else
-    {
+    
         self.borderColor = UIColor.blackColor;
         self.borderWidth = .25;
-    }
+
     _borderBottomLayer.fillColor = nil;
 
     // Init scrollView
@@ -1059,16 +1040,10 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     [super initialize];
 
     SDSegmentView *appearance = [self appearance];
-    [appearance setTitleColor:[UIColor colorWithWhite:0.392 alpha:1] forState:UIControlStateNormal];
-    [appearance setTitleColor:[UIColor colorWithWhite:0.235 alpha:1] forState:UIControlStateSelected];
+    [appearance setTitleColor:UWHEX(0x3C3931) forState:UIControlStateNormal];
+    [appearance setTitleColor:UWHEX(0x00a2a0) forState:UIControlStateSelected];
     [appearance setTitleColor:[UIColor colorWithWhite:0.800 alpha:1] forState:UIControlStateDisabled];
 
-    if (!SD_IS_IOS7)
-    {
-        [appearance setTitleShadowColor:UIColor.whiteColor forState:UIControlStateNormal];
-        [appearance setTitleShadowColor:UIColor.whiteColor forState:UIControlStateSelected];
-        [appearance setTitleShadowColor:UIColor.clearColor forState:UIControlStateDisabled];
-    }
 }
 
 + (SDSegmentView *)new
@@ -1087,16 +1062,9 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     {
         _imageSize = kSDSegmentedControlImageSize;
 
-        if (!SD_IS_IOS7)
-        {
-            self.titleShadowOffset = CGSizeMake(0, 0.5);
-            self.titleFont = [UIFont boldSystemFontOfSize:14];
-        }
-        else
-        {
+
             self.titleFont = [UIFont systemFontOfSize:14];
             self.selectedTitleFont = [UIFont boldSystemFontOfSize:14];
-        }
 
         self.userInteractionEnabled = YES;
         self.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
@@ -1212,8 +1180,7 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
 
 - (void)tintColorDidChange
 {
-    if (SD_IS_IOS7)
-    {
+
         [super tintColorDidChange];
         
         switch (self.tintAdjustmentMode)
@@ -1252,7 +1219,6 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
                 
                 break;
         }
-    }
 }
 
 @end
@@ -1266,19 +1232,8 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
     SDStainView *appearance = [self appearance];
     appearance.edgeInsets = UIEdgeInsetsMake(-.5, -.5, -.5, -.5);
 
-    if (!SD_IS_IOS7)
-    {
-        appearance.innerStrokeLineWidth = 1.5;
-        appearance.innerStrokeColor = UIColor.whiteColor;
-        appearance.backgroundColor = [UIColor colorWithWhite:0.816 alpha:1];
-        appearance.shadowOffset = CGSizeMake(0, .5);
-        appearance.shadowBlur = 2.5;
-        appearance.shadowColor = UIColor.blackColor;
-    }
-    else
-    {
-        appearance.backgroundColor = [UIColor clearColor];
-    }
+
+    appearance.backgroundColor = [UIColor clearColor];
 }
 
 + (id)appearance
@@ -1390,11 +1345,8 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
 
 - (void)tintColorDidChange
 {
-    if (SD_IS_IOS7)
-    {
-        [super tintColorDidChange];
-        [self setNeedsDisplay];
-    }
+    [super tintColorDidChange];
+    [self setNeedsDisplay];
 }
 
 @end

@@ -87,9 +87,11 @@ static NSInteger buttonWidth = 16;
     if (!_selectedButton) {
         _selectedButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _selectedButton.adjustsImageWhenHighlighted = NO;
+
         [_selectedButton setImage:[UIImage imageNamed:@"UWPhotoPickerUnselected"] forState:UIControlStateNormal];
         [_selectedButton setImage:[UIImage imageNamed:@"UWPhotoPickerSelected"] forState:UIControlStateSelected];
-        [_selectedButton addTarget:self action:@selector(selectionButtonPressed) forControlEvents:UIControlEventTouchDown];
+        _selectedButton.userInteractionEnabled = NO;
+//        [_selectedButton addTarget:self action:@selector(selectionButtonPressed) forControlEvents:UIControlEventTouchDown];
         _selectedButton.frame = CGRectMake(0, 0, 16, 16);
         [self.contentView addSubview:_selectedButton];
     }
