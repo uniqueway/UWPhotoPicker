@@ -21,6 +21,18 @@
 
 @implementation UWPhotoDataManager
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        self.countLocation = UWPhotoCountLocationNone;
+        self.hasRightButton = YES;
+        self.hasSectionTitle = YES;
+        self.isSingleSelection = NO;
+        self.isSingleMenu = YES;
+    }
+    return self;
+}
+
 - (void)loadPhotosWithAll:(NSArray *)allPhotos recommendPhotos:(NSArray *)recommendPhotos singleSelection:(BOOL)isSingleSelection hasSectionTitle:(BOOL)hasSectionTitle{
     self.allPhotos = allPhotos;
     self.recommendPhotos = recommendPhotos;
