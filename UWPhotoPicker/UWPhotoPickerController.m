@@ -215,7 +215,7 @@ static CGFloat kCountLabelWidth = 22.f;
         rect = CGRectMake(0, 0, 60, CGRectGetHeight(navView.bounds));
         UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         backBtn.frame = rect;
-        [backBtn setImage:[UIImage imageNamed:@"back.png"]
+        [backBtn setImage:[UIImage imageNamed:@"NavigationBar_Back"]
                  forState:UIControlStateNormal];
         [backBtn addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
         [navView addSubview:backBtn];

@@ -19,7 +19,7 @@
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="zET-HP-t12">
                                 <rect key="frame" x="150" y="28" width="300" height="300"/>
-                                <color key="backgroundColor" red="0.58817130327224731" green="0.58827322721481323" blue="0.58815699815750122" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="300" id="5Nn-nY-osb"/>
                                     <constraint firstAttribute="width" constant="300" id="iqv-rn-ScT"/>
