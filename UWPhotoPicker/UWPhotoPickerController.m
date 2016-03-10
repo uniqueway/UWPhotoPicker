@@ -165,7 +165,11 @@ static CGFloat kCountLabelWidth = 22.f;
 #pragma mark - event response
 
 - (void)backAction {
-    [self dismissViewControllerAnimated:YES completion:NULL];
+    if (self.navigationController) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }else {
+        [self dismissViewControllerAnimated:YES completion:NULL];
+    }
 }
 
 - (void)pushToEditView {
