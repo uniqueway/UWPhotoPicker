@@ -52,9 +52,9 @@
 }
 
 - (void)changeSelectedStatus:(NSArray<NSIndexPath *> *)indexPaths {
-    for (NSIndexPath *indexPath in indexPaths) {
-        id <UWPhotoDatable> model = [self photoAtIndex:indexPath];
-    }
+//    for (NSIndexPath *indexPath in indexPaths) {
+//        id <UWPhotoDatable> model = [self photoAtIndex:indexPath];
+//    }
 }
 
 - (void)handleTitle {
@@ -63,7 +63,7 @@
     
     for (NSArray *group in self.allPhotos) {
         id <UWPhotoDatable> photo = group.firstObject;
-        NSString *title = [photo.asset.creationDate uwpp_DateFormatByDot];
+        NSString *title = [[NSDate dateWithTimeIntervalSince1970:photo.date] uwpp_DateFormatByDot];
         [self.allPhotosTitles addObject:title];
         for (id<UWPhotoDatable>photo in group) {
             if (photo.isSelected) {
@@ -74,7 +74,7 @@
     
     for (NSArray *group in self.recommendPhotos) {
         id <UWPhotoDatable> photo = group.firstObject;
-        NSString *title = [photo.asset.creationDate uwpp_DateFormatByDot];
+        NSString *title = [[NSDate dateWithTimeIntervalSince1970:photo.date] uwpp_DateFormatByDot];
         [self.recommendTitles addObject:title];
         if (_selectedCount == 0) {
             for (id<UWPhotoDatable>photo in group) {

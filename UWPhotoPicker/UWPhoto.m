@@ -50,6 +50,7 @@
 
 - (void)setAsset:(PHAsset *)asset {
     _asset = asset;
+    _date = asset.creationDate.timeIntervalSince1970;
     [self loadImageWithAsset:asset targetSize:CGSizeMake(200, 200)];
 }
 
