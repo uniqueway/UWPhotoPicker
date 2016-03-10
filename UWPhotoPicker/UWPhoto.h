@@ -14,5 +14,8 @@
 @property (nonatomic, strong) PHAsset *asset; // 来自相册
 @property (nonatomic, assign) PHImageRequestID assetRequestID; // 在相册id
 @property (nonatomic, assign) BOOL isSelected;
+@property (nonatomic, strong) NSString *identifier;
+
+- (NSString *)modelId;
 
 @end

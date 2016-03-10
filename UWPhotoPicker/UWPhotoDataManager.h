@@ -34,7 +34,10 @@ typedef NS_ENUM(NSInteger, UWPhotoCountLocation) {
 @property (nonatomic, assign) UWPhotoCountLocation countLocation; // 选中图片个数的位置
 @property (nonatomic, assign) BOOL hasRightButton; //是否带右上角确认的按钮
 @property (nonatomic, assign) BOOL hasSectionTitle; //section是否带标题
+
 @property (nonatomic, assign) BOOL isSingleSelection; // 单选多选
+@property (nonatomic, strong) NSString *imageIdentifier; //单选的时候确定选中图片的id，优先赋值图片id,其次是对象id,
+
 @property (nonatomic, assign) BOOL isSingleMenu; // 是否带「推荐」「所有照片」两个菜单项
 @property (nonatomic, assign) UWMenuIndex menuIndex;
 @property (nonatomic, copy) void(^finishedLoading)(void);

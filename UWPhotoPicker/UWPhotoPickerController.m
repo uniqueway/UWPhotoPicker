@@ -74,6 +74,9 @@ static CGFloat kCountLabelWidth = 22.f;
         }else {
             cell.isSelected = YES;
         }
+        if (!_photoData.hasRightButton) { // 没有「确定」按钮时，选择即返回
+            [self confirmSelectedImages];
+        }
     }
     
     // 单选时，不包含就选移出所有，再添加新的；多选的时候包含当前model，移出当前model，改的只有是否选中状态，并且成对出现，第二次出现时，并未对此model做修改
@@ -128,7 +131,7 @@ static CGFloat kCountLabelWidth = 22.f;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    UWPhoto *photo = [self.photoData photoAtIndex:indexPath];
+    id<UWPhotoDatable> photo = [self.photoData photoAtIndex:indexPath];
     static NSString *CellIdentifier = @"UWPhotoCollectionViewCell";
     UWPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
     cell.isLineWhenSelected = _photoData.isSingleSelection;
@@ -137,6 +140,14 @@ static CGFloat kCountLabelWidth = 22.f;
     cell.selectedBlock = ^(BOOL isSelected, NSIndexPath *indexPath) {
         [self handlePhotoStatusAtIndexPath:indexPath selected:isSelected];
     };
+    if (_photoData.isSingleSelection) { // 单选时，确定选择状态
+        cell.isSelected = NO;
+        NSString *objectId = [photo modelId];
+        NSString *identifier = [photo identifier];
+        if ([_photoData.imageIdentifier isEqualToString:identifier] || [_photoData.imageIdentifier isEqualToString:objectId]) {
+            cell.isSelected = YES;
+        }
+    }
     return cell;
 }
 
@@ -165,18 +176,20 @@ static CGFloat kCountLabelWidth = 22.f;
 #pragma mark - event response
 
 - (void)backAction {
-    if (self.navigationController) {
+    if (self.navigationController.viewControllers.count > 1) {
         [self.navigationController popViewControllerAnimated:YES];
     }else {
         [self dismissViewControllerAnimated:YES completion:NULL];
     }
 }
 
-- (void)pushToEditView {
-
+- (void)confirmSelectedImages {
     if (self.selectedPhotos) {
         NSArray *tmp = [self.modelChangedList allObjects];
         self.selectedPhotos(tmp);
+    }
+    if (_photoData.isSingleSelection) {
+        [self backAction];
     }
 }
 
@@ -223,7 +236,7 @@ static CGFloat kCountLabelWidth = 22.f;
             [self.cropBtn setTitle:@"确定" forState:UIControlStateNormal];
             [self.cropBtn.titleLabel setFont:[UIFont boldSystemFontOfSize:15.0f]];
             [self.cropBtn setTitleColor:UWHEX(0x00a2a0) forState:UIControlStateNormal];
-            [self.cropBtn addTarget:self action:@selector(pushToEditView) forControlEvents:UIControlEventTouchUpInside];
+            [self.cropBtn addTarget:self action:@selector(confirmSelectedImages) forControlEvents:UIControlEventTouchUpInside];
             [navView addSubview:self.cropBtn];
         }
         if (_photoData.countLocation == UWPhotoCountLocationTop) {

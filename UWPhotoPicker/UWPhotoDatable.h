@@ -16,6 +16,8 @@
 @property (nonatomic, copy)   void(^imageDidFinished)(id<UWPhotoDatable> photo);
 @property (nonatomic, assign) BOOL isSelected;
 @property (nonatomic, assign) NSTimeInterval date;
+@property (nonatomic, strong) NSString *identifier;
 
+- (NSString *)modelId;
 
 @end

@@ -63,12 +63,10 @@ static NSInteger buttonWidth = 30;
 
 - (void)selectionButtonPressed {
     self.isSelected = !self.isSelected;
-    _photo.isSelected = self.isSelected;
     if (self.selectedBlock) {
         self.selectedBlock(_selectedButton.selected, self.indexPath);
     }
 }
-
 
 #pragma mark - set/get
 - (void)setPhoto:(id <UWPhotoDatable>)photo {
