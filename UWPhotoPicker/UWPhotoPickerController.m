@@ -178,6 +178,7 @@ static CGFloat kCountLabelWidth = 22.f;
 
 - (void)segmentValueChanged:(SDSegmentedControl *)sender {
     self.photoData.menuIndex = sender.selectedSegmentIndex == 0?  UWMenuIndexRecommed : UWMenuIndexAll;
+    [self.collectionView reloadData];
 }
 #pragma mark - getters & setters
 
