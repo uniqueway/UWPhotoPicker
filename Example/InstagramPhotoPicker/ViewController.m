@@ -38,7 +38,6 @@
         }];
         NSArray *result = [self groupPhotosBy1Day:temp];
         
-        
         UWPhotoPickerController *photoPicker = [[UWPhotoPickerController alloc] init];
         [photoPicker.photoData loadPhotosWithAll:result recommendPhotos:result singleSelection:YES hasSectionTitle:YES];
         photoPicker.photoData.hasRightButton = YES;

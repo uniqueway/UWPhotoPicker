@@ -16,6 +16,6 @@
 @property (nonatomic, assign) BOOL isSelected;
 @property (nonatomic, strong) NSString *identifier;
 
-- (NSString *)modelId;
+
 
 @end

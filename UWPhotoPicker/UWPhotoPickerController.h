@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "UWPhotoDataManager.h"
-
+#import "UWPhotoDatable.h"
 
 typedef NS_ENUM(NSInteger, UWPickerStatus) {
     UWPickerStatusRecommed,
@@ -17,7 +17,7 @@ typedef NS_ENUM(NSInteger, UWPickerStatus) {
 
 @interface UWPhotoPickerController : UIViewController
 
-@property (nonatomic, copy) void(^selectedPhotos)(NSArray *list);
+@property (nonatomic, copy) void(^selectedPhotos)(NSArray <UWPhotoDatable>*list);
 @property (nonatomic, copy) void(^cropBlock)(NSArray *list);
 @property (nonatomic, strong) UWPhotoDataManager *photoData;
 @property (nonatomic, assign) NSInteger limit;

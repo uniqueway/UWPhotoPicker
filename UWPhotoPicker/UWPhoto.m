@@ -12,6 +12,10 @@
 
 @implementation UWPhoto
 
+- (NSString *)modelId {
+    return nil;
+}
+
 - (void)loadImageWithAssetRequestID:(PHImageRequestID)requestId {
     
 }
