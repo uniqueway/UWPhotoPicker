@@ -206,7 +206,7 @@ static CGFloat kCountLabelWidth = 22.f;
         self.topView = [[UIView alloc] initWithFrame:rect];
         self.topView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
         self.topView.clipsToBounds = YES;
-        self.topView.backgroundColor = [[UIColor colorWithRed:26.0/255 green:29.0/255 blue:33.0/255 alpha:1] colorWithAlphaComponent:.8f];
+        self.topView.backgroundColor = [UIColor whiteColor];
         
         rect = CGRectMake(0, 20, CGRectGetWidth(self.topView.bounds), navHeight);
         UIView *navView = [[UIView alloc] initWithFrame:rect];
