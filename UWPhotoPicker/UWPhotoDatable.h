@@ -17,6 +17,7 @@
 @property (nonatomic, assign) BOOL isSelected;
 @property (nonatomic, assign) NSTimeInterval date;
 @property (nonatomic, strong) NSString *identifier;
+@property (nonatomic, strong) NSString *url;
 
 - (NSString *)modelId;
 
