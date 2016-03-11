@@ -58,6 +58,8 @@
     [self loadImageWithAsset:asset targetSize:CGSizeMake(200, 200)];
 }
 
-
+- (NSString *)identifier {
+    return _asset.localIdentifier;
+}
 
 @end
