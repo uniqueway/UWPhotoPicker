@@ -75,7 +75,6 @@ static CGFloat kCountLabelWidth = 22.f;
             _photoData.selectionIdentifier = [photo selectionIdentifier];
         }else {
             cell.isSelected = YES;
-            
         }
         if (!_photoData.hasRightButton) { // 没有「确定」按钮时，选择即返回
             [self confirmSelectedImages];
