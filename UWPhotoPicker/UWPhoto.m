@@ -60,7 +60,7 @@
 
 - (UIImage *)image {
     if (!_image) {
-        [self loadImageWithAsset:_asset targetSize:CGSizeZero completion:^(UIImage *result) {
+        [self loadImageWithAsset:_asset targetSize:PHImageManagerMaximumSize completion:^(UIImage *result) {
             _image = result;
             if (self.imageDidFinished) {
                 self.imageDidFinished(self);
