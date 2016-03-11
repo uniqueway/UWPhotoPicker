@@ -24,8 +24,6 @@
     
 }
 
-
-
 - (void)loadImageWithAsset:(PHAsset *)asset targetSize:(CGSize)targetSize{
     PHImageManager *imageManager = [PHImageManager defaultManager];
     PHImageRequestOptions *options = [PHImageRequestOptions new];

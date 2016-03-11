@@ -148,6 +148,7 @@ static CGFloat kCountLabelWidth = 22.f;
         BOOL isThis = [_photoData.selectionIdentifier isEqualToString:imageId] || [_photoData.selectionIdentifier isEqualToString:modelId];
         if (isPresent && isThis ) {
             cell.isSelected = YES;
+            self.selecedCell = cell;
         }
     }
     return cell;
