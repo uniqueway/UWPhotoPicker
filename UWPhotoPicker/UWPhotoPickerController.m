@@ -196,6 +196,7 @@ static CGFloat kCountLabelWidth = 22.f;
 }
 
 - (void)segmentValueChanged:(SDSegmentedControl *)sender {
+    self.selecedCell = nil;
     self.photoData.menuIndex = sender.selectedSegmentIndex == 0?  UWMenuIndexRecommed : UWMenuIndexAll;
     [self.collectionView reloadData];
 }
