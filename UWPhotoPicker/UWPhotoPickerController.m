@@ -14,6 +14,7 @@
 #import "UWPhotoReusableView.h"
 #import "UWPhotoPickerConfig.h"
 #import "SDSegmentedControl.h"
+#import "UWPhotoDatable.h"
 
 
 #define NavigationBarHeight 64
@@ -140,7 +141,7 @@ static CGFloat kCountLabelWidth = 22.f;
     cell.selectedBlock = ^(BOOL isSelected, NSIndexPath *indexPath) {
         [self handlePhotoStatusAtIndexPath:indexPath selected:isSelected];
     };
-    if (_photoData.isSingleSelection) { // 单选时，确定选择状态
+    if (_photoData.isSingleSelection && !self.selecedCell) { // 单选时，确定选择状态
         cell.isSelected = NO;
         NSString *modelId = [photo modelId];
         NSString *imageId = [photo imageId];
@@ -188,7 +189,7 @@ static CGFloat kCountLabelWidth = 22.f;
 
 - (void)confirmSelectedImages {
     if (self.selectedPhotos) {
-        NSArray *tmp = [self.modelChangedList allObjects];
+        NSArray <UWPhotoDatable>*tmp =  [self.modelChangedList allObjects];
         self.selectedPhotos(tmp);
     }
     if (_photoData.isSingleSelection) {
