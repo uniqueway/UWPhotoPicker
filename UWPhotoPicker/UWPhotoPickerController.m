@@ -144,7 +144,9 @@ static CGFloat kCountLabelWidth = 22.f;
         cell.isSelected = NO;
         NSString *objectId = [photo modelId];
         NSString *identifier = [photo identifier];
-        if ([_photoData.imageIdentifier isEqualToString:identifier] || [_photoData.imageIdentifier isEqualToString:objectId]) {
+        BOOL isPresent = !_photoData.imageIdentifier;
+        BOOL isThis = [_photoData.imageIdentifier isEqualToString:identifier] || [_photoData.imageIdentifier isEqualToString:objectId];
+        if (isPresent && isThis ) {
             cell.isSelected = YES;
         }
     }
