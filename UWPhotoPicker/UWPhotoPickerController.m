@@ -142,10 +142,10 @@ static CGFloat kCountLabelWidth = 22.f;
     };
     if (_photoData.isSingleSelection) { // 单选时，确定选择状态
         cell.isSelected = NO;
-        NSString *objectId = [photo modelId];
-        NSString *identifier = [photo identifier];
-        BOOL isPresent = !_photoData.imageIdentifier;
-        BOOL isThis = [_photoData.imageIdentifier isEqualToString:identifier] || [_photoData.imageIdentifier isEqualToString:objectId];
+        NSString *modelId = [photo modelId];
+        NSString *imageId = [photo imageId];
+        BOOL isPresent = _photoData.selectionIdentifier.length > 0;
+        BOOL isThis = [_photoData.selectionIdentifier isEqualToString:imageId] || [_photoData.selectionIdentifier isEqualToString:modelId];
         if (isPresent && isThis ) {
             cell.isSelected = YES;
         }

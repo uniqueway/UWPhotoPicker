@@ -16,6 +16,10 @@
     return nil;
 }
 
+- (NSString *)imageId {
+    return _asset.localIdentifier;
+}
+
 - (void)loadImageWithAssetRequestID:(PHImageRequestID)requestId {
     
 }

@@ -16,9 +16,8 @@
 @property (nonatomic, copy)   void(^imageDidFinished)(id<UWPhotoDatable> photo);
 @property (nonatomic, assign) BOOL isSelected;
 @property (nonatomic, assign) NSTimeInterval date;
-@property (nonatomic, strong) NSString *identifier;
-@property (nonatomic, strong) NSString *url;
 
 - (NSString *)modelId;
+- (NSString *)imageId; // 图片储存在本地相册的localIdentifier
 
 @end
