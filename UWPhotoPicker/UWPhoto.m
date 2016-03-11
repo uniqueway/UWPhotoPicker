@@ -20,8 +20,7 @@
     PHImageManager *imageManager = [PHImageManager defaultManager];
     PHImageRequestOptions *options = [PHImageRequestOptions new];
     options.networkAccessAllowed = YES;
-    BOOL isOrigin = targetSize.width == 0;
-    options.resizeMode = isOrigin ? PHImageRequestOptionsResizeModeNone : PHImageRequestOptionsResizeModeFast;
+    options.resizeMode =  PHImageRequestOptionsResizeModeFast;
     options.deliveryMode =  PHImageRequestOptionsDeliveryModeHighQualityFormat;
     options.synchronous = NO;
     [imageManager requestImageForAsset:asset targetSize:targetSize contentMode:PHImageContentModeAspectFill options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
@@ -72,7 +71,7 @@
 
 - (UIImage *)thumbnailImage {
     if (!_thumbnailImage) {
-        [self loadImageWithAsset:_asset targetSize:self.thumbnailSize completion:^(UIImage *result) {
+        [self loadImageWithAsset:_asset targetSize:PHImageManagerMaximumSize completion:^(UIImage *result) {
             _thumbnailImage = result;
             if (self.imageDidFinished) {
                 self.imageDidFinished(self);

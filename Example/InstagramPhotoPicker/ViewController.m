@@ -43,6 +43,9 @@
         photoPicker.photoData.hasRightButton = YES;
         photoPicker.photoData.countLocation = UWPhotoCountLocationTop;
         photoPicker.photoData.title = @"选择照片";
+        photoPicker.selectedPhotos = ^(NSArray <UWPhotoDatable>*list) {
+            
+        };
         photoPicker.cropBlock = ^(NSArray *list) {
             CGFloat size = [[UIScreen mainScreen] bounds].size.width;
             NSInteger index = 0;
