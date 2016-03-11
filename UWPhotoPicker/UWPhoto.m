@@ -22,7 +22,7 @@
     options.networkAccessAllowed = YES;
     BOOL isOrigin = targetSize.width == 0;
     options.resizeMode = isOrigin ? PHImageRequestOptionsResizeModeNone : PHImageRequestOptionsResizeModeFast;
-    options.deliveryMode = isOrigin? PHImageRequestOptionsDeliveryModeHighQualityFormat: PHImageRequestOptionsDeliveryModeFastFormat;
+    options.deliveryMode =  PHImageRequestOptionsDeliveryModeHighQualityFormat;
     options.synchronous = NO;
     [imageManager requestImageForAsset:asset targetSize:targetSize contentMode:PHImageContentModeAspectFill options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -61,7 +61,7 @@
 - (UIImage *)image {
     if (!_image) {
         [self loadImageWithAsset:_asset targetSize:CGSizeZero completion:^(UIImage *result) {
-            self.image = result;
+            _image = result;
             if (self.imageDidFinished) {
                 self.imageDidFinished(self);
             }
@@ -70,4 +70,15 @@
     return _image;
 }
 
+- (UIImage *)thumbnailImage {
+    if (!_thumbnailImage) {
+        [self loadImageWithAsset:_asset targetSize:CGSizeZero completion:^(UIImage *result) {
+            _thumbnailImage = result;
+            if (self.imageDidFinished) {
+                self.imageDidFinished(self);
+            }
+        }];
+    }
+    return _thumbnailImage;
+}
 @end
