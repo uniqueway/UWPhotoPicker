@@ -17,7 +17,6 @@
 @property (nonatomic, assign) BOOL isSelected;
 @property (nonatomic, assign) NSTimeInterval date;
 
-- (NSString *)modelId;
-- (NSString *)imageId; // 图片储存在本地相册的localIdentifier
+- (NSString *)selectionIdentifier;// 优先imageId > modelId
 
 @end

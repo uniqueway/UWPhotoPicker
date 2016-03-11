@@ -12,11 +12,7 @@
 
 @implementation UWPhoto
 
-- (NSString *)modelId {
-    return nil;
-}
-
-- (NSString *)imageId {
+- (NSString *)selectionIdentifier {
     return _asset.localIdentifier;
 }
 

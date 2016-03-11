@@ -74,6 +74,7 @@ static CGFloat kCountLabelWidth = 22.f;
             self.selecedCell = cell;
         }else {
             cell.isSelected = YES;
+            _photoData.selectionIdentifier = [photo selectionIdentifier];
         }
         if (!_photoData.hasRightButton) { // 没有「确定」按钮时，选择即返回
             [self confirmSelectedImages];
@@ -143,11 +144,8 @@ static CGFloat kCountLabelWidth = 22.f;
     };
     if (_photoData.isSingleSelection && !self.selecedCell) { // 单选时，确定选择状态
         cell.isSelected = NO;
-        NSString *modelId = [photo modelId];
-        NSString *imageId = [photo imageId];
-        BOOL isPresent = _photoData.selectionIdentifier.length > 0;
-        BOOL isThis = [_photoData.selectionIdentifier isEqualToString:imageId] || [_photoData.selectionIdentifier isEqualToString:modelId];
-        if (isPresent && isThis ) {
+        BOOL isThis = [_photoData.selectionIdentifier isEqualToString:[photo selectionIdentifier]];
+        if ( isThis ) {
             cell.isSelected = YES;
             self.selecedCell = cell;
         }
