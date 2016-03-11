@@ -16,6 +16,6 @@
 @property (nonatomic, strong) PHAsset *asset; // 来自相册
 @property (nonatomic, assign) BOOL isSelected;
 
-
+@property (nonatomic, assign) CGSize thumbnailSize;
 
 @end

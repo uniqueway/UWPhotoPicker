@@ -72,7 +72,7 @@
 
 - (UIImage *)thumbnailImage {
     if (!_thumbnailImage) {
-        [self loadImageWithAsset:_asset targetSize:CGSizeZero completion:^(UIImage *result) {
+        [self loadImageWithAsset:_asset targetSize:self.thumbnailSize completion:^(UIImage *result) {
             _thumbnailImage = result;
             if (self.imageDidFinished) {
                 self.imageDidFinished(self);
@@ -81,4 +81,13 @@
     }
     return _thumbnailImage;
 }
+
+- (CGSize)thumbnailSize {
+    if (_thumbnailSize.width == 0) {
+        CGFloat width = ([UIScreen mainScreen].bounds.size.width - (4 - 1) * 2)/4;
+        _thumbnailSize = CGSizeMake(width, width);
+    }
+    return _thumbnailSize;
+}
+
 @end
