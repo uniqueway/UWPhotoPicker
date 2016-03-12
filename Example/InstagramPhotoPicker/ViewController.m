@@ -39,7 +39,7 @@
         NSArray *result = [self groupPhotosBy1Day:temp];
         
         UWPhotoPickerController *photoPicker = [[UWPhotoPickerController alloc] init];
-        [photoPicker.photoData loadPhotosWithAll:result recommendPhotos:result singleSelection:YES hasSectionTitle:YES];
+        [photoPicker.photoData loadPhotosWithAll:result recommendPhotos:result singleSelection:NO hasSectionTitle:YES];
         photoPicker.photoData.hasRightButton = YES;
         photoPicker.photoData.countLocation = UWPhotoCountLocationTop;
         photoPicker.photoData.title = @"选择照片";

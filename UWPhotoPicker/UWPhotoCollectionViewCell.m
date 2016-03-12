@@ -9,11 +9,11 @@
 #import "UWPhotoCollectionViewCell.h"
 #import "UWPhotoPickerConfig.h"
 #import "UWPhotoDatable.h"
+#import "UIView+UWPhotoAnimation.h"
 
 #define DEFAULT_COLOR [UIColor clearColor]
 #define SELECTED_COLOR [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5]
 
-static NSInteger buttonMargin = 5;
 static NSInteger buttonWidth = 30;
 
 @interface UWPhotoCollectionViewCell ()
@@ -62,6 +62,7 @@ static NSInteger buttonWidth = 30;
 }
 
 - (void)selectionButtonPressed {
+    [_selectedButton uw_scaleAnimation];
     self.isSelected = !self.isSelected;
     if (self.selectedBlock) {
         self.selectedBlock(_selectedButton.selected, self.indexPath);

@@ -15,7 +15,7 @@
 #import "UWPhotoPickerConfig.h"
 #import "SDSegmentedControl.h"
 #import "UWPhotoDatable.h"
-
+#import "UIView+UWPhotoAnimation.h"
 
 #define NavigationBarHeight 64
 static CGFloat kBottomSegmentHeight = 45;
@@ -101,6 +101,13 @@ static CGFloat kCountLabelWidth = 22.f;
 /// 选择的图片个数
 - (void)calculateCountOfSelectedPhotos {
     if (!_photoData.isSingleSelection) {
+        // 赋值
+        if (_photoData.countLocation == UWPhotoCountLocationBottom) {
+            self.countLabel.text = [NSString stringWithFormat:@"已选: %@",@(self.photoData.selectedCount)];
+        }else {
+            self.countLabel.text = @(self.photoData.selectedCount).stringValue;
+            [self.countLabel uw_scaleAnimation];
+        }
         // 动画
         if (self.photoData.selectedCount == 0) {
             [UIView animateWithDuration:0.3 animations:^{
@@ -111,12 +118,7 @@ static CGFloat kCountLabelWidth = 22.f;
                 self.countLabel.alpha = 1;
             }];
         }
-        // 赋值
-        if (_photoData.countLocation == UWPhotoCountLocationBottom) {
-            self.countLabel.text = [NSString stringWithFormat:@"已选: %@",@(self.photoData.selectedCount)];
-        }else {
-            self.countLabel.text = @(self.photoData.selectedCount).stringValue;
-        }
+        
     }
 }
 
