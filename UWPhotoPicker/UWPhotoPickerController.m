@@ -62,6 +62,8 @@ static CGFloat kCountLabelWidth = 22.f;
         [self.view addSubview:self.segmentedControl];
         self.segmentedControl.selectedSegmentIndex = 0;
     }
+    
+    
 }
 
 - (void)handlePhotoStatusAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)isSelected {
