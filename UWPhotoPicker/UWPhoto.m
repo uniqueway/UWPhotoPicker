@@ -71,7 +71,7 @@
 
 - (UIImage *)thumbnailImage {
     if (!_thumbnailImage) {
-        [self loadImageWithAsset:_asset targetSize:self.thumbnailSize completion:^(UIImage *result) {
+        [self loadImageWithAsset:_asset targetSize:PHImageManagerMaximumSize completion:^(UIImage *result) {
             _thumbnailImage = result;
             if (self.imageDidFinished) {
                 self.imageDidFinished(self);
