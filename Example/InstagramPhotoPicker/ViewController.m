@@ -43,6 +43,7 @@
         photoPicker.photoData.hasRightButton = YES;
         photoPicker.photoData.countLocation = UWPhotoCountLocationTop;
         photoPicker.photoData.title = @"选择照片";
+        photoPicker.photoData.isSingleMenu = NO;
         photoPicker.selectedPhotos = ^(NSArray <UWPhotoDatable>*list) {
             
         };

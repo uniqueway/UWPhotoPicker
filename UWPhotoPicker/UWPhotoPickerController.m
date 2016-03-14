@@ -58,8 +58,10 @@ static CGFloat kCountLabelWidth = 22.f;
         [weakSelf calculateCountOfSelectedPhotos];
         [weakSelf.collectionView reloadData];
     };
-    [self.view addSubview:self.segmentedControl];
-    self.segmentedControl.selectedSegmentIndex = 0;
+    if (!_photoData.isSingleMenu) {
+        [self.view addSubview:self.segmentedControl];
+        self.segmentedControl.selectedSegmentIndex = 0;
+    }
 }
 
 - (void)handlePhotoStatusAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)isSelected {
@@ -311,7 +313,7 @@ static CGFloat kCountLabelWidth = 22.f;
         layout.minimumLineSpacing           = spacing;
         layout.headerReferenceSize = CGSizeMake(self.view.bounds.size.width, 30);
         
-        CGRect rect = CGRectMake(0, NavigationBarHeight, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) -NavigationBarHeight-5);
+        CGRect rect = CGRectMake(0, NavigationBarHeight, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) -NavigationBarHeight - (_photoData.isSingleMenu ? 0 : 5));
         UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:rect collectionViewLayout:layout];
         collectionView.dataSource = self;
         collectionView.delegate = self;
