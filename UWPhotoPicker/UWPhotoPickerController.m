@@ -16,6 +16,8 @@
 #import "SDSegmentedControl.h"
 #import "UWPhotoDatable.h"
 #import "UIView+UWPhotoAnimation.h"
+#import "UWPhotoNavigationView.h"
+#import "Masonry.h"
 
 #define NavigationBarHeight 64
 static CGFloat kBottomSegmentHeight = 45;
@@ -36,8 +38,9 @@ static CGFloat kCountLabelWidth = 22.f;
 @property (nonatomic, assign) UWPickerStatus status;
 
 @property (nonatomic, strong) SDSegmentedControl *segmentedControl;
-@property (nonatomic, strong) UILabel *countLabel;
 @property (nonatomic, assign) NSInteger selectedCount;
+
+@property (nonatomic, weak) UWPhotoNavigationView *navBar;
 
 @end
 
@@ -51,7 +54,9 @@ static CGFloat kCountLabelWidth = 22.f;
     self.automaticallyAdjustsScrollViewInsets = NO;
     [self.view setBackgroundColor:[UIColor whiteColor]];
     [self.collectionView reloadData];
-    [self.view addSubview:self.topView];
+    
+    self.navBar.title = _photoData.title;
+
     self.modelChangedList = [NSMutableSet set];
     __weak __typeof(&*self)weakSelf = self;
     _photoData.finishedLoading = ^{
@@ -60,10 +65,7 @@ static CGFloat kCountLabelWidth = 22.f;
     };
     if (!_photoData.isSingleMenu) {
         [self.view addSubview:self.segmentedControl];
-        self.segmentedControl.selectedSegmentIndex = 0;
     }
-    
-    
 }
 
 - (void)handlePhotoStatusAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)isSelected {
@@ -104,25 +106,13 @@ static CGFloat kCountLabelWidth = 22.f;
 #pragma mark - event
 /// 选择的图片个数
 - (void)calculateCountOfSelectedPhotos {
+    
     if (!_photoData.isSingleSelection) {
-        // 赋值
         if (_photoData.countLocation == UWPhotoCountLocationBottom) {
-            self.countLabel.text = [NSString stringWithFormat:@"已选: %@",@(self.photoData.selectedCount)];
+            self.segmentedControl.countOfImages = _photoData.selectedCount;
         }else {
-            self.countLabel.text = @(self.photoData.selectedCount).stringValue;
-            [self.countLabel uw_scaleAnimation];
+            self.navBar.count = self.photoData.selectedCount;
         }
-        // 动画
-        if (self.photoData.selectedCount == 0) {
-            [UIView animateWithDuration:0.3 animations:^{
-                self.countLabel.alpha = 0;
-            }];
-        }else if (self.countLabel.alpha == 0) {
-            [UIView animateWithDuration:0.3 animations:^{
-                self.countLabel.alpha = 1;
-            }];
-        }
-        
     }
 }
 
@@ -248,24 +238,8 @@ static CGFloat kCountLabelWidth = 22.f;
             [self.cropBtn addTarget:self action:@selector(confirmSelectedImages) forControlEvents:UIControlEventTouchUpInside];
             [navView addSubview:self.cropBtn];
         }
-        if (_photoData.countLocation == UWPhotoCountLocationTop) {
-            [navView addSubview:self.countLabel];
-        }
     }
     return _topView;
-}
-
-- (UIButton *)buttonWithTitle:(NSString *)title withSize:(CGSize)size{
-    UIButton *button    = [UIButton buttonWithType:UIButtonTypeCustom];
-    UIColor *darkColor  = [UIColor colorWithRed:46.0/255.0 green:43.0/255.0 blue:37.0/255.0 alpha:1];
-    UIColor *whiteColor = [UIColor whiteColor];
-    [button setTitle:title forState:UIControlStateNormal];
-    [button setTitleColor:darkColor forState:UIControlStateNormal];
-    [button setTitleColor:whiteColor forState:UIControlStateSelected];
-    [button setBackgroundImage:[self.class imageWithCGColor:whiteColor.CGColor size:size] forState:UIControlStateNormal];
-    [button setBackgroundImage:[self.class imageWithCGColor:darkColor.CGColor size:size] forState:UIControlStateSelected];
-    
-    return button;
 }
 
 + (UIImage *)imageWithCGColor:(CGColorRef)cgColor_
@@ -345,29 +319,22 @@ static CGFloat kCountLabelWidth = 22.f;
     return _segmentedControl;
 }
 
-- (UILabel *)countLabel {
-    if (!_countLabel) {
-        BOOL isTop = _photoData.countLocation == UWPhotoCountLocationTop;
-        _countLabel = [[UILabel alloc] init];
-        _countLabel.backgroundColor = isTop ? [self.cropBtn titleColorForState:UIControlStateNormal] : [UIColor clearColor];
-        _countLabel.textAlignment = isTop? NSTextAlignmentCenter : NSTextAlignmentRight;
-        _countLabel.font = [UIFont boldSystemFontOfSize:12];
-        _countLabel.textColor = isTop ? [UIColor whiteColor] : UWHEX(0x3c3931);
-        _countLabel.alpha = 0;
-        CGFloat allWidth = CGRectGetWidth(self.view.bounds);
-        if (isTop) {
-            _countLabel.frame = CGRectMake(allWidth-45- kCountLabelWidth, CGRectGetMidY(_cropBtn.frame) - kCountLabelWidth/2, kCountLabelWidth, kCountLabelWidth);
-            _countLabel.layer.cornerRadius = kCountLabelWidth/2;
-            _countLabel.layer.masksToBounds = YES;
-            _countLabel.textColor = [UIColor whiteColor];
-            _countLabel.textAlignment = NSTextAlignmentCenter;
-        }else {
-            [_segmentedControl addSubview:_countLabel];
-            [_segmentedControl bringSubviewToFront:_countLabel];
-            _countLabel.frame = CGRectMake(allWidth - 100 , 0, 85, kBottomSegmentHeight);
+- (UWPhotoNavigationView *)navBar {
+    if (!_navBar) {
+        UWPhotoNavigationView *navBar = [[UWPhotoNavigationView alloc] init];
+        [navBar.backButton addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
+        if (_photoData.hasRightButton) {
+            [navBar.rightButton setTitle:@"确定" forState:UIControlStateNormal];
+            [navBar.rightButton addTarget:self action:@selector(confirmSelectedImages) forControlEvents:UIControlEventTouchUpInside];
         }
+        _navBar = navBar;
+        [self.view addSubview:navBar];
+        [navBar mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.left.right.offset(0);
+            make.height.mas_equalTo(NavigationBarHeight);
+        }];
     }
-    return _countLabel;
+    return _navBar;
 }
 
 @end

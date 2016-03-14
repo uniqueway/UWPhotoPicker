@@ -12,8 +12,8 @@
 
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, assign) NSUInteger count;
-@property (nonatomic, strong) UIButton *backButton;
-@property (nonatomic, strong) UIButton *rightButton;
+@property (nonatomic, weak) UIButton *backButton;
+@property (nonatomic, weak) UIButton *rightButton;
 
 
 @end

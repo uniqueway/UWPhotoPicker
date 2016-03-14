@@ -30,7 +30,7 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
 
 @property (strong, nonatomic) NSMutableArray *_items;
 @property (strong, nonatomic) UIView *_selectedStainView;
-
+@property (strong, nonatomic) UILabel *countLabel;
 @end
 
 @implementation SDSegmentedControl
@@ -86,6 +86,7 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
             [self setWidth:(allWidth - width*titles.count) forSegmentAtIndex:titles.count];
             [self setEnabled:NO forSegmentAtIndex:titles.count];
         }
+        self.selectedSegmentIndex = 0;
     }
     return self;
 }
@@ -149,6 +150,33 @@ const CGFloat kSDSegmentedControlScrollOffset = 20;
 
     // Init stain view
     [_scrollView addSubview:self._selectedStainView = SDStainView.new];
+}
+
+- (UILabel *)countLabel {
+    if (!_countLabel) {
+        _countLabel = [[UILabel alloc] initWithFrame: CGRectMake(CGRectGetWidth(self.bounds) - 100 , 0, 85, self.bounds.size.height)];
+        _countLabel.backgroundColor =  [UIColor clearColor];
+        _countLabel.textAlignment = NSTextAlignmentRight;
+        _countLabel.font = [UIFont boldSystemFontOfSize:12];
+        _countLabel.textColor =  UWHEX(0x3c3931);
+        [self addSubview:_countLabel];
+        [self bringSubviewToFront:_countLabel];
+    }
+    return _countLabel;
+}
+
+- (void)setCountOfImages:(NSUInteger)countOfImages {
+    _countOfImages = countOfImages;
+    self.countLabel.text = [NSString stringWithFormat:@"已选: %@",@(countOfImages)];
+    if (countOfImages == 0 ) { // 动画
+        [UIView animateWithDuration:0.3 animations:^{
+            self.countLabel.alpha = 0;
+        }];
+    }else if (self.countLabel.alpha == 0) {
+        [UIView animateWithDuration:0.3 animations:^{
+            self.countLabel.alpha = 1;
+        }];
+    }
 }
 
 - (UIColor *)backgroundColor

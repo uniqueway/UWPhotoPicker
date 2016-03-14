@@ -38,7 +38,8 @@ typedef enum {
 @property (retain, nonatomic) UIFont *selectedTitleFont UI_APPEARANCE_SELECTOR;
 @property (assign, nonatomic) BOOL centerSegmentsIfPossible UI_APPEARANCE_SELECTOR;
 
-@property (assign,nonatomic) UIScrollView *scrollView;
+@property (assign, nonatomic) UIScrollView *scrollView;
+@property (nonatomic, assign) NSUInteger countOfImages;
 
 - (instancetype)initWithTitles:(NSArray <NSString *> *)titles width:(CGFloat)width;
 
