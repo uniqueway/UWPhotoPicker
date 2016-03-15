@@ -22,4 +22,8 @@ Pod::Spec.new do |s|
     ss.public_header_files = 'UWPhotoPicker/SegmentControl/*.h'
     ss.source_files = 'UWPhotoPicker/SegmentControl/*.{h,m}'
   end
+  s.subspec 'UWPhotoBrowser' do |ss|
+      ss.public_header_files = 'UWPhotoPicker/UWPhotoBrowser/*.h'
+      ss.source_files = 'UWPhotoPicker/UWPhotoBrowser/*.{h,m}'
+  end
 end
