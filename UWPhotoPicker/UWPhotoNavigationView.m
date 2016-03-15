@@ -71,7 +71,7 @@ static const CGFloat NavBarHeight = 44;
         [self addSubview:button];
         [button mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.bottom.offset(0);
-            make.size.mas_equalTo(CGSizeMake(80, NavBarHeight));
+            make.size.mas_equalTo(CGSizeMake(NavBarHeight, NavBarHeight));
         }];
         _backButton = button;
     }
