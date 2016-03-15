@@ -186,9 +186,7 @@ static CGFloat kCountLabelWidth = 22.f;
         NSArray <UWPhotoDatable>*tmp =  [self.modelChangedList allObjects];
         self.selectedPhotos(tmp);
     }
-    if (_photoData.isSingleSelection) {
-        [self backAction];
-    }
+    [self backAction];
 }
 
 - (void)segmentValueChanged:(SDSegmentedControl *)sender {
