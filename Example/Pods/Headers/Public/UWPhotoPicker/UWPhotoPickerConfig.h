@@ -1,1 +1,0 @@
-../../../../../UWPhotoPicker/UWPhotoPickerConfig.h

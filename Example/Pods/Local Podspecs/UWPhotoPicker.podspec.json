@@ -34,6 +34,11 @@
       "name": "SegmentControl",
       "public_header_files": "UWPhotoPicker/SegmentControl/*.h",
       "source_files": "UWPhotoPicker/SegmentControl/*.{h,m}"
+    },
+    {
+      "name": "UWPhotoBrowser",
+      "public_header_files": "UWPhotoPicker/UWPhotoBrowser/*.h",
+      "source_files": "UWPhotoPicker/UWPhotoBrowser/*.{h,m}"
     }
   ]
 }

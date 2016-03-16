@@ -48,7 +48,7 @@ static const CGFloat NavBarHeight = 44;
         UILabel *titleLabel = [[UILabel alloc] init];
         titleLabel.textAlignment = NSTextAlignmentCenter;
         titleLabel.backgroundColor = [UIColor clearColor];
-        titleLabel.textColor = [UIColor whiteColor];
+        titleLabel.textColor = [UIColor blackColor];
         titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
         [self addSubview:titleLabel];
         [titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {

@@ -8,8 +8,8 @@
 
 #import "ViewController.h"
 #import "UWPhotoPickerController.h"
-#import <uwphotohe>
 #import "UWPhoto.h"
+#import "UWPhotoHelper.h"
 
 @interface ViewController ()
 @property (strong, nonatomic) IBOutlet UIImageView *imageView;
