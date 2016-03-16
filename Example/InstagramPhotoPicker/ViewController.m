@@ -8,7 +8,7 @@
 
 #import "ViewController.h"
 #import "UWPhotoPickerController.h"
-#import "NSDate+UWPhotoPicker.h"
+#import <uwphotohe>
 #import "UWPhoto.h"
 
 @interface ViewController ()
@@ -39,38 +39,38 @@
         NSArray *result = [self groupPhotosBy1Day:temp];
         
         UWPhotoPickerController *photoPicker = [[UWPhotoPickerController alloc] init];
-        [photoPicker.photoData loadPhotosWithAll:result recommendPhotos:result singleSelection:NO hasSectionTitle:YES];
-        photoPicker.photoData.hasRightButton = YES;
-        photoPicker.photoData.countLocation = UWPhotoCountLocationTop;
-        photoPicker.photoData.title = @"选择照片";
-        photoPicker.photoData.isSingleMenu = NO;
+        [photoPicker.dataManager loadPhotosWithAll:result recommendPhotos:result singleSelection:NO hasSectionTitle:YES];
+        photoPicker.dataManager.hasRightButton = YES;
+        photoPicker.dataManager.countLocation = UWPhotoCountLocationTop;
+        photoPicker.dataManager.title = @"选择照片";
+        photoPicker.dataManager.isSingleMenu = NO;
         photoPicker.selectedPhotos = ^(NSArray <UWPhotoDatable>*list) {
             
         };
-        photoPicker.cropBlock = ^(NSArray *list) {
-            CGFloat size = [[UIScreen mainScreen] bounds].size.width;
-            NSInteger index = 0;
-            CGFloat _width = 0;
-            for (NSDictionary *data in list) {
-                UIImage *image = data[@"image"];
-                CGFloat width  = image.size.width;
-                CGFloat height = size / width * image.size.height;
-                UIImageView *imageview = [[UIImageView alloc] initWithFrame:CGRectMake(0, y, size, height)];
-                imageview.image = image;
-                [v addSubview:imageview];
-                y += height+30;
-                if (image.size.width > _width) {
-                    _width = image.size.width;
-                }
-                NSData *imgData = UIImageJPEGRepresentation(image, 1.0);
-                NSLog(@"Size of Image:%f MB",(double)[imgData length]/1048576);
-                NSLog(@"%@",image);
-                index++;
-                image = nil;
-            }
-            v.contentSize = (CGSize){_width+1,y};
-            list = nil;
-        };
+//        photoPicker.cropBlock = ^(NSArray *list) {
+//            CGFloat size = [[UIScreen mainScreen] bounds].size.width;
+//            NSInteger index = 0;
+//            CGFloat _width = 0;
+//            for (NSDictionary *data in list) {
+//                UIImage *image = data[@"image"];
+//                CGFloat width  = image.size.width;
+//                CGFloat height = size / width * image.size.height;
+//                UIImageView *imageview = [[UIImageView alloc] initWithFrame:CGRectMake(0, y, size, height)];
+//                imageview.image = image;
+//                [v addSubview:imageview];
+//                y += height+30;
+//                if (image.size.width > _width) {
+//                    _width = image.size.width;
+//                }
+//                NSData *imgData = UIImageJPEGRepresentation(image, 1.0);
+//                NSLog(@"Size of Image:%f MB",(double)[imgData length]/1048576);
+//                NSLog(@"%@",image);
+//                index++;
+//                image = nil;
+//            }
+//            v.contentSize = (CGSize){_width+1,y};
+//            list = nil;
+//        };
         
         UINavigationController *navCon = [[UINavigationController alloc] initWithRootViewController:photoPicker];
         [navCon setNavigationBarHidden:YES];

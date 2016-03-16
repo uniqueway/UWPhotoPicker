@@ -92,24 +92,7 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    id<UWPhotoDatable> photo = [self.photoData photoAtIndex:indexPath];
-    static NSString *CellIdentifier = @"UWPhotoCollectionViewCell";
-    UWPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
-    cell.selectedStyle =  _dataManager.isSingleSelection ? SelectedStyleLine : SelectedStyleCheck;
-    cell.photo = photo;
-    cell.indexPath = indexPath;
-    cell.selectedBlock = ^(BOOL isSelected, NSIndexPath *indexPath) {
-        [self handlePhotoStatusAtIndexPath:indexPath selected:isSelected];
-    };
-    if (_dataManager.isSingleSelection && !self.selecedCell) { // 单选时，确定选择状态
-        cell.isSelected = NO;
-        BOOL isThis = [_dataManager.selectionIdentifier isEqualToString:[photo selectionIdentifier]];
-        if ( isThis ) {
-            cell.isSelected = YES;
-            self.selecedCell = cell;
-        }
-    }
-    return cell;
+    return nil;
 }
 #pragma mark - getter -
 - (UWPhotoNavigationView *)navBar {
