@@ -156,6 +156,11 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 #pragma mark - event response
 
 - (void)backAction {
+    if (!_dataManager.isSingleSelection) {
+        [self.modelChangedList enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(id  <UWPhotoDatable> obj, BOOL * _Nonnull stop) {
+            [obj setIsSelected:[obj isSelected]];
+        }];
+    }
     if (self.navigationController.viewControllers.count > 1) {
         [self.navigationController popViewControllerAnimated:YES];
     }else {

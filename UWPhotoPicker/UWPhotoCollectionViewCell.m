@@ -66,7 +66,9 @@ static NSInteger buttonWidth = 30;
 
 - (void)selectionButtonPressed {
     self.isSelected = !self.isSelected;
-    
+    if (_selectedStyle != SelectedStyleLine) {
+        [_photo setIsSelected:self.isSelected];
+    }
     [_selectedButton uw_scaleAnimation];
     _lineButton.selected = YES;
     if (self.selectedBlock) {
