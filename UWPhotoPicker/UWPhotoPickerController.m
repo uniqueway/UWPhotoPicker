@@ -29,6 +29,8 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 @property (nonatomic, assign) UWPickerStatus status;
 @property (nonatomic, strong) SDSegmentedControl *segmentedControl;
 
+@property (nonatomic, assign) BOOL preNavbarHiddenStatus;
+
 @end
 
 @implementation UWPhotoPickerController
@@ -37,7 +39,8 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.navigationController setNavigationBarHidden:YES];
+    _preNavbarHiddenStatus = self.navigationController.navigationBarHidden;
+    self.navigationController.navigationBarHidden =  YES;
     self.automaticallyAdjustsScrollViewInsets = NO;
     [self.view setBackgroundColor:[UIColor whiteColor]];
     [self.collectionView reloadData];
@@ -53,6 +56,11 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     if (!_dataManager.isSingleMenu) {
         [self.view addSubview:self.segmentedControl];
     }
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    self.navigationController.navigationBarHidden = _preNavbarHiddenStatus;
+    [super viewWillDisappear:animated];
 }
 
 - (void)handlePhotoStatusAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)isSelected {
