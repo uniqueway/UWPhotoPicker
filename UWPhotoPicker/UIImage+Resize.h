@@ -35,3 +35,7 @@
 -(UIImage*)uw_resizedImageToSize:(CGSize)dstSize;
 -(UIImage*)uw_resizedImageToFitInSize:(CGSize)boundingSize scaleIfSmaller:(BOOL)scale;
 @end
+
+@interface UIImage()
+
+@end

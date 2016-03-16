@@ -22,24 +22,12 @@
 static CGFloat kBottomSegmentHeight = 45;
 static CGFloat kSegmentItemWidth = 70;
 static NSInteger MAX_SELECTION_COUNT = INFINITY;
-static CGFloat kCountLabelWidth = 22.f;
 
-@interface UWPhotoPickerController ()<UICollectionViewDataSource, UICollectionViewDelegate> {
-    CGFloat beginOriginY;
-}
-@property (strong, nonatomic) UIView *topView;
-@property (strong, nonatomic) UIImageView *maskView;
-@property (weak, nonatomic) UICollectionView *collectionView;
 
-@property (strong, nonatomic) NSMutableSet *modelChangedList;
-@property (nonatomic, weak)   UWPhotoCollectionViewCell *selecedCell;
-@property (strong, nonatomic) UIButton *cropBtn;
+@interface UWPhotoPickerController ()
+
 @property (nonatomic, assign) UWPickerStatus status;
-
 @property (nonatomic, strong) SDSegmentedControl *segmentedControl;
-@property (nonatomic, assign) NSInteger selectedCount;
-
-@property (nonatomic, weak) UWPhotoNavigationView *navBar;
 
 @end
 
@@ -54,40 +42,40 @@ static CGFloat kCountLabelWidth = 22.f;
     [self.view setBackgroundColor:[UIColor whiteColor]];
     [self.collectionView reloadData];
     
-    self.navBar.title = _photoData.title;
+    self.navBar.title = _dataManager.title;
 
-    self.modelChangedList = [NSMutableSet set];
+    self.modelChangedList = [[NSMutableSet alloc] init];
     __weak __typeof(&*self)weakSelf = self;
-    _photoData.finishedLoading = ^{
+    _dataManager.finishedLoading = ^{
         [weakSelf calculateCountOfSelectedPhotos];
         [weakSelf.collectionView reloadData];
     };
-    if (!_photoData.isSingleMenu) {
+    if (!_dataManager.isSingleMenu) {
         [self.view addSubview:self.segmentedControl];
     }
 }
 
 - (void)handlePhotoStatusAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)isSelected {
     
-    id <UWPhotoDatable> photo = [self.photoData photoAtIndex:indexPath];
-    self.photoData.selectedCount += isSelected ? 1 : -1;
+    id <UWPhotoDatable> photo = [self.dataManager photoAtIndex:indexPath];
+    self.dataManager.selectedCount += isSelected ? 1 : -1;
 
-    if (_photoData.isSingleSelection) { // 单选时，取消上一个图片选中状态，移除所有图片
+    if (_dataManager.isSingleSelection) { // 单选时，取消上一个图片选中状态，移除所有图片
         UWPhotoCollectionViewCell *cell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
         if (cell != self.selecedCell) {
             self.selecedCell.isSelected = NO;
             self.selecedCell = cell;
-            _photoData.selectionIdentifier = [photo selectionIdentifier];
+            _dataManager.selectionIdentifier = [photo selectionIdentifier];
         }else {
             cell.isSelected = YES;
         }
-        if (!_photoData.hasRightButton) { // 没有「确定」按钮时，选择即返回
+        if (!_dataManager.hasRightButton) { // 没有「确定」按钮时，选择即返回
             [self confirmSelectedImages];
         }
     }
     
     // 单选时，不包含就选移出所有，再添加新的；多选的时候包含当前model，移出当前model，改的只有是否选中状态，并且成对出现，第二次出现时，并未对此model做修改
-    if (_photoData.isSingleSelection) {
+    if (_dataManager.isSingleSelection) {
         if (![self.modelChangedList containsObject:photo]) {
             [self.modelChangedList removeAllObjects];
             [self.modelChangedList addObject:photo];
@@ -106,11 +94,11 @@ static CGFloat kCountLabelWidth = 22.f;
 /// 选择的图片个数
 - (void)calculateCountOfSelectedPhotos {
     
-    if (!_photoData.isSingleSelection) {
-        if (_photoData.countLocation == UWPhotoCountLocationBottom) {
-            self.segmentedControl.countOfImages = _photoData.selectedCount;
+    if (!_dataManager.isSingleSelection) {
+        if (_dataManager.countLocation == UWPhotoCountLocationBottom) {
+            self.segmentedControl.countOfImages = _dataManager.selectedCount;
         }else {
-            self.navBar.count = self.photoData.selectedCount;
+            self.navBar.count = self.dataManager.selectedCount;
         }
     }
 }
@@ -119,27 +107,28 @@ static CGFloat kCountLabelWidth = 22.f;
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     
-    return [self.photoData numberOfSections];
+    return [self.dataManager numberOfSections];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    return [self.photoData numberOfItemsInSection:section];
+    return [self.dataManager numberOfItemsInSection:section];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    id<UWPhotoDatable> photo = [self.photoData photoAtIndex:indexPath];
+
+    id<UWPhotoDatable> photo = [self.dataManager photoAtIndex:indexPath];
     static NSString *CellIdentifier = @"UWPhotoCollectionViewCell";
     UWPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
-    cell.selectedStyle =  _photoData.isSingleSelection ? SelectedStyleLine : SelectedStyleCheck;
+    cell.selectedStyle =  _dataManager.isSingleSelection ? SelectedStyleLine : SelectedStyleCheck;
     cell.photo = photo;
     cell.indexPath = indexPath;
     cell.selectedBlock = ^(BOOL isSelected, NSIndexPath *indexPath) {
         [self handlePhotoStatusAtIndexPath:indexPath selected:isSelected];
     };
-    if (_photoData.isSingleSelection && !self.selecedCell) { // 单选时，确定选择状态
+    if (_dataManager.isSingleSelection && !self.selecedCell) { // 单选时，确定选择状态
         cell.isSelected = NO;
-        BOOL isThis = [_photoData.selectionIdentifier isEqualToString:[photo selectionIdentifier]];
+        BOOL isThis = [_dataManager.selectionIdentifier isEqualToString:[photo selectionIdentifier]];
         if ( isThis ) {
             cell.isSelected = YES;
             self.selecedCell = cell;
@@ -152,7 +141,7 @@ static CGFloat kCountLabelWidth = 22.f;
     UICollectionReusableView *reusableView = nil;
     if (kind == UICollectionElementKindSectionHeader) {
         UWPhotoReusableView *view = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:NSStringFromClass([UWPhotoReusableView class]) forIndexPath:indexPath];
-        view.title = [self.photoData titleInSection:indexPath.section];
+        view.title = [self.dataManager titleInSection:indexPath.section];
         return view;
     }
     return reusableView;
@@ -161,12 +150,6 @@ static CGFloat kCountLabelWidth = 22.f;
 #pragma mark - UICollectionViewDelegate
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-}
-
-#pragma mark - UIScrollViewDelegate
-
-- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     
 }
 
@@ -182,7 +165,7 @@ static CGFloat kCountLabelWidth = 22.f;
 
 - (void)confirmSelectedImages {
     if (self.selectedPhotos) {
-        NSArray <UWPhotoDatable>*tmp =  [self.modelChangedList allObjects];
+        NSArray <UWPhotoDatable> *tmp = [NSArray arrayWithArray:[self.modelChangedList allObjects]];
         self.selectedPhotos(tmp);
     }
     [self backAction];
@@ -190,89 +173,10 @@ static CGFloat kCountLabelWidth = 22.f;
 
 - (void)segmentValueChanged:(SDSegmentedControl *)sender {
     self.selecedCell = nil;
-    self.photoData.menuIndex = sender.selectedSegmentIndex == 0?  UWMenuIndexRecommed : UWMenuIndexAll;
+    self.dataManager.menuIndex = sender.selectedSegmentIndex == 0?  UWMenuIndexRecommed : UWMenuIndexAll;
     [self.collectionView reloadData];
 }
 #pragma mark - getters & setters
-
-- (UIView *)topView {
-    if (_topView == nil) {
-        CGFloat navHeight = 44;
-        CGRect rect = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), NavigationBarHeight);
-        self.topView = [[UIView alloc] initWithFrame:rect];
-        self.topView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
-        self.topView.clipsToBounds = YES;
-        self.topView.backgroundColor = [UIColor whiteColor];
-        
-        rect = CGRectMake(0, 20, CGRectGetWidth(self.topView.bounds), navHeight);
-        UIView *navView = [[UIView alloc] initWithFrame:rect];
-        [self.topView addSubview:navView];
-        
-        rect = CGRectMake(0, 0, 60, CGRectGetHeight(navView.bounds));
-        UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        backBtn.frame = rect;
-        [backBtn setImage:[UIImage imageNamed:@"NavigationBar_Back"]
-                 forState:UIControlStateNormal];
-        [backBtn addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
-        [navView addSubview:backBtn];
-        
-        CGFloat titleWidth = 100;
-        rect = CGRectMake((CGRectGetWidth(navView.bounds)-titleWidth)/2, 0, titleWidth, navHeight);
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:rect];
-        titleLabel.text = _photoData.title;
-        titleLabel.textAlignment = NSTextAlignmentCenter;
-        titleLabel.backgroundColor = [UIColor clearColor];
-        titleLabel.textColor = [UIColor blackColor];
-        titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
-        [navView addSubview:titleLabel];
-        
-        if (_photoData.hasRightButton) {
-            rect = CGRectMake(CGRectGetWidth(navView.bounds)-45, 0, 40, CGRectGetHeight(navView.bounds));
-            self.cropBtn = [[UIButton alloc] initWithFrame:rect];
-            [self.cropBtn setTitle:@"确定" forState:UIControlStateNormal];
-            [self.cropBtn.titleLabel setFont:[UIFont boldSystemFontOfSize:15.0f]];
-            [self.cropBtn setTitleColor:UWHEX(0x00a2a0) forState:UIControlStateNormal];
-            [self.cropBtn addTarget:self action:@selector(confirmSelectedImages) forControlEvents:UIControlEventTouchUpInside];
-            [navView addSubview:self.cropBtn];
-        }
-    }
-    return _topView;
-}
-
-+ (UIImage *)imageWithCGColor:(CGColorRef)cgColor_
-                         size:(CGSize)size_
-{
-    CGFloat systemVer = [[[UIDevice currentDevice] systemVersion] floatValue];
-    CGFloat scale = systemVer >= 4.0 ? UIScreen.mainScreen.scale : 1.0;
-    
-    return [self imageWithCGColor:cgColor_ size:size_ scale:scale];
-}
-
-+ (UIImage *)imageWithCGColor:(CGColorRef)cgColor_
-                         size:(CGSize)size_
-                        scale:(CGFloat)scale_
-{
-    CGFloat systemVer = [[[UIDevice currentDevice] systemVersion] floatValue];
-    
-    if ( systemVer >= 4.0 ) {
-        UIGraphicsBeginImageContextWithOptions(size_, NO, scale_);
-    }
-    else {
-        UIGraphicsBeginImageContext(size_);
-    }
-    
-    CGRect rect = CGRectZero;
-    rect.size = size_;
-    UIColor *color = [UIColor colorWithCGColor:cgColor_];
-    UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect:rect];
-    [color setFill];
-    [rectanglePath fill];
-    
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return image;
-}
 
 - (UICollectionView *)collectionView {
     if (!_collectionView) {
@@ -286,7 +190,7 @@ static CGFloat kCountLabelWidth = 22.f;
         layout.minimumLineSpacing           = spacing;
         layout.headerReferenceSize = CGSizeMake(self.view.bounds.size.width, 30);
         
-        CGRect rect = CGRectMake(0, NavigationBarHeight, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) -NavigationBarHeight - (_photoData.isSingleMenu ? 0 : 5));
+        CGRect rect = CGRectMake(0, NavigationBarHeight, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) -NavigationBarHeight - (_dataManager.isSingleMenu ? 0 : 5));
         UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:rect collectionViewLayout:layout];
         collectionView.dataSource = self;
         collectionView.delegate = self;
@@ -300,11 +204,11 @@ static CGFloat kCountLabelWidth = 22.f;
     return _collectionView;
 }
 
-- (UWPhotoDataManager *)photoData {
-    if (!_photoData) {
-        _photoData = [[UWPhotoDataManager alloc] init];
+- (UWPhotoDataManager *)dataManager {
+    if (!_dataManager) {
+        _dataManager = [[UWPhotoDataManager alloc] init];
     }
-    return _photoData;
+    return _dataManager;
 }
 
 - (SDSegmentedControl *)segmentedControl {
@@ -320,7 +224,7 @@ static CGFloat kCountLabelWidth = 22.f;
     if (!_navBar) {
         UWPhotoNavigationView *navBar = [[UWPhotoNavigationView alloc] init];
         [navBar.backButton addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
-        if (_photoData.hasRightButton) {
+        if (_dataManager.hasRightButton) {
             [navBar.rightButton setTitle:@"确定" forState:UIControlStateNormal];
             [navBar.rightButton addTarget:self action:@selector(confirmSelectedImages) forControlEvents:UIControlEventTouchUpInside];
         }

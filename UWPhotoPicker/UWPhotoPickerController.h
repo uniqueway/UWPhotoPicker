@@ -10,18 +10,23 @@
 #import "UWPhotoDataManager.h"
 #import "UWPhotoDatable.h"
 
+@class UWPhotoNavigationView, UWPhotoCollectionViewCell;
+
+
 typedef NS_ENUM(NSInteger, UWPickerStatus) {
     UWPickerStatusRecommed,
     UWPickerStatusAll,
 };
 
-@interface UWPhotoPickerController : UIViewController
+@interface UWPhotoPickerController : UIViewController<UICollectionViewDataSource, UICollectionViewDelegate>
 
 @property (nonatomic, copy) void(^selectedPhotos)(NSArray <UWPhotoDatable>*list);
-@property (nonatomic, copy) void(^cropBlock)(NSArray *list);
-@property (nonatomic, strong) UWPhotoDataManager *photoData;
-@property (nonatomic, assign) NSInteger limit;
 
 
-
+@property (nonatomic, strong) UWPhotoDataManager    *dataManager;
+@property (nonatomic, weak  ) UICollectionView      *collectionView;
+@property (nonatomic, weak  ) UWPhotoNavigationView *navBar;
+@property (nonatomic, assign) NSInteger selectedCount;
+@property (nonatomic, strong) NSMutableSet *modelChangedList;
+@property (nonatomic, weak)   UWPhotoCollectionViewCell *selecedCell;
 @end

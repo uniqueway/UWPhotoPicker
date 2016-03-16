@@ -150,4 +150,38 @@
 	return [self uw_resizedImageToSize:dstSize];
 }
 
++ (UIImage *)imageWithCGColor:(CGColorRef)cgColor_
+                         size:(CGSize)size_
+{
+    CGFloat systemVer = [[[UIDevice currentDevice] systemVersion] floatValue];
+    CGFloat scale = systemVer >= 4.0 ? UIScreen.mainScreen.scale : 1.0;
+    
+    return [self imageWithCGColor:cgColor_ size:size_ scale:scale];
+}
+
++ (UIImage *)imageWithCGColor:(CGColorRef)cgColor_
+                         size:(CGSize)size_
+                        scale:(CGFloat)scale_
+{
+    CGFloat systemVer = [[[UIDevice currentDevice] systemVersion] floatValue];
+    
+    if ( systemVer >= 4.0 ) {
+        UIGraphicsBeginImageContextWithOptions(size_, NO, scale_);
+    }
+    else {
+        UIGraphicsBeginImageContext(size_);
+    }
+    
+    CGRect rect = CGRectZero;
+    rect.size = size_;
+    UIColor *color = [UIColor colorWithCGColor:cgColor_];
+    UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect:rect];
+    [color setFill];
+    [rectanglePath fill];
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
 @end
