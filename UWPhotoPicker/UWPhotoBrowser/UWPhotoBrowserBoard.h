@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UWPhotoDataManager.h"
 
 @interface UWPhotoBrowserBoard : UIViewController
+
+@property (nonatomic, strong) UWPhotoDataManager *dataManager;
 
 @end

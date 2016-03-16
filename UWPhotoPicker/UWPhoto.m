@@ -7,7 +7,7 @@
 //
 
 #import "UWPhoto.h"
-#import "UWPhotoPickerConfig.h"
+#import "UWPhotoHelper.h"
 
 
 @implementation UWPhoto

@@ -7,7 +7,7 @@
 //
 
 #import "UWPhotoReusableView.h"
-#import "UWPhotoPickerConfig.h"
+#import "UWPhotoHelper.h"
 
 @interface UWPhotoReusableView ()
 

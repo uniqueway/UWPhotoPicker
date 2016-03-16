@@ -8,8 +8,7 @@
 
 #import "UWPhotoNavigationView.h"
 #import "Masonry.h"
-#import "UIView+UWPhotoAnimation.h"
-#import "UWPhotoPickerConfig.h"
+#import "UWPhotoHelper.h"
 
 static const CGFloat NavBarHeight = 44;
 

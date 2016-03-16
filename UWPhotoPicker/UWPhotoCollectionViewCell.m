@@ -7,9 +7,8 @@
 //
 
 #import "UWPhotoCollectionViewCell.h"
-#import "UWPhotoPickerConfig.h"
+#import "UWPhotoHelper.h"
 #import "UWPhotoDatable.h"
-#import "UIView+UWPhotoAnimation.h"
 
 #define DEFAULT_COLOR [UIColor clearColor]
 #define SELECTED_COLOR [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5]
@@ -20,6 +19,7 @@ static NSInteger buttonWidth = 30;
 
 @property (strong, nonatomic) UIImageView *imageView;
 @property (nonatomic, strong) UIButton *selectedButton;
+@property (nonatomic, strong) UIButton *lineButton;
 
 @end
 
@@ -46,10 +46,13 @@ static NSInteger buttonWidth = 30;
 - (void)layoutSubviews {
     [super layoutSubviews];
     _imageView.frame = self.bounds;
-    if (_isLineWhenSelected) {
-        self.selectedButton.frame = self.bounds;
+    if (_selectedStyle == SelectedStyleCheck) {
+        self.selectedButton.frame = CGRectMake(self.bounds.size.width - _selectedButton.frame.size.width , 0, buttonWidth, buttonWidth);
+    }else if (_selectedStyle == SelectedStyleLine){
+        self.lineButton.frame = self.bounds;
     }else {
         self.selectedButton.frame = CGRectMake(self.bounds.size.width - _selectedButton.frame.size.width , 0, buttonWidth, buttonWidth);
+        self.lineButton.frame = self.bounds;
     }
     
 }
@@ -62,8 +65,10 @@ static NSInteger buttonWidth = 30;
 }
 
 - (void)selectionButtonPressed {
-    [_selectedButton uw_scaleAnimation];
     self.isSelected = !self.isSelected;
+    
+    [_selectedButton uw_scaleAnimation];
+    _lineButton.selected = YES;
     if (self.selectedBlock) {
         self.selectedBlock(_selectedButton.selected, self.indexPath);
     }
@@ -84,7 +89,14 @@ static NSInteger buttonWidth = 30;
 
 - (void)setIsSelected:(BOOL)isSelected {
     _isSelected = isSelected;
-    self.selectedButton.selected = isSelected;
+    if (_selectedStyle == SelectedStyleCheck) {
+        self.selectedButton.selected = isSelected;
+    }else if(_selectedStyle == SelectedStyleLine) {
+        self.lineButton.selected = isSelected;
+    }else {
+        self.selectedButton.selected = isSelected;
+        self.lineButton.userInteractionEnabled = NO;
+    }
 }
 
 - (UIButton *)selectedButton {
@@ -92,18 +104,26 @@ static NSInteger buttonWidth = 30;
         _selectedButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _selectedButton.adjustsImageWhenHighlighted = NO;
         _selectedButton.backgroundColor = [UIColor clearColor];
-        if (_isLineWhenSelected) {
-            [_selectedButton setImage:[UIImage imageNamed:@"UWPhotoPickerLineSelected"] forState:UIControlStateSelected];
-            _selectedButton.contentMode = UIViewContentModeScaleToFill;
-        }else {
-            [_selectedButton setImage:[UIImage imageNamed:@"UWPhotoPickerUnselected"] forState:UIControlStateNormal];
-            [_selectedButton setImage:[UIImage imageNamed:@"UWPhotoPickerSelected"] forState:UIControlStateSelected];
-        }
-        [_selectedButton addTarget:self action:@selector(selectionButtonPressed) forControlEvents:UIControlEventTouchDown];
+        [_selectedButton setImage:[UIImage imageNamed:@"UWPhotoPickerUnselected"] forState:UIControlStateNormal];
+        [_selectedButton setImage:[UIImage imageNamed:@"UWPhotoPickerSelected"] forState:UIControlStateSelected];
+        [_selectedButton addTarget:self action:@selector(selectionButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         _selectedButton.frame = CGRectMake(0, 0, 30, 30);
         [self.contentView addSubview:_selectedButton];
     }
     return _selectedButton;
+}
+
+- (UIButton *)lineButton {
+    if (!_lineButton) {
+        _lineButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _lineButton.adjustsImageWhenHighlighted = NO;
+        _lineButton.backgroundColor = [UIColor clearColor];
+        [_lineButton setImage:[UIImage imageNamed:@"UWPhotoPickerLineSelected"] forState:UIControlStateSelected];
+        _lineButton.contentMode = UIViewContentModeScaleToFill;
+        [_lineButton addTarget:self action:@selector(selectionButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+        [self.contentView addSubview:_lineButton];
+    }
+    return _lineButton;
 }
 
 @end

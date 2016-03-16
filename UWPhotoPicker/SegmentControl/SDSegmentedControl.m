@@ -7,7 +7,7 @@
 
 #import "SDSegmentedControl.h"
 #import <QuartzCore/QuartzCore.h>
-#import "UWPhotoPickerConfig.h"
+#import "UWPhotoHelper.h"
 
 #pragma mark - Constants
 

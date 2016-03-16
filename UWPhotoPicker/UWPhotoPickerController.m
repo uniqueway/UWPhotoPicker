@@ -12,10 +12,9 @@
 #import "UWPhotoLoader.h"
 #import "SVProgressHUD.h"
 #import "UWPhotoReusableView.h"
-#import "UWPhotoPickerConfig.h"
+#import "UWPhotoHelper.h"
 #import "SDSegmentedControl.h"
 #import "UWPhotoDatable.h"
-#import "UIView+UWPhotoAnimation.h"
 #import "UWPhotoNavigationView.h"
 #import "Masonry.h"
 
@@ -132,7 +131,7 @@ static CGFloat kCountLabelWidth = 22.f;
     id<UWPhotoDatable> photo = [self.photoData photoAtIndex:indexPath];
     static NSString *CellIdentifier = @"UWPhotoCollectionViewCell";
     UWPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
-    cell.isLineWhenSelected = _photoData.isSingleSelection;
+    cell.selectedStyle =  _photoData.isSingleSelection ? SelectedStyleLine : SelectedStyleCheck;
     cell.photo = photo;
     cell.indexPath = indexPath;
     cell.selectedBlock = ^(BOOL isSelected, NSIndexPath *indexPath) {

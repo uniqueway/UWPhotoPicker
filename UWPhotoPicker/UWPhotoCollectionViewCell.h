@@ -9,12 +9,19 @@
 #import <UIKit/UIKit.h>
 #import "UWPhotoDatable.h"
 
+typedef NS_ENUM(NSInteger, SelectedStyle) {
+    SelectedStyleCheck,
+    SelectedStyleLine,
+    SelectedStyleBoth,
+};
+
+
 @interface UWPhotoCollectionViewCell : UICollectionViewCell
 
 @property (nonatomic, strong) id <UWPhotoDatable> photo;
 @property (nonatomic, strong) NSIndexPath *indexPath;
 @property (nonatomic, assign) BOOL isSelected;
 @property (nonatomic, copy)   void(^selectedBlock)(BOOL isSelected, NSIndexPath *indexPath);
-@property (nonatomic, assign) BOOL isLineWhenSelected;
+@property (nonatomic, assign) SelectedStyle selectedStyle;
 
 @end
