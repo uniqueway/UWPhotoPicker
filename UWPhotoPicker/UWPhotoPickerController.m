@@ -17,6 +17,7 @@
 #import "UWPhotoDatable.h"
 #import "UWPhotoNavigationView.h"
 #import "Masonry.h"
+#import "UWPhotoBrowserBoard.h"
 
 #define NavigationBarHeight 64
 static CGFloat kBottomSegmentHeight = 45;
@@ -43,7 +44,6 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     self.navigationController.navigationBarHidden =  YES;
     self.automaticallyAdjustsScrollViewInsets = NO;
     [self.view setBackgroundColor:[UIColor whiteColor]];
-    [self.collectionView reloadData];
     
     self.navBar.title = _dataManager.title;
 
@@ -56,6 +56,36 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     if (!_dataManager.isSingleMenu) {
         [self.view addSubview:self.segmentedControl];
     }
+    [self buildUI];
+}
+
+- (void)buildUI {
+    CGFloat colum = 4.0, spacing = 2.0;
+    CGFloat value = floorf((CGRectGetWidth(self.view.bounds) - (colum - 1) * spacing) / colum);
+    
+    UICollectionViewFlowLayout *layout  = [[UICollectionViewFlowLayout alloc] init];
+    layout.itemSize                     = CGSizeMake(value, value);
+    layout.sectionInset                 = UIEdgeInsetsMake(0, 0, 0, 0);
+    layout.minimumInteritemSpacing      = spacing;
+    layout.minimumLineSpacing           = spacing;
+    layout.headerReferenceSize = CGSizeMake(self.view.bounds.size.width, 30);
+    
+    CGRect rect = CGRectMake(0, NavigationBarHeight, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) -NavigationBarHeight - (_dataManager.isSingleMenu ? 0 : 5));
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:rect collectionViewLayout:layout];
+    collectionView.dataSource = self;
+    collectionView.delegate = self;
+    collectionView.contentInset = UIEdgeInsetsMake(0, 0, kBottomSegmentHeight, 0);
+    collectionView.backgroundColor = UWPhotoBackgroudColor;
+    [collectionView registerClass:[UWPhotoCollectionViewCell class] forCellWithReuseIdentifier:@"UWPhotoCollectionViewCell"];
+    [collectionView registerClass:[UWPhotoReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:NSStringFromClass([UWPhotoReusableView class])];
+    [self.view addSubview:collectionView];
+    _collectionView = collectionView;
+    [_collectionView reloadData];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.collectionView reloadData];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -158,7 +188,9 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 #pragma mark - UICollectionViewDelegate
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
+    UWPhotoBrowserBoard *board = [[UWPhotoBrowserBoard alloc] init];
+    board.dataManager = self.dataManager;
+    [self.navigationController pushViewController:board animated:YES];
 }
 
 #pragma mark - event response
@@ -190,32 +222,6 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     [self.collectionView reloadData];
 }
 #pragma mark - getters & setters
-
-- (UICollectionView *)collectionView {
-    if (!_collectionView) {
-        CGFloat colum = 4.0, spacing = 2.0;
-        CGFloat value = floorf((CGRectGetWidth(self.view.bounds) - (colum - 1) * spacing) / colum);
-        
-        UICollectionViewFlowLayout *layout  = [[UICollectionViewFlowLayout alloc] init];
-        layout.itemSize                     = CGSizeMake(value, value);
-        layout.sectionInset                 = UIEdgeInsetsMake(0, 0, 0, 0);
-        layout.minimumInteritemSpacing      = spacing;
-        layout.minimumLineSpacing           = spacing;
-        layout.headerReferenceSize = CGSizeMake(self.view.bounds.size.width, 30);
-        
-        CGRect rect = CGRectMake(0, NavigationBarHeight, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) -NavigationBarHeight - (_dataManager.isSingleMenu ? 0 : 5));
-        UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:rect collectionViewLayout:layout];
-        collectionView.dataSource = self;
-        collectionView.delegate = self;
-        collectionView.contentInset = UIEdgeInsetsMake(0, 0, kBottomSegmentHeight, 0);
-        collectionView.backgroundColor = UWPhotoBackgroudColor;
-        [collectionView registerClass:[UWPhotoCollectionViewCell class] forCellWithReuseIdentifier:@"UWPhotoCollectionViewCell"];
-        [collectionView registerClass:[UWPhotoReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:NSStringFromClass([UWPhotoReusableView class])];
-        [self.view addSubview:collectionView];
-        _collectionView = collectionView;
-    }
-    return _collectionView;
-}
 
 - (UWPhotoDataManager *)dataManager {
     if (!_dataManager) {

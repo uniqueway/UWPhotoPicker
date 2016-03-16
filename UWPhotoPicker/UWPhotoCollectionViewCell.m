@@ -9,11 +9,12 @@
 #import "UWPhotoCollectionViewCell.h"
 #import "UWPhotoHelper.h"
 #import "UWPhotoDatable.h"
+#import <Masonry.h>
 
 #define DEFAULT_COLOR [UIColor clearColor]
 #define SELECTED_COLOR [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5]
 
-static NSInteger buttonWidth = 30;
+static NSInteger buttonWidth = 25;
 
 @interface UWPhotoCollectionViewCell ()
 
@@ -32,8 +33,11 @@ static NSInteger buttonWidth = 30;
         self.imageView = [[UIImageView alloc] initWithFrame:self.bounds];
         self.imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         self.imageView.contentMode = UIViewContentModeScaleAspectFill;
-        
         [self.contentView addSubview:self.imageView];
+        [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.mas_equalTo(UIEdgeInsetsZero);
+        }];
+        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(handleMWPhotoLoadingDidEndNotification:)
                                                      name:UWPhotoPickerLoadingDidFinishedNotification
@@ -41,20 +45,6 @@ static NSInteger buttonWidth = 30;
 
     }
     return self;
-}
-
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    _imageView.frame = self.bounds;
-    if (_selectedStyle == SelectedStyleCheck) {
-        self.selectedButton.frame = CGRectMake(self.bounds.size.width - _selectedButton.frame.size.width , 0, buttonWidth, buttonWidth);
-    }else if (_selectedStyle == SelectedStyleLine){
-        self.lineButton.frame = self.bounds;
-    }else {
-        self.selectedButton.frame = CGRectMake(self.bounds.size.width - _selectedButton.frame.size.width , 0, buttonWidth, buttonWidth);
-        self.lineButton.frame = self.bounds;
-    }
-    
 }
 
 - (void)handleMWPhotoLoadingDidEndNotification:(NSNotification *)notification {
@@ -109,8 +99,11 @@ static NSInteger buttonWidth = 30;
         [_selectedButton setImage:[UIImage imageNamed:@"UWPhotoPickerUnselected"] forState:UIControlStateNormal];
         [_selectedButton setImage:[UIImage imageNamed:@"UWPhotoPickerSelected"] forState:UIControlStateSelected];
         [_selectedButton addTarget:self action:@selector(selectionButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-        _selectedButton.frame = CGRectMake(0, 0, 30, 30);
         [self.contentView addSubview:_selectedButton];
+        [_selectedButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.right.offset(0);
+            make.size.mas_equalTo(CGSizeMake(buttonWidth, buttonWidth));
+        }];
     }
     return _selectedButton;
 }
@@ -124,6 +117,9 @@ static NSInteger buttonWidth = 30;
         _lineButton.contentMode = UIViewContentModeScaleToFill;
         [_lineButton addTarget:self action:@selector(selectionButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:_lineButton];
+        [_lineButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.left.bottom.right.offset(0);
+        }];
     }
     return _lineButton;
 }

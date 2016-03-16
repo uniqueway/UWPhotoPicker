@@ -6,11 +6,10 @@
 //
 //
 
-#import <UIKit/UIKit.h>
+#import "UWPhotoPickerController.h"
 #import "UWPhotoDataManager.h"
 
-@interface UWPhotoBrowserBoard : UIViewController
+@interface UWPhotoBrowserBoard : UWPhotoPickerController
 
-@property (nonatomic, strong) UWPhotoDataManager *dataManager;
 
 @end

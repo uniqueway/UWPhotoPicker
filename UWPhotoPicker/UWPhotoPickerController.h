@@ -24,9 +24,10 @@ typedef NS_ENUM(NSInteger, UWPickerStatus) {
 
 
 @property (nonatomic, strong) UWPhotoDataManager    *dataManager;
+
 @property (nonatomic, weak  ) UICollectionView      *collectionView;
 @property (nonatomic, weak  ) UWPhotoNavigationView *navBar;
-@property (nonatomic, assign) NSInteger selectedCount;
+
 @property (nonatomic, strong) NSMutableSet *modelChangedList;
 @property (nonatomic, weak)   UWPhotoCollectionViewCell *selecedCell;
 @end
