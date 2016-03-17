@@ -51,7 +51,10 @@
 - (void)handlePhotoStatusAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)isSelected {
     UWPhotoCollectionViewCell *selectedCell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:self.selectedIndexPath];
     [selectedCell cellShouldHighlight:NO];
-    [super handlePhotoStatusAtIndexPath:indexPath selected:isSelected];
+    UWPhotoCollectionViewCell *currentCell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+    [currentCell cellShouldHighlight:YES];
+    self.selectedIndexPath = indexPath;
+    [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
 }
 #pragma mark - UI -
 - (void)buildUI {
@@ -104,7 +107,6 @@
         make.height.mas_equalTo(width+30);
     }];
     self.collectionView = collectionView;
-    
 }
 
 - (void)updateTitle {
