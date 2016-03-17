@@ -42,6 +42,8 @@
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
 }
 
+
+
 - (SelectedStyle)selectedStyle {
     return SelectedStyleBoth;
 }
@@ -84,7 +86,7 @@
     CGFloat width = 47;
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     layout.itemSize                    = CGSizeMake(width, width);
-    layout.sectionInset                = UIEdgeInsetsMake(15, 0, 15, 0);
+    layout.sectionInset                = UIEdgeInsetsMake(15, 5, 15, 0);
     layout.minimumInteritemSpacing     = 5;
     layout.minimumLineSpacing          = 5;
     layout.scrollDirection             = UICollectionViewScrollDirectionHorizontal;
@@ -167,8 +169,7 @@
     if (!_browserView) {
         UWBrowserView *browserView = [[UWBrowserView alloc] init];
         browserView.scrollIndexPath = ^(NSIndexPath *indexPath) {
-            self.selectedIndexPath = indexPath;
-            [self.collectionView reloadData];
+            [self handlePhotoStatusAtIndexPath:indexPath selected:YES];
         };
         [self.view addSubview:browserView];
         [browserView mas_makeConstraints:^(MASConstraintMaker *make) {
