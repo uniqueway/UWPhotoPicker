@@ -10,6 +10,9 @@
 #import "UWPhotoDataManager.h"
 #import "UWPhotoDatable.h"
 
+#import "UWPhotoCollectionViewCell.h"
+
+
 @class UWPhotoNavigationView, UWPhotoCollectionViewCell;
 
 
@@ -30,4 +33,14 @@ typedef NS_ENUM(NSInteger, UWPickerStatus) {
 
 @property (nonatomic, strong) NSMutableSet *modelChangedList;
 @property (nonatomic, weak)   UWPhotoCollectionViewCell *selecedCell;
+
+/**
+ *  @brief 子类重写，选择的样子，无，对勾，线框，对勾和线框
+ */
+- (SelectedStyle)selectedStyle;
+/**
+ *  @brief 点击对勾的时候调用
+ */
+- (void)handlePhotoStatusAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)isSelected;
+
 @end

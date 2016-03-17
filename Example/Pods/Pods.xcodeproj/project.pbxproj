@@ -184,6 +184,10 @@
 		720DC354002092C31669D06F9D57032B /* GPUImageUIElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 60C7B666542E1910DBF766833211B139 /* GPUImageUIElement.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		739AA70298B55C090917C67059E76BBA /* GPUImageSingleComponentGaussianBlurFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 043FE00548D5DAB3EF38E7473058A63D /* GPUImageSingleComponentGaussianBlurFilter.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
 		7478D4B41B8A859EF5EF670BA7D74171 /* GPUImageNobleCornerDetectionFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = C398D85C27A42CD00C27D8883FAAC100 /* GPUImageNobleCornerDetectionFilter.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
+		74AAFE591C9A6F5E00F94831 /* UWBrowserView.h in Headers */ = {isa = PBXBuildFile; fileRef = 74AAFE571C9A6F5E00F94831 /* UWBrowserView.h */; };
+		74AAFE5A1C9A6F5E00F94831 /* UWBrowserView.m in Sources */ = {isa = PBXBuildFile; fileRef = 74AAFE581C9A6F5E00F94831 /* UWBrowserView.m */; };
+		74AAFE5D1C9A6FC700F94831 /* UWBrowserCollectionViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 74AAFE5B1C9A6FC700F94831 /* UWBrowserCollectionViewCell.h */; };
+		74AAFE5E1C9A6FC700F94831 /* UWBrowserCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 74AAFE5C1C9A6FC700F94831 /* UWBrowserCollectionViewCell.m */; };
 		758F079742FA6FD9CE55D832F39557BA /* UWPhotoCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EC024B2B0513A346DF788499A9B71AD7 /* UWPhotoCollectionViewCell.m */; };
 		75FB19F919886142B16DA417292AF227 /* GPUImageLuminanceRangeFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 28BBB1E5E608C276697DF6EE33863F6D /* GPUImageLuminanceRangeFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		76504FBCEC7E0C1F8EB3A5B08885174B /* GPUImageHazeFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E9E8E992345AB8F2B5EFA4DDC9CB675 /* GPUImageHazeFilter.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
@@ -647,6 +651,10 @@
 		747E8F668D6EDF8C828D6585D1DA973B /* GPUImageDirectionalSobelEdgeDetectionFilter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = GPUImageDirectionalSobelEdgeDetectionFilter.h; path = framework/Source/GPUImageDirectionalSobelEdgeDetectionFilter.h; sourceTree = "<group>"; };
 		747F24E435154237730FB7014CE664D7 /* GPUImageFilterGroup.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = GPUImageFilterGroup.m; path = framework/Source/GPUImageFilterGroup.m; sourceTree = "<group>"; };
 		74A7BE20EDD6F330299AF799DDE1585D /* UWPhotoImageItem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = UWPhotoImageItem.h; sourceTree = "<group>"; };
+		74AAFE571C9A6F5E00F94831 /* UWBrowserView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UWBrowserView.h; sourceTree = "<group>"; };
+		74AAFE581C9A6F5E00F94831 /* UWBrowserView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UWBrowserView.m; sourceTree = "<group>"; };
+		74AAFE5B1C9A6FC700F94831 /* UWBrowserCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UWBrowserCollectionViewCell.h; sourceTree = "<group>"; };
+		74AAFE5C1C9A6FC700F94831 /* UWBrowserCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UWBrowserCollectionViewCell.m; sourceTree = "<group>"; };
 		7559A9C11434C70F5169EC3BE2E5095D /* GPUImagePrewittEdgeDetectionFilter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = GPUImagePrewittEdgeDetectionFilter.h; path = framework/Source/GPUImagePrewittEdgeDetectionFilter.h; sourceTree = "<group>"; };
 		75B9C174FBD92E853F14CFB8FBBCECD4 /* GPUImageRGBClosingFilter.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = GPUImageRGBClosingFilter.m; path = framework/Source/GPUImageRGBClosingFilter.m; sourceTree = "<group>"; };
 		7659BF48FEFEA3C05A46147A2E558DCB /* UIImage+Resize.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
@@ -977,6 +985,10 @@
 			children = (
 				9D30EC10E4FA58184A1C69280B2C28D4 /* UWPhotoBrowserBoard.h */,
 				FABADA0D480AF886DD224127AA09E9E3 /* UWPhotoBrowserBoard.m */,
+				74AAFE571C9A6F5E00F94831 /* UWBrowserView.h */,
+				74AAFE581C9A6F5E00F94831 /* UWBrowserView.m */,
+				74AAFE5B1C9A6FC700F94831 /* UWBrowserCollectionViewCell.h */,
+				74AAFE5C1C9A6FC700F94831 /* UWBrowserCollectionViewCell.m */,
 			);
 			path = UWPhotoBrowser;
 			sourceTree = "<group>";
@@ -1708,6 +1720,7 @@
 				F3844FA0BC26CC2E0A3397F2A8D973D8 /* GPUImageLocalBinaryPatternFilter.h in Headers */,
 				F68E9B771878DB5397357810B3CBDF62 /* GPUImageLookupFilter.h in Headers */,
 				7D84124D15687644CBCC13BB58B836F2 /* GPUImageLowPassFilter.h in Headers */,
+				74AAFE5D1C9A6FC700F94831 /* UWBrowserCollectionViewCell.h in Headers */,
 				75FB19F919886142B16DA417292AF227 /* GPUImageLuminanceRangeFilter.h in Headers */,
 				131DAD863C28AC0C65E1CEC9110D1F02 /* GPUImageLuminanceThresholdFilter.h in Headers */,
 				2478DBC8D5E78606EE8C0C9909D15329 /* GPUImageLuminosity.h in Headers */,
@@ -1789,6 +1802,7 @@
 				6D76E744014686941643D53B63092BC3 /* GPUImageVignetteFilter.h in Headers */,
 				A3207852EFEC69653F515E3491745B39 /* GPUImageVoronoiConsumerFilter.h in Headers */,
 				81B2CEF0A9A4D9CA438E989034BE689F /* GPUImageWeakPixelInclusionFilter.h in Headers */,
+				74AAFE591C9A6F5E00F94831 /* UWBrowserView.h in Headers */,
 				885F540C3721EB398522C1646259619C /* GPUImageWhiteBalanceFilter.h in Headers */,
 				447BE308F88DFB632722B43E73A675AB /* GPUImageXYDerivativeFilter.h in Headers */,
 				C22CBF65410185A97D139AF06B277E09 /* GPUImageZoomBlurFilter.h in Headers */,
@@ -2121,6 +2135,7 @@
 				35C6DD07A53DB76D2C24E042B93E20B1 /* GPUImageLuminosityBlendFilter.m in Sources */,
 				CE4199395A07CEE32A80FF802D68F13F /* GPUImageMaskFilter.m in Sources */,
 				D492F90A0A202DD6321675A2A2203C96 /* GPUImageMedianFilter.m in Sources */,
+				74AAFE5A1C9A6F5E00F94831 /* UWBrowserView.m in Sources */,
 				7BD3F1EAE832407A81328635B48794D0 /* GPUImageMissEtikateFilter.m in Sources */,
 				E9DB576CF8EA753F630097480270C363 /* GPUImageMonochromeFilter.m in Sources */,
 				DC8EF2714DEEA211C54905E8C08F6EDA /* GPUImageMosaicFilter.m in Sources */,
@@ -2182,6 +2197,7 @@
 				0B0A46C0137491A5D31E66A0667E8198 /* GPUImageThresholdedNonMaximumSuppressionFilter.m in Sources */,
 				A18B1725D91EC59323DF6E1AD32BE257 /* GPUImageThresholdSketchFilter.m in Sources */,
 				70B945562B2AF99DE7D0957059E9E73A /* GPUImageTiltShiftFilter.m in Sources */,
+				74AAFE5E1C9A6FC700F94831 /* UWBrowserCollectionViewCell.m in Sources */,
 				FE83BF56C567756C21EC2B7CE62A9E2E /* GPUImageToneCurveFilter.m in Sources */,
 				83A9D8C98E9654494773237748835FB6 /* GPUImageToonFilter.m in Sources */,
 				6F172712D5C1E1296ED4E355E12B8D17 /* GPUImageTransformFilter.m in Sources */,

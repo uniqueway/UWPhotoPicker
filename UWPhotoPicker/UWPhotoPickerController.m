@@ -8,7 +8,6 @@
 
 #import "UWPhotoPickerController.h"
 #import "UWPhotoEditorViewController.h"
-#import "UWPhotoCollectionViewCell.h"
 #import "UWPhotoLoader.h"
 #import "SVProgressHUD.h"
 #import "UWPhotoReusableView.h"
@@ -93,13 +92,17 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     [super viewWillDisappear:animated];
 }
 
+- (SelectedStyle)selectedStyle {
+    return _dataManager.isSingleSelection ? SelectedStyleLine : SelectedStyleCheck;
+}
+
 - (void)handlePhotoStatusAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)isSelected {
     
     id <UWPhotoDatable> photo = [self.dataManager photoAtIndex:indexPath];
     self.dataManager.selectedCount += isSelected ? 1 : -1;
-
-    if (_dataManager.isSingleSelection) { // 单选时，取消上一个图片选中状态，移除所有图片
         UWPhotoCollectionViewCell *cell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+    if (_dataManager.isSingleSelection) { // 单选时，取消上一个图片选中状态，移除所有图片
+
         if (cell != self.selecedCell) {
             self.selecedCell.isSelected = NO;
             self.selecedCell = cell;
@@ -111,7 +114,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
             [self confirmSelectedImages];
         }
     }
-    
+    self.selecedCell = cell;
     // 单选时，不包含就选移出所有，再添加新的；多选的时候包含当前model，移出当前model，改的只有是否选中状态，并且成对出现，第二次出现时，并未对此model做修改
     if (_dataManager.isSingleSelection) {
         if (![self.modelChangedList containsObject:photo]) {
@@ -158,7 +161,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     id<UWPhotoDatable> photo = [self.dataManager photoAtIndex:indexPath];
     static NSString *CellIdentifier = @"UWPhotoCollectionViewCell";
     UWPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
-    cell.selectedStyle =  _dataManager.isSingleSelection ? SelectedStyleLine : SelectedStyleCheck;
+    cell.selectedStyle =  [self selectedStyle];
     cell.photo = photo;
     cell.indexPath = indexPath;
     cell.selectedBlock = ^(BOOL isSelected, NSIndexPath *indexPath) {

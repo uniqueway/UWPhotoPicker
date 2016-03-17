@@ -10,6 +10,7 @@
 #import "UWPhotoDatable.h"
 
 typedef NS_ENUM(NSInteger, SelectedStyle) {
+    SelectedStyleNone,
     SelectedStyleCheck,
     SelectedStyleLine,
     SelectedStyleBoth,
@@ -23,5 +24,7 @@ typedef NS_ENUM(NSInteger, SelectedStyle) {
 @property (nonatomic, assign) BOOL isSelected;
 @property (nonatomic, copy)   void(^selectedBlock)(BOOL isSelected, NSIndexPath *indexPath);
 @property (nonatomic, assign) SelectedStyle selectedStyle;
+
+- (void)cellShouldHighlight:(BOOL)isHighlight;
 
 @end

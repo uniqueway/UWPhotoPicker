@@ -31,11 +31,11 @@ static NSInteger buttonWidth = 25;
         self.backgroundColor = UWPhotoBackgroudColor;
         self.clipsToBounds = YES;
         self.imageView = [[UIImageView alloc] initWithFrame:self.bounds];
-        self.imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         self.imageView.contentMode = UIViewContentModeScaleAspectFill;
         [self.contentView addSubview:self.imageView];
+
         [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.mas_equalTo(UIEdgeInsetsZero);
+            make.top.left.bottom.right.offset(0);
         }];
         
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -66,6 +66,9 @@ static NSInteger buttonWidth = 25;
     }
 }
 
+- (void)cellShouldHighlight:(BOOL)isHighlight {
+    _lineButton.selected = isHighlight;
+}
 #pragma mark - set/get
 - (void)setPhoto:(id <UWPhotoDatable>)photo {
     _imageView.image = [photo thumbnailImage];
@@ -85,7 +88,7 @@ static NSInteger buttonWidth = 25;
         self.selectedButton.selected = isSelected;
     }else if(_selectedStyle == SelectedStyleLine) {
         self.lineButton.selected = isSelected;
-    }else {
+    }else if(_selectedStyle == SelectedStyleBoth){
         self.selectedButton.selected = isSelected;
         self.lineButton.userInteractionEnabled = NO;
     }

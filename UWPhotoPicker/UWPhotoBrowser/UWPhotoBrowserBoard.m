@@ -12,11 +12,12 @@
 #import <Masonry.h>
 #import "UWPhotoCollectionViewCell.h"
 #import "UWPhotoHelper.h"
-
+#import "UWBrowserView.h"
 
 @interface UWPhotoBrowserBoard ()<UIScrollViewDelegate,UICollectionViewDelegate,UICollectionViewDataSource>
 
 @property (nonatomic, weak) UIScrollView *scrollView;
+@property (nonatomic, weak) UWBrowserView *browserView;
 @property (nonatomic, assign) NSUInteger currentIndex;
 
 @property (nonatomic, strong) NSArray <UWPhotoDatable> *photos;
@@ -25,6 +26,7 @@
 
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, assign) NSUInteger totalCount;
+@property (nonatomic, weak) UWPhotoCollectionViewCell *highLightCell;
 
 @end
 
@@ -40,6 +42,14 @@
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
 }
 
+- (SelectedStyle)selectedStyle {
+    return SelectedStyleBoth;
+}
+
+- (void)handlePhotoStatusAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)isSelected {
+    [self.selecedCell cellShouldHighlight:NO];
+    [super handlePhotoStatusAtIndexPath:indexPath selected:isSelected];
+}
 #pragma mark - UI -
 - (void)buildUI {
     [self.view.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -66,6 +76,7 @@
     [self updateTitle];
     [self createCollectionView];
     [self createLine];
+    self.browserView.dataManager = self.dataManager;
 }
 
 - (void)createCollectionView {
@@ -151,5 +162,21 @@
     return _scrollView;
 }
 
-
+- (UWBrowserView *)browserView {
+    if (!_browserView) {
+        UWBrowserView *browserView = [[UWBrowserView alloc] init];
+        browserView.scrollIndexPath = ^(NSIndexPath *indexPath) {
+            [self.selecedCell cellShouldHighlight:NO];
+            [self.collectionView reloadData];
+        };
+        [self.view addSubview:browserView];
+        [browserView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.offset(44);
+            make.left.right.offset(0);
+            make.bottom.offset(-77);
+        }];
+        _browserView = browserView;
+    }
+    return _browserView;
+}
 @end
