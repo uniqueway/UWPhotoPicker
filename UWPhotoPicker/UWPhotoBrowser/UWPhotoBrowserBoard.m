@@ -47,7 +47,8 @@
 }
 
 - (void)handlePhotoStatusAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)isSelected {
-    [self.selecedCell cellShouldHighlight:NO];
+    UWPhotoCollectionViewCell *selectedCell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:self.selectedIndexPath];
+    [selectedCell cellShouldHighlight:NO];
     [super handlePhotoStatusAtIndexPath:indexPath selected:isSelected];
 }
 #pragma mark - UI -
@@ -166,7 +167,7 @@
     if (!_browserView) {
         UWBrowserView *browserView = [[UWBrowserView alloc] init];
         browserView.scrollIndexPath = ^(NSIndexPath *indexPath) {
-            [self.selecedCell cellShouldHighlight:NO];
+            self.selectedIndexPath = indexPath;
             [self.collectionView reloadData];
         };
         [self.view addSubview:browserView];

@@ -32,7 +32,7 @@ typedef NS_ENUM(NSInteger, UWPickerStatus) {
 @property (nonatomic, weak  ) UWPhotoNavigationView *navBar;
 
 @property (nonatomic, strong) NSMutableSet *modelChangedList;
-@property (nonatomic, weak)   UWPhotoCollectionViewCell *selecedCell;
+@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 
 /**
  *  @brief 子类重写，选择的样子，无，对勾，线框，对勾和线框

@@ -101,11 +101,11 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     id <UWPhotoDatable> photo = [self.dataManager photoAtIndex:indexPath];
     self.dataManager.selectedCount += isSelected ? 1 : -1;
         UWPhotoCollectionViewCell *cell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+    
     if (_dataManager.isSingleSelection) { // 单选时，取消上一个图片选中状态，移除所有图片
-
-        if (cell != self.selecedCell) {
-            self.selecedCell.isSelected = NO;
-            self.selecedCell = cell;
+        UWPhotoCollectionViewCell *selectedCell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:self.selectedIndexPath];
+        if (cell != selectedCell) {
+            selectedCell.isSelected = NO;
             _dataManager.selectionIdentifier = [photo selectionIdentifier];
         }else {
             cell.isSelected = YES;
@@ -114,7 +114,6 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
             [self confirmSelectedImages];
         }
     }
-    self.selecedCell = cell;
     // 单选时，不包含就选移出所有，再添加新的；多选的时候包含当前model，移出当前model，改的只有是否选中状态，并且成对出现，第二次出现时，并未对此model做修改
     if (_dataManager.isSingleSelection) {
         if (![self.modelChangedList containsObject:photo]) {
@@ -129,6 +128,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
         }
     }
     [self calculateCountOfSelectedPhotos];
+    self.selectedIndexPath = indexPath;
 }
 
 #pragma mark - event
@@ -167,12 +167,16 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     cell.selectedBlock = ^(BOOL isSelected, NSIndexPath *indexPath) {
         [self handlePhotoStatusAtIndexPath:indexPath selected:isSelected];
     };
-    if (_dataManager.isSingleSelection && !self.selecedCell) { // 单选时，确定选择状态
-        cell.isSelected = NO;
-        BOOL isThis = [_dataManager.selectionIdentifier isEqualToString:[photo selectionIdentifier]];
-        if ( isThis ) {
+    if ( _dataManager.isSingleSelection ) { // 单选时，确定选择状态
+        if (self.selectedIndexPath == indexPath) {
             cell.isSelected = YES;
-            self.selecedCell = cell;
+        }else {
+            cell.isSelected = NO;
+            BOOL isThis = [_dataManager.selectionIdentifier isEqualToString:[photo selectionIdentifier]];
+            if ( isThis ) {
+                cell.isSelected = YES;
+                self.selectedIndexPath = indexPath;
+            }
         }
     }
     return cell;
@@ -220,7 +224,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 }
 
 - (void)segmentValueChanged:(SDSegmentedControl *)sender {
-    self.selecedCell = nil;
+    self.selectedIndexPath = nil;
     self.dataManager.menuIndex = sender.selectedSegmentIndex == 0?  UWMenuIndexRecommed : UWMenuIndexAll;
     [self.collectionView reloadData];
 }
