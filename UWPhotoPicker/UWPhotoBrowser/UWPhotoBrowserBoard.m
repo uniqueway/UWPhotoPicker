@@ -34,6 +34,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.selectedIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     [self buildUI];
 }
 
@@ -42,7 +43,10 @@
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
 }
 
-
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+     [self handlePhotoStatusAtIndexPath:self.selectedIndexPath selected:YES];
+}
 
 - (SelectedStyle)selectedStyle {
     return SelectedStyleBoth;
