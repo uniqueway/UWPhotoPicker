@@ -47,8 +47,14 @@
             [obj removeFromSuperview];
         }
     }];
-
-    CGSize size = [UIScreen mainScreen].bounds.size;
+    
+    _totalCount = 0;
+    NSInteger section = [self.dataManager numberOfSections];
+    for (NSInteger i = 0; i < section; i++) {
+        NSInteger count = [self.dataManager numberOfItemsInSection:i];
+        _totalCount += count;
+    }
+    
     self.navBar.backgroundColor = [UIColor blackColor];
     [self.navBar.rightButton setTitle:@"已选" forState:UIControlStateNormal];
     [self.navBar.rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -56,14 +62,7 @@
     [self.navBar mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(44);
     }];
-    _totalCount = 0;
-    NSInteger section = [self.dataManager numberOfSections];
-    for (NSInteger i = 0; i < section; i++) {
-        NSInteger count = [self.dataManager numberOfItemsInSection:i];
-        _totalCount += count;
-    }
 
-    self.scrollView.contentSize = CGSizeMake(size.width, 0);
     [self updateTitle];
     [self createCollectionView];
     [self createLine];
@@ -118,6 +117,11 @@
 
 - (void)showPhotos {
     
+}
+
+- (void)resetContentSize {
+    CGRect bounds = _scrollView.bounds;
+    CGSize size = CGSizeMake(bounds.size.width * _totalCount, bounds.size.height);
 }
 
 #pragma mark - UICollectionViewDelegate & UICollectionViewDataSource
