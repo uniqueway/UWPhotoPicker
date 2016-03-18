@@ -143,21 +143,6 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)showPhotos {
-    
-}
-
-- (void)resetContentSize {
-    CGRect bounds = _scrollView.bounds;
-    CGSize size = CGSizeMake(bounds.size.width * _totalCount, bounds.size.height);
-}
-
-#pragma mark - UICollectionViewDelegate & UICollectionViewDataSource
-
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-}
-
 #pragma mark - getter -
 - (UIScrollView *)scrollView {
     if (!_scrollView) {
