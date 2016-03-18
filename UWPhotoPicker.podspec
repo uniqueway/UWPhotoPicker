@@ -18,6 +18,7 @@ Pod::Spec.new do |s|
   s.source_files  = "UWPhotoPicker/*","UWPhotoPicker/instagramFilter/*/*.{h,m}"
   s.frameworks = "Foundation", "CoreGraphics", "UIKit"
   s.resources = 'UWPhotoPicker/Resources/*','UWPhotoPicker/instagramFilter/filterIcon/*'
+  s.dependency "libextobjc"
   s.subspec 'SegmentControl' do |ss|
     ss.public_header_files = 'UWPhotoPicker/SegmentControl/*.h'
     ss.source_files = 'UWPhotoPicker/SegmentControl/*.{h,m}'
