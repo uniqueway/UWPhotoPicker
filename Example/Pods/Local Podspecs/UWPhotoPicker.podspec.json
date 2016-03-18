@@ -29,6 +29,11 @@
     "UWPhotoPicker/Resources/*",
     "UWPhotoPicker/instagramFilter/filterIcon/*"
   ],
+  "dependencies": {
+    "libextobjc": [
+
+    ]
+  },
   "subspecs": [
     {
       "name": "SegmentControl",

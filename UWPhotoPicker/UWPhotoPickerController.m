@@ -17,6 +17,7 @@
 #import "UWPhotoNavigationView.h"
 #import "Masonry.h"
 #import "UWPhotoBrowserBoard.h"
+#import <EXTScope.h>
 
 #define NavigationBarHeight 64
 static CGFloat kBottomSegmentHeight = 45;
@@ -164,7 +165,9 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     cell.selectedStyle =  [self selectedStyle];
     cell.photo = photo;
     cell.indexPath = indexPath;
+    @weakify(self);
     cell.selectedBlock = ^(BOOL isSelected, NSIndexPath *indexPath) {
+        @strongify(self);
         [self handlePhotoStatusAtIndexPath:indexPath selected:isSelected];
     };
     if ( _dataManager.isSingleSelection ) { // 单选时，确定选择状态
