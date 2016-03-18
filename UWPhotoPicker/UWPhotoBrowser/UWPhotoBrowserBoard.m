@@ -48,6 +48,11 @@
     [self handlePhotoStatusAtIndexPath:self.selectedIndexPath selected:YES];
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+}
+
 - (SelectedStyle)selectedStyle {
     return SelectedStyleBoth;
 }
