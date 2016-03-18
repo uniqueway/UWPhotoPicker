@@ -45,7 +45,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-     [self handlePhotoStatusAtIndexPath:self.selectedIndexPath selected:YES];
+    [self handlePhotoStatusAtIndexPath:self.selectedIndexPath selected:YES];
 }
 
 - (SelectedStyle)selectedStyle {
@@ -53,6 +53,13 @@
 }
 
 - (void)handlePhotoStatusAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)isSelected {
+    
+    [self scrollToIndexPath:indexPath];
+    [self.browserView scrollToIndexPath:indexPath];
+    [self calculateCountOfSelectedPhotosByNum: (isSelected ? 1 : -1) ];
+}
+
+- (void)scrollToIndexPath:(NSIndexPath *)indexPath {
     UWPhotoCollectionViewCell *selectedCell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:self.selectedIndexPath];
     [selectedCell cellShouldHighlight:NO];
     UWPhotoCollectionViewCell *currentCell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
@@ -60,6 +67,7 @@
     self.selectedIndexPath = indexPath;
     [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
 }
+
 #pragma mark - UI -
 - (void)buildUI {
     [self.view.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -175,7 +183,7 @@
     if (!_browserView) {
         UWBrowserView *browserView = [[UWBrowserView alloc] init];
         browserView.scrollIndexPath = ^(NSIndexPath *indexPath) {
-            [self handlePhotoStatusAtIndexPath:indexPath selected:YES];
+            [self scrollToIndexPath:indexPath];
         };
         [self.view addSubview:browserView];
         [browserView mas_makeConstraints:^(MASConstraintMaker *make) {

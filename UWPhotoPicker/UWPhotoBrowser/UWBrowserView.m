@@ -26,6 +26,10 @@ static NSString *UWBrowserCellIndentifier = @"UWBrowserCellIndentifier";
     [self.collectionView reloadData];
 }
 
+- (void)scrollToIndexPath:(NSIndexPath *)indexPath {
+    [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionLeft animated:NO];
+}
+
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     
     return [self.dataManager numberOfSections];

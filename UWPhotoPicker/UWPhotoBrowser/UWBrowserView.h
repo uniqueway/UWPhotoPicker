@@ -14,4 +14,6 @@
 @property (nonatomic, strong) UWPhotoDataManager    *dataManager;
 @property (nonatomic, copy) void(^scrollIndexPath)(NSIndexPath *indexPath);
 
+- (void)scrollToIndexPath:(NSIndexPath *)indexPath;
+
 @end

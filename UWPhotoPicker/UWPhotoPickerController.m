@@ -49,7 +49,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     self.modelChangedList = [[NSMutableSet alloc] init];
     __weak __typeof(&*self)weakSelf = self;
     _dataManager.finishedLoading = ^{
-        [weakSelf calculateCountOfSelectedPhotos];
+        [weakSelf calculateCountOfSelectedPhotosByNum:0];
         [weakSelf.collectionView reloadData];
     };
     if (!_dataManager.isSingleMenu) {
@@ -84,6 +84,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [self calculateCountOfSelectedPhotosByNum:0];
     [self.collectionView reloadData];
 }
 
@@ -99,9 +100,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 - (void)handlePhotoStatusAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)isSelected {
     
     id <UWPhotoDatable> photo = [self.dataManager photoAtIndex:indexPath];
-    self.dataManager.selectedCount += isSelected ? 1 : -1;
-        UWPhotoCollectionViewCell *cell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-    
+    UWPhotoCollectionViewCell *cell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
     if (_dataManager.isSingleSelection) { // 单选时，取消上一个图片选中状态，移除所有图片
         UWPhotoCollectionViewCell *selectedCell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:self.selectedIndexPath];
         if (cell != selectedCell) {
@@ -114,6 +113,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
             [self confirmSelectedImages];
         }
     }
+    
     // 单选时，不包含就选移出所有，再添加新的；多选的时候包含当前model，移出当前model，改的只有是否选中状态，并且成对出现，第二次出现时，并未对此model做修改
     if (_dataManager.isSingleSelection) {
         if (![self.modelChangedList containsObject:photo]) {
@@ -127,14 +127,14 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
             [self.modelChangedList addObject:photo];
         }
     }
-    [self calculateCountOfSelectedPhotos];
+    [self calculateCountOfSelectedPhotosByNum:isSelected ? 1 : -1];
     self.selectedIndexPath = indexPath;
 }
 
 #pragma mark - event
 /// 选择的图片个数
-- (void)calculateCountOfSelectedPhotos {
-    
+- (void)calculateCountOfSelectedPhotosByNum:(NSUInteger)count {
+    self.dataManager.selectedCount += count;
     if (!_dataManager.isSingleSelection) {
         if (_dataManager.countLocation == UWPhotoCountLocationBottom) {
             self.segmentedControl.countOfImages = _dataManager.selectedCount;

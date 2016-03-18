@@ -42,5 +42,6 @@ typedef NS_ENUM(NSInteger, UWPickerStatus) {
  *  @brief 点击对勾的时候调用
  */
 - (void)handlePhotoStatusAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)isSelected;
+- (void)calculateCountOfSelectedPhotosByNum:(NSUInteger)count;
 
 @end
