@@ -46,6 +46,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self calculateCountOfSelectedPhotosByNum:0];
+    [self scrollToIndexPath:self.selectedIndexPath];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
