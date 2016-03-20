@@ -45,7 +45,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [self handlePhotoStatusAtIndexPath:self.selectedIndexPath selected:YES];
+    [self calculateCountOfSelectedPhotosByNum:0];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -60,11 +60,11 @@
 - (void)handlePhotoStatusAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)isSelected {
     
     [self scrollToIndexPath:indexPath];
-    [self.browserView scrollToIndexPath:indexPath];
     [self calculateCountOfSelectedPhotosByNum: (isSelected ? 1 : -1) ];
 }
 
 - (void)scrollToIndexPath:(NSIndexPath *)indexPath {
+    [self.browserView scrollToIndexPath:indexPath];
     UWPhotoCollectionViewCell *selectedCell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:self.selectedIndexPath];
     [selectedCell cellShouldHighlight:NO];
     UWPhotoCollectionViewCell *currentCell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
@@ -144,8 +144,12 @@
 
 #pragma mark - event
 - (void)backAction {
-
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    [self scrollToIndexPath:indexPath];
 }
 
 #pragma mark - getter -
