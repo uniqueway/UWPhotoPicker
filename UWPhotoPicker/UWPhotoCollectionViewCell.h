@@ -27,4 +27,6 @@ typedef NS_ENUM(NSInteger, SelectedStyle) {
 
 - (void)cellShouldHighlight:(BOOL)isHighlight;
 
+- (void)shouldScale;
+
 @end

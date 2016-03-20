@@ -37,21 +37,8 @@ static NSInteger buttonWidth = 25;
         [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.left.bottom.right.offset(0);
         }];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleMWPhotoLoadingDidEndNotification:)
-                                                     name:UWPhotoPickerLoadingDidFinishedNotification
-                                                   object:nil];
-
     }
     return self;
-}
-
-- (void)handleMWPhotoLoadingDidEndNotification:(NSNotification *)notification {
-    id <UWPhotoDatable> photo = [notification object];
-    if (photo == _photo) {
-        _imageView.image = [_photo thumbnailImage];
-    }
 }
 
 - (void)selectionButtonPressed {
@@ -69,10 +56,29 @@ static NSInteger buttonWidth = 25;
 - (void)cellShouldHighlight:(BOOL)isHighlight {
     _lineButton.selected = isHighlight;
 }
+
+- (void)shouldScale {
+    if (self.imageView.gestureRecognizers.count == 0) {
+        UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(scaleImage:)];
+        self.imageView.userInteractionEnabled = YES;
+        [self.imageView addGestureRecognizer:pinch];
+    }
+}
+
+- (void)transformIdentity {
+    self.imageView.transform = CGAffineTransformIdentity;
+}
+
+- (void)scaleImage:(UIPinchGestureRecognizer *)sender {
+    sender.view.transform = CGAffineTransformScale(sender.view.transform, sender.scale, sender.scale);
+    sender.scale = 1;
+}
+
 #pragma mark - set/get
 - (void)setPhoto:(id <UWPhotoDatable>)photo {
     _imageView.image = [photo thumbnailImage];
     _photo = photo;
+    [self transformIdentity];
     self.isSelected = _photo.isSelected;
     __weak typeof(&*self) weakself = self;
     _photo.imageDidFinished = ^(id<UWPhotoDatable> photo) {

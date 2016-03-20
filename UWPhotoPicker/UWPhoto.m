@@ -23,23 +23,13 @@
     options.resizeMode =  PHImageRequestOptionsResizeModeFast;
     options.deliveryMode =  PHImageRequestOptionsDeliveryModeHighQualityFormat;
     options.synchronous = NO;
-    [imageManager requestImageForAsset:asset targetSize:targetSize contentMode:PHImageContentModeAspectFill options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+    [imageManager requestImageForAsset:asset targetSize:targetSize contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (completion) {
                 completion(result);
             }
         });
     }];
-}
-
-- (void)imageFinishLoading {
-    NSAssert([[NSThread currentThread] isMainThread], @"这个必须在主线程调用");
-    [self performSelector:@selector(postImageFinishedNotification) withObject:nil withObject:0];
-}
-
-- (void)postImageFinishedNotification {
-    [[NSNotificationCenter defaultCenter] postNotificationName:UWPhotoPickerLoadingDidFinishedNotification
-                                                        object:self];
 }
 
 - (void)setAsset:(PHAsset *)asset {
@@ -59,7 +49,8 @@
 
 - (UIImage *)image {
     if (!_image) {
-        [self loadImageWithAsset:_asset targetSize:PHImageManagerMaximumSize completion:^(UIImage *result) {
+        CGSize size = [UIScreen mainScreen].bounds.size;
+        [self loadImageWithAsset:_asset targetSize:size completion:^(UIImage *result) {
             _image = result;
             if (self.imageDidFinished) {
                 self.imageDidFinished(self);
@@ -71,7 +62,8 @@
 
 - (UIImage *)thumbnailImage {
     if (!_thumbnailImage) {
-        [self loadImageWithAsset:_asset targetSize:PHImageManagerMaximumSize completion:^(UIImage *result) {
+        CGSize size = [UIScreen mainScreen].bounds.size;
+        [self loadImageWithAsset:_asset targetSize:size completion:^(UIImage *result) {
             _thumbnailImage = result;
             if (self.imageDidFinished) {
                 self.imageDidFinished(self);
