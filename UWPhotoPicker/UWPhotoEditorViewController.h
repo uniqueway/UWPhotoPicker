@@ -12,8 +12,10 @@ static NSString * const UWPhotoEditorViewControllerNotification = @"UWPhotoEdito
 static NSString * const UWPhotoEditorUploadEditedImageNotification = @"UWPhotoEditorUploadEditedImageNotification";
 
 typedef void(^cropBlock)(NSArray *list);
+
 @interface UWPhotoEditorViewController : UIViewController
 
+@property (nonatomic, assign) BOOL isSingle;
 @property (nonatomic, copy) void(^cropBlock)(NSArray *list);
 
 - (id)initWithPhotoList:(NSArray *)list crop:(cropBlock)crop;

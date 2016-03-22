@@ -12,9 +12,11 @@
 #import "UWImageScrollView.h"
 #import "UWPhotoImageItem.h"
 #import <SVProgressHUD.h>
+#import <Masonry.h>
 
 #import <mach/mach_time.h>
 #import "UWPhotoDatable.h"
+#import "UWPhotoNavigationView.h"
 
 
 #define SCREEN_WIDTH CGRectGetWidth([UIScreen mainScreen].bounds)
@@ -26,7 +28,7 @@
 @property (nonatomic, strong) NSMutableArray *thumbnailImageList;
 @property (strong, nonatomic) UIView *topView;
 @property (strong, nonatomic) UICollectionView *collectionView;
-//@property (strong, nonatomic) UIView *imageListView;
+
 @property (nonatomic, assign) BOOL isEdited;
 @property (strong, nonatomic) UWImageScrollView *imageScrollView;
 @property (nonatomic, assign) NSInteger currentType;
@@ -37,6 +39,9 @@
 @property (nonatomic, assign) NSInteger currentIndex;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) CALayer *maskLayer;
+
+
+@property (nonatomic, weak  ) UWPhotoNavigationView *navBar;
 
 @end
 
@@ -69,6 +74,15 @@
         self.titleLabel.text = self.navigtationTitle;
     }
 
+}
+
+- (void)buildUI {
+    
+}
+
+#pragma mark - event - 
+- (void)confirmSelectedImages {
+    
 }
 
 #pragma mark - UWImageScrollViewDelegate
@@ -124,69 +138,13 @@
     [self.collectionView reloadData];
 }
 
-
 #pragma mark - event response
 
 
 - (void)backAction {
-    NSMutableArray *list = [@[] mutableCopy];
-    for (NSDictionary *dict in self.resultList) {
-        if (dict) {
-            [list addObject:dict];
-        }
-    }
-    if (self.cropBlock && list.count > 0) {
-        self.cropBlock(list);
-    }
-
-    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+  [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
-/*
-- (void)nextOrSubmitAction {
-    BOOL isLast    = self.currentIndex == self.list.count-1;
-    __weak __typeof__(self) weakSelf = self;
-    NSInteger index = self.currentIndex;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        __block UIImage *image = weakSelf.imageScrollView.capture;
-        UWPhoto *photo = weakSelf.list[index];
-        NSURL *url = photo.asset.defaultRepresentation.url;
-        if (!url) {
-            url = [NSURL URLWithString:@""];
-        }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (self.cropBlock) {
-                if (self.currentType != 0) {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:UWPhotoEditorUploadEditedImageNotification object:nil];
-                }
-                weakSelf.cropBlock(@[@{@"image":image,@"url": url}]);
-            }
-            if (isLast) {
-                weakSelf.list = nil;
-                [self dismissViewControllerAnimated:YES completion:NULL];
-                [SVProgressHUD dismiss];
-            }
-            image = nil;
-        });
 
-    });
-    self.nextOrSubmitButton.enabled = NO;
-    if (isLast) {
-        [SVProgressHUD showWithStatus:@"正在处理中"];
-    } else {
-        self.currentIndex++;
-        [self loadCurrentImage];
-        NSString *title = @"下一张";
-        if (self.currentIndex == self.list.count-1) {
-            title = @"完成";
-        }
-        [self.nextOrSubmitButton setTitle:title forState:UIControlStateNormal];
-        self.nextOrSubmitButton.enabled = YES;
-        self.titleLabel.text = self.navigtationTitle;
-    }
-    
-    
-}
- //*/
 - (UIView *)topView {
     if (_topView == nil) {
         CGFloat handleHeight = 44;
@@ -227,7 +185,7 @@
         
         rect = CGRectMake(0, CGRectGetHeight(self.topView.bounds)-handleHeight, SCREEN_WIDTH, handleHeight);
         UIView *dragView = [[UIView alloc] initWithFrame:rect];
-        [self addButtonsToDragView:dragView];
+
         [self.topView addSubview:dragView];
         
         
@@ -282,44 +240,6 @@
     UIGraphicsEndImageContext();
     
     return image;
-}
-
-- (void)addButtonsToDragView:(UIView *)view {
-    NSArray *list   = @[];
-    list = @[@"滤镜"];
-    CGFloat height  = 44;
-    CGFloat width   = SCREEN_WIDTH/list.count;
-    CGSize itemSize = (CGSize){width,height};
-    NSInteger index = 0;
-    UIButton *button = nil;
-    for (NSString *title in list) {
-        button = [self buttonWithTitle:title withSize:itemSize];
-        button.selected  = YES;
-        button.tag       = index;
-        button.frame     = CGRectMake(width*index, 0, width, height);
-        [button addTarget:self action:@selector(buttonDidPress:) forControlEvents:UIControlEventTouchUpInside];
-        [view addSubview:button];
-        index++;
-    }
-//    if (list.count > 1) {
-//        [button setSelected:YES];
-//    }
-}
-
-- (void)buttonDidPress:(UIButton *)sender {
-    return;
-//    NSInteger index = sender.tag;
-//    NSArray *list = @[self.collectionView];
-//    for (UIButton *button in [[sender superview]subviews]) {
-//        if ([button isKindOfClass:UIButton.class]) {
-//            button.selected = YES;
-//        }
-//    }
-//    sender.selected = NO;
-//    for (UIView *view in list) {
-//        view.hidden = NO;
-//    }
-//    [list[index] setHidden:YES];
 }
 
 
@@ -438,19 +358,6 @@
 
 #pragma mark getters & setters
 
-- (UIButton *)buttonWithTitle:(NSString *)title withSize:(CGSize)size{
-    UIButton *button    = [UIButton buttonWithType:UIButtonTypeCustom];
-    UIColor *darkColor  = [UIColor colorWithRed:46.0/255.0 green:43.0/255.0 blue:37.0/255.0 alpha:1];
-    UIColor *whiteColor = [UIColor whiteColor];
-    [button setTitle:title forState:UIControlStateNormal];
-    [button setTitleColor:darkColor forState:UIControlStateNormal];
-    [button setTitleColor:whiteColor forState:UIControlStateSelected];
-    [button setBackgroundImage:[self.class imageWithCGColor:whiteColor.CGColor size:size] forState:UIControlStateNormal];
-    [button setBackgroundImage:[self.class imageWithCGColor:darkColor.CGColor size:size] forState:UIControlStateSelected];
-    
-    return button;
-}
-
 - (UICollectionView *)collectionView {
     if (!_collectionView) {
         CGFloat padding = 10;
@@ -484,36 +391,6 @@
 - (NSString *)navigtationTitle {
     return [NSString stringWithFormat:@"%ld/%ld",self.currentIndex+1,self.list.count];
 }
-
-//- (UIView *)imageListView {
-//    if (!_imageListView) {
-//        CGFloat padding  = 20;
-//        CGFloat y        = NavigationBarHeight*2+SCREEN_WIDTH-20;
-//        CGFloat height   = SCREEN_HEIGHT-y;
-//        CGFloat itemSize = SCREEN_WIDTH/3 - 20;
-//        NSInteger index  = 0;
-//        self.thumbnailImageList = [@[] mutableCopy];
-//        _imageListView = [[UIView alloc] initWithFrame:CGRectMake(0, y, SCREEN_WIDTH, height)];
-//        _imageListView.hidden = !(self.list.count > 1);
-//        CGFloat x = 0;
-//        for (UWPhoto *photo in self.list) {
-//            x += itemSize + padding;
-//            if (index == 0) {
-//                x = 10;
-//            }
-//            CGRect rect = CGRectMake(x, (height - itemSize)/2, itemSize, itemSize);;
-//            UWPhotoImageItem *item = [[UWPhotoImageItem alloc] initWithFrame:rect];
-//            if (index == 0) {
-//                item.layer.borderWidth  = 4.f;
-//            }
-//            item.image.image = [photo thumbnailImage];
-//            [_imageListView addSubview:item];
-//            [self.thumbnailImageList addObject:item];
-//            index++;
-//        }
-//    }
-//    return _imageListView;
-//}
 
 - (UILabel *)titleLabel {
     if (!_titleLabel) {
@@ -563,4 +440,22 @@
     }
     return _maskLayer;
 }
+
+- (UWPhotoNavigationView *)navBar {
+    if (!_navBar) {
+        UWPhotoNavigationView *navBar = [[UWPhotoNavigationView alloc] init];
+        [navBar.backButton addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
+        [navBar.rightButton setTitle:@"完成" forState:UIControlStateNormal];
+        [navBar.rightButton addTarget:self action:@selector(confirmSelectedImages) forControlEvents:UIControlEventTouchUpInside];
+        _navBar = navBar;
+        [self.view addSubview:navBar];
+        [navBar mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.left.right.offset(0);
+            make.height.mas_equalTo(NavigationBarHeight);
+        }];
+    }
+    return _navBar;
+}
+
+
 @end
