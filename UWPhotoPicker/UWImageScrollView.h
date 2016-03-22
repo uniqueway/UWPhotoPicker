@@ -21,6 +21,5 @@
 
 - (void)displayImage:(UIImage *)image;
 - (UIImage *)capture;
-
 - (void)switchFilter:(NSInteger)type;
 @end

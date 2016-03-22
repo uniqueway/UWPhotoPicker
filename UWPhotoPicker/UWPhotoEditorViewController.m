@@ -14,6 +14,7 @@
 #import <SVProgressHUD.h>
 
 #import <mach/mach_time.h>
+#import "UWPhotoDatable.h"
 
 
 #define SCREEN_WIDTH CGRectGetWidth([UIScreen mainScreen].bounds)
@@ -116,9 +117,8 @@
 
 #pragma mark - Helper
 - (void)loadCurrentImage {
-    UWPhoto *photo = self.list[self.currentIndex];
-    
-    [self.imageScrollView displayImage:photo.image];
+    id <UWPhotoDatable> photo = self.list[self.currentIndex];
+    [self.imageScrollView displayImage:[photo thumbnailImage]];
     self.currentType  = 0;
 //    [self.imageScrollView.videoCamera switchFilter:self.currentType];
     [self.collectionView reloadData];

@@ -198,9 +198,18 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 #pragma mark - UICollectionViewDelegate
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    UWPhotoBrowserBoard *board = [[UWPhotoBrowserBoard alloc] init];
-    board.dataManager = self.dataManager;
-    [self.navigationController pushViewController:board animated:YES];
+    if (_dataManager.editable) {
+        id <UWPhotoDatable> photo = [_dataManager photoAtIndex:indexPath];
+        UWPhotoEditorViewController *editBoard = [[UWPhotoEditorViewController alloc] initWithPhotoList:@[photo] crop:^(NSArray *list) {
+            
+        }];
+        [self.navigationController pushViewController:editBoard animated:YES];
+        
+    }else {
+        UWPhotoBrowserBoard *board = [[UWPhotoBrowserBoard alloc] init];
+        board.dataManager = self.dataManager;
+        [self.navigationController pushViewController:board animated:YES];
+    }
 }
 
 #pragma mark - event response

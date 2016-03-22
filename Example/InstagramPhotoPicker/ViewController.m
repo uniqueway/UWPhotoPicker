@@ -40,6 +40,7 @@
         
         UWPhotoPickerController *photoPicker = [[UWPhotoPickerController alloc] init];
         [photoPicker.dataManager loadPhotosWithAll:result recommendPhotos:result singleSelection:NO hasSectionTitle:YES];
+        photoPicker.dataManager.editable = YES;
         photoPicker.dataManager.hasRightButton = YES;
         photoPicker.dataManager.countLocation = UWPhotoCountLocationTop;
         photoPicker.dataManager.title = @"选择照片";
