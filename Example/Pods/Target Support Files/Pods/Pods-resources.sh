@@ -65,13 +65,6 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_resource "GPUImage/framework/Resources/lookup_soft_elegance_2.png"
   install_resource "SVProgressHUD/SVProgressHUD/SVProgressHUD.bundle"
   install_resource "../../UWPhotoPicker/Resources/UWPhotoPickerAsset.xcassets"
-  install_resource "../../UWPhotoPicker/instagramFilter/filterIcon/earlybird.jpg"
-  install_resource "../../UWPhotoPicker/instagramFilter/filterIcon/hudson.jpg"
-  install_resource "../../UWPhotoPicker/instagramFilter/filterIcon/inkwell.jpg"
-  install_resource "../../UWPhotoPicker/instagramFilter/filterIcon/lomofi.jpg"
-  install_resource "../../UWPhotoPicker/instagramFilter/filterIcon/normal.jpg"
-  install_resource "../../UWPhotoPicker/instagramFilter/filterIcon/toaster.jpg"
-  install_resource "../../UWPhotoPicker/instagramFilter/filterIcon/xproii.jpg"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_resource "GPUImage/framework/Resources/lookup.png"
@@ -81,13 +74,6 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_resource "GPUImage/framework/Resources/lookup_soft_elegance_2.png"
   install_resource "SVProgressHUD/SVProgressHUD/SVProgressHUD.bundle"
   install_resource "../../UWPhotoPicker/Resources/UWPhotoPickerAsset.xcassets"
-  install_resource "../../UWPhotoPicker/instagramFilter/filterIcon/earlybird.jpg"
-  install_resource "../../UWPhotoPicker/instagramFilter/filterIcon/hudson.jpg"
-  install_resource "../../UWPhotoPicker/instagramFilter/filterIcon/inkwell.jpg"
-  install_resource "../../UWPhotoPicker/instagramFilter/filterIcon/lomofi.jpg"
-  install_resource "../../UWPhotoPicker/instagramFilter/filterIcon/normal.jpg"
-  install_resource "../../UWPhotoPicker/instagramFilter/filterIcon/toaster.jpg"
-  install_resource "../../UWPhotoPicker/instagramFilter/filterIcon/xproii.jpg"
 fi
 
 mkdir -p "${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"

@@ -17,6 +17,8 @@
 @implementation UWPhotoFilterCollectionViewCell
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
+        self.layer.cornerRadius = 2;
+        self.layer.masksToBounds = YES;
         self.content = [[UIView alloc] initWithFrame:self.bounds];
         self.content.backgroundColor = DEFAULT_COLOR;
         [self.contentView addSubview:self.content];

@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'C32FAA707FC2EFAA6CF8D054'
+               BlueprintIdentifier = '75AC57969183167BBB85FEC1'
                BlueprintName = 'UWPhotoPicker'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'libUWPhotoPicker.a'>
