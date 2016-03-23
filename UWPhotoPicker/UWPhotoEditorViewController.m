@@ -22,7 +22,7 @@
 
 #define SCREEN_WIDTH CGRectGetWidth([UIScreen mainScreen].bounds)
 #define SCREEN_HEIGHT CGRectGetHeight([UIScreen mainScreen].bounds)
-#define NavigationBarHeight 64
+#define NavigationBarHeight 44
 
 @interface UWPhotoEditorViewController()<UICollectionViewDataSource, UICollectionViewDelegate,UWImageScrollViewDelegate>
 @property (nonatomic, strong) NSMutableArray *list;
@@ -43,6 +43,7 @@
 
 @property (nonatomic, weak  ) UWPhotoNavigationView *navBar;
 @property (nonatomic, weak) UWFilterView *filterView;
+@property (nonatomic, assign) CGFloat filterBottomMargin;
 
 @end
 
@@ -59,6 +60,7 @@
     self.view.backgroundColor = [UIColor blackColor];
     self.automaticallyAdjustsScrollViewInsets =     NO;
     self.view.clipsToBounds = YES;
+    self.filterBottomMargin = 105;
     [self updateImageAtIndex:self.currentIndexPath];
     self.filterView.selectedFilterType = ^(NSInteger type){
         [self.imageScrollView switchFilter:type];
@@ -307,13 +309,15 @@
     if (!_navBar) {
         UWPhotoNavigationView *navBar = [[UWPhotoNavigationView alloc] init];
         navBar.backgroundColor = [UIColor blackColor];
+        [navBar.backButton setImage:[UIImage imageNamed:@"UWNavigationBarWhiteBack"] forState:UIControlStateNormal];
         [navBar.backButton addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
+        [navBar.rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [navBar.rightButton setTitle:@"完成" forState:UIControlStateNormal];
         [navBar.rightButton addTarget:self action:@selector(finishFix) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:navBar];
         [navBar mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.left.right.offset(0);
-            make.height.mas_equalTo(64);
+            make.height.mas_equalTo(NavigationBarHeight);
         }];
         _navBar = navBar;
     }
@@ -342,7 +346,7 @@
         [filterView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.right.offset(0);
             make.bottom.offset(-10);
-            make.height.mas_equalTo(105);
+            make.height.mas_equalTo(self.filterBottomMargin);
         }];
         _filterView = filterView;
     }
@@ -350,7 +354,7 @@
 }
 
 - (CGRect)rectForScrollView {
-    CGRect rect = CGRectMake(0, 64, SCREEN_WIDTH, SCREEN_HEIGHT - 64 - 105);
+    CGRect rect = CGRectMake(0, NavigationBarHeight, SCREEN_WIDTH, SCREEN_HEIGHT - NavigationBarHeight - self.filterBottomMargin);
     return rect;
 }
 @end
