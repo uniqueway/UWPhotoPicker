@@ -33,7 +33,7 @@
 @property (nonatomic, assign) BOOL isEdited;
 @property (nonatomic, strong) UWImageScrollView *imageScrollView;
 @property (nonatomic, assign) NSInteger currentType;
-@property (strong, nonatomic) NSMutableArray *resultList;
+@property (strong, nonatomic) NSMutableSet *resultList;
 @property (strong, nonatomic) UIButton *nextOrSubmitButton;
 @property (nonatomic, assign) NSInteger currentIndex;
 @property (nonatomic, strong) UILabel *titleLabel;
@@ -51,7 +51,7 @@
     self.currentType  = 0;
     self.cropBlock    = crop;
     self.list         = [list mutableCopy];
-    self.resultList   = [[NSMutableArray alloc] initWithCapacity:list.count];
+    self.resultList   = [[NSMutableSet alloc] initWithCapacity:list.count];
     self.currentIndex = 0;
     self.view.backgroundColor = [UIColor blackColor];
     return self;
@@ -73,20 +73,27 @@
     self.filterView.currentType = 0;
     id <UWPhotoDatable> photo = self.list[self.currentIndex];
     [self.imageScrollView displayImage:[photo thumbnailImage]];
-    [self.imageScrollView switchFilter:self.filterView.currentType];
+    [self.imageScrollView switchFilter:[photo filterIndex]];
+    [self.imageScrollView setZoomScale:[photo scale]];
+    [self.imageScrollView setContentOffset:CGPointFromString([photo offset])];
 }
 
 - (void)contentDidEdit:(BOOL)flag {
     self.isEdited = flag;
-}
-
-#pragma mark - event - 
-- (void)finishFix {
-    if (self.isEdited) {
+    if (flag) {
         id <UWPhotoDatable> photo = self.list[self.currentIndex];
         photo.filterIndex = self.filterView.currentType;
         photo.scale = self.imageScrollView.zoomScale;
         photo.offset = NSStringFromCGPoint(self.imageScrollView.contentOffset);
+        photo.image = self.imageScrollView.capture;
+        [self.resultList addObject:photo];
+    }
+}
+
+#pragma mark - event - 
+- (void)finishFix {
+    if (self.resultList.count > 0 ) {
+        self.cropBlock([self.resultList allObjects]);
     }
     [self backAction];
 }
