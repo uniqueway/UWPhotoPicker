@@ -57,7 +57,7 @@
     [super viewDidLoad];
     self.resultList   = [[NSMutableSet alloc] initWithCapacity:1];
     self.view.backgroundColor = [UIColor blackColor];
-    
+    self.automaticallyAdjustsScrollViewInsets =     NO;
     self.view.clipsToBounds = YES;
     [self updateImageAtIndex:self.currentIndexPath];
     self.filterView.selectedFilterType = ^(NSInteger type){
@@ -306,13 +306,14 @@
 - (UWPhotoNavigationView *)navBar {
     if (!_navBar) {
         UWPhotoNavigationView *navBar = [[UWPhotoNavigationView alloc] init];
+        navBar.backgroundColor = [UIColor blackColor];
         [navBar.backButton addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
         [navBar.rightButton setTitle:@"完成" forState:UIControlStateNormal];
         [navBar.rightButton addTarget:self action:@selector(finishFix) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:navBar];
         [navBar mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.left.right.offset(0);
-            make.height.mas_equalTo(NavigationBarHeight);
+            make.height.mas_equalTo(64);
         }];
         _navBar = navBar;
     }
