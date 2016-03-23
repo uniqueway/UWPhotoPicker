@@ -19,6 +19,10 @@
 @property (nonatomic, assign) BOOL isSelected;
 @property (nonatomic, assign) NSTimeInterval date;
 
+@property (nonatomic, strong) NSString *offset; //CGPoint
+@property (nonatomic, assign) CGFloat scale;
+@property (nonatomic, assign) NSInteger filterIndex; //滤镜
+
 - (NSString *)selectionIdentifier;// 优先imageId > modelId
 
 @end

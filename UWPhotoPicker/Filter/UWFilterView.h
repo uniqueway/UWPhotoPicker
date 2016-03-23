@@ -10,7 +10,7 @@
 
 @interface UWFilterView : UIView
 
-@property (nonatomic, assign) NSUInteger currentIndex;
-@property (nonatomic, copy) void(^selectedFilterIndex)(NSUInteger index);
+@property (nonatomic, assign) NSInteger currentType;
+@property (nonatomic, copy) void(^selectedFilterType)(NSInteger type);
 
 @end

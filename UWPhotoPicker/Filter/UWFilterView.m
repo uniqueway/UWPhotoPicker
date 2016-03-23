@@ -9,7 +9,7 @@
 #import "UWFilterView.h"
 #import "UWPhotoFilterCollectionViewCell.h"
 #import "UWPhotoHelper.h"
-
+#import <Masonry.h>
 @interface UWFilterView ()<UICollectionViewDelegate, UICollectionViewDataSource>
 
 @property (nonatomic, weak) UICollectionView *collectionView;
@@ -23,6 +23,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = UWHEX(0x12110f);
+        self.currentType = 0;
         self.filterList   = @[@{@"name":@"normal", @"index":@0},
                               @{@"name":@"inkwell", @"index":@1},
                               @{@"name":@"earlybird", @"index":@2},
@@ -49,16 +50,16 @@
     cell.title.text = title;
     NSString *filterName = [@(index).stringValue stringByAppendingString:@"_filter.jpg"];
     cell.imageView.image = [UIImage imageNamed:filterName];
-    cell.selected = (index == self.currentIndex);
+    cell.selected = (index == self.currentType);
     return cell;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     NSInteger selectedIndex = [self.filterList[indexPath.row][@"index"] integerValue];
-    if (selectedIndex != self.currentIndex) {
-        self.currentIndex = selectedIndex;
-        if (self.selectedFilterIndex) {
-            self.selectedFilterIndex(selectedIndex);
+    if (selectedIndex != self.currentType) {
+        self.currentType = selectedIndex;
+        if (self.selectedFilterType) {
+            self.selectedFilterType(selectedIndex);
         }
         [self.collectionView reloadData];
     }
@@ -67,7 +68,7 @@
 - (UICollectionView *)collectionView {
     if (!_collectionView) {
         UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
-        flowLayout.itemSize = CGSizeMake(63, 63);
+        flowLayout.itemSize = CGSizeMake(63, 85);
         flowLayout.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10);
         flowLayout.minimumLineSpacing = 5;
         flowLayout.minimumInteritemSpacing =5;
@@ -81,8 +82,16 @@
         collectionView.showsHorizontalScrollIndicator = NO;
         [collectionView registerClass:[UWPhotoFilterCollectionViewCell class] forCellWithReuseIdentifier:@"UWPhotoFilterCollectionViewCell"];
         [self addSubview:collectionView];
+        [collectionView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.offset(0);
+        }];
         _collectionView = collectionView;
     }
     return _collectionView;
+}
+
+- (void)setCurrentType:(NSInteger)currentType {
+    _currentType = currentType;
+    [self.collectionView reloadData];
 }
 @end

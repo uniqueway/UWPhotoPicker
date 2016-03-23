@@ -24,7 +24,6 @@
         [self.contentView addSubview:self.content];
         
         self.imageView = [[UIImageView alloc] init];
-        self.imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         self.imageView.backgroundColor = [UIColor grayColor];
         self.imageView.contentMode = UIViewContentModeScaleAspectFill;
         self.imageView.layer.borderWidth = 2.5;

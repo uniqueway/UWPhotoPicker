@@ -53,9 +53,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
         [weakSelf calculateCountOfSelectedPhotosByNum:0];
         [weakSelf.collectionView reloadData];
     };
-    if (!_dataManager.isSingleMenu) {
-        [self.view addSubview:self.segmentedControl];
-    }
+
     [self buildUI];
 }
 
@@ -81,6 +79,10 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     [self.view addSubview:collectionView];
     _collectionView = collectionView;
     [_collectionView reloadData];
+    
+    if (!_dataManager.isSingleMenu) {
+        [self.view addSubview:self.segmentedControl];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {

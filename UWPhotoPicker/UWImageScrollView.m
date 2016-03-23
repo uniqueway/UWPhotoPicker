@@ -72,6 +72,7 @@ static const CGFloat MAX_SIZE = 1500;
         frameToCenter.origin.y = 0;
     
     self.imageView.frame = frameToCenter;
+
 }
 
 /**
@@ -270,6 +271,9 @@ static CGRect UWScaleRect(CGRect rect, CGFloat scale)
 
 - (void)switchFilter:(NSInteger)type {
     
+    if ([self.scrollDelegate respondsToSelector:@selector(contentDidEdit:)]) {
+        [self.scrollDelegate contentDidEdit:YES];
+    }
     if ((self.imageView.image != nil) && (self.picture == nil)) {
         self.picture = [[GPUImagePicture alloc] initWithImage:self.imageView.image];
     } else {
@@ -280,7 +284,6 @@ static CGRect UWScaleRect(CGRect rect, CGFloat scale)
     [self forceSwitchToNewFilter:type];
     
 }
-
 
 - (void)displayImage:(UIImage *)image {
     if (!image) {
