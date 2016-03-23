@@ -84,9 +84,9 @@
 - (void)finishFix {
     if (self.isEdited) {
         id <UWPhotoDatable> photo = self.list[self.currentIndex];
-        [photo setFilterIndex:self.filterView.currentType];
-        [photo setScale:self.imageScrollView.zoomScale];
-        [photo setOffset:NSStringFromCGPoint(self.imageScrollView.contentOffset)];
+        photo.filterIndex = self.filterView.currentType;
+        photo.scale = self.imageScrollView.zoomScale;
+        photo.offset = NSStringFromCGPoint(self.imageScrollView.contentOffset);
     }
     [self backAction];
 }

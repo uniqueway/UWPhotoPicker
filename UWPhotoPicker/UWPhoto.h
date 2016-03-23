@@ -18,4 +18,8 @@
 
 @property (nonatomic, assign) CGSize thumbnailSize;
 
+@property (nonatomic, strong) NSString *offset; //CGPoint
+@property (nonatomic, assign) CGFloat scale;
+@property (nonatomic, assign) NSInteger filterIndex; //滤镜
+
 @end
