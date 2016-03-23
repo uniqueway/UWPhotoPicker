@@ -203,7 +203,9 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     if (_dataManager.editable) {
         id <UWPhotoDatable> photo = [_dataManager photoAtIndex:indexPath];
         UWPhotoEditorViewController *editBoard = [[UWPhotoEditorViewController alloc] initWithPhotoList:@[photo] crop:^(NSArray *list) {
-            
+            if (self.selectedPhotos) {
+                self.selectedPhotos(list);
+            }
         }];
         [self.navigationController pushViewController:editBoard animated:YES];
         
@@ -231,7 +233,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 
 - (void)confirmSelectedImages {
     if (self.selectedPhotos) {
-        NSArray <UWPhotoDatable> *tmp = [NSArray arrayWithArray:[self.modelChangedList allObjects]];
+        NSArray *tmp = [NSArray arrayWithArray:[self.modelChangedList allObjects]];
         self.selectedPhotos(tmp);
     }
     [self backAction];

@@ -23,7 +23,7 @@ typedef NS_ENUM(NSInteger, UWPickerStatus) {
 
 @interface UWPhotoPickerController : UIViewController<UICollectionViewDataSource, UICollectionViewDelegate>
 
-@property (nonatomic, copy) void(^selectedPhotos)(NSArray <UWPhotoDatable>*list);
+@property (nonatomic, copy) void(^selectedPhotos)(NSArray *list);
 
 
 @property (nonatomic, strong) UWPhotoDataManager    *dataManager;
