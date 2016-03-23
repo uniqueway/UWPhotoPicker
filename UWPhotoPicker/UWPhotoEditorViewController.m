@@ -53,7 +53,6 @@
     self.list         = [list mutableCopy];
     self.filterList   = @[@(0),@(1),@(2),@(3),@(4)];
     self.filterNameList = @[@"normal", @"inkwell", @"earlybird", @"xproii", @"lomofi",@"hudson",@"toaster"];
-//    self.filterList   = @[@"normal", @"amaro", @"rise", @"hudson", @"xproii", @"sierra", @"lomofi", @"earlybird", @"sutro", @"toaster", @"brannan", @"inkwell", @"walden", @"hefe", @"valencia", @"nashville", @"1977"];
     self.resultList   = [[NSMutableArray alloc] initWithCapacity:list.count];
     self.currentIndex = 0;
     self.view.backgroundColor = [UIColor blackColor];
