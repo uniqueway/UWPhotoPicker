@@ -57,11 +57,22 @@
     [super viewDidLoad];
     self.resultList   = [[NSMutableSet alloc] initWithCapacity:1];
     self.view.backgroundColor = [UIColor blackColor];
+    
     self.view.clipsToBounds = YES;
     [self updateImageAtIndex:self.currentIndexPath];
     self.filterView.selectedFilterType = ^(NSInteger type){
         [self.imageScrollView switchFilter:type];
     };
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBarHidden = YES;
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    self.navigationController.navigationBarHidden = NO;
+    [super viewWillDisappear:animated];
 }
 
 - (void)updateImageAtIndex:(NSIndexPath *)indexPath {

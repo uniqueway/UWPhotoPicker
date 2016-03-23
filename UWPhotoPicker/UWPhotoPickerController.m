@@ -87,6 +87,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    self.navigationController.navigationBarHidden = YES;
     [self calculateCountOfSelectedPhotosByNum:0];
     [self.collectionView reloadData];
 }
