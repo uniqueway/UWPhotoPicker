@@ -35,9 +35,10 @@
 @property (nonatomic, assign) NSInteger currentType;
 @property (strong, nonatomic) NSMutableSet *resultList;
 @property (strong, nonatomic) UIButton *nextOrSubmitButton;
-@property (nonatomic, assign) NSInteger currentIndex;
+
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) CALayer *maskLayer;
+
 
 
 @property (nonatomic, weak  ) UWPhotoNavigationView *navBar;
@@ -46,16 +47,7 @@
 @end
 
 @implementation UWPhotoEditorViewController
-- (id)initWithPhotoList:(NSArray *)list crop:(cropBlock)crop {
-    self              = [super init];
-    self.currentType  = 0;
-    self.cropBlock    = crop;
-    self.list         = [list mutableCopy];
-    self.resultList   = [[NSMutableSet alloc] initWithCapacity:list.count];
-    self.currentIndex = 0;
-    self.view.backgroundColor = [UIColor blackColor];
-    return self;
-}
+
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return UIStatusBarStyleLightContent;
@@ -63,25 +55,32 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self updateImageAtIndex:0];
+    self.resultList   = [[NSMutableSet alloc] initWithCapacity:1];
+    self.view.backgroundColor = [UIColor blackColor];
+    self.view.clipsToBounds = YES;
+    [self updateImageAtIndex:self.currentIndexPath];
     self.filterView.selectedFilterType = ^(NSInteger type){
         [self.imageScrollView switchFilter:type];
     };
 }
 
-- (void)updateImageAtIndex:(NSInteger)index {
-    self.filterView.currentType = 0;
-    id <UWPhotoDatable> photo = self.list[self.currentIndex];
+- (void)updateImageAtIndex:(NSIndexPath *)indexPath {
+    id <UWPhotoDatable> photo = self.currentPhoto;
+    if (!photo) {
+        photo = [_dataManager photoAtIndex:indexPath];
+    }
     [self.imageScrollView displayImage:[photo thumbnailImage]];
     [self.imageScrollView switchFilter:[photo filterIndex]];
     [self.imageScrollView setZoomScale:[photo scale]];
     [self.imageScrollView setContentOffset:CGPointFromString([photo offset])];
+    self.filterView.currentType = [photo filterIndex];
+    //FIXME: 移动到当前的IndexPath
 }
 
 - (void)contentDidEdit:(BOOL)flag {
     self.isEdited = flag;
     if (flag) {
-        id <UWPhotoDatable> photo = self.list[self.currentIndex];
+        id <UWPhotoDatable> photo = self.currentPhoto;
         photo.filterIndex = self.filterView.currentType;
         photo.scale = self.imageScrollView.zoomScale;
         photo.offset = NSStringFromCGPoint(self.imageScrollView.contentOffset);
@@ -92,7 +91,7 @@
 
 #pragma mark - event - 
 - (void)finishFix {
-    if (self.resultList.count > 0 ) {
+    if (self.resultList.count > 0 && self.cropBlock) {
         self.cropBlock([self.resultList allObjects]);
     }
     [self backAction];
@@ -101,9 +100,8 @@
 
 #pragma mark - event response
 
-
 - (void)backAction {
-  [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+  [self.navigationController popViewControllerAnimated:YES];
 }
 
 + (UIImage *)imageWithCGColor:(CGColorRef)cgColor_

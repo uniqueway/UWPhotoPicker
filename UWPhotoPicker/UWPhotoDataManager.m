@@ -133,6 +133,6 @@
         return [self.recommendPhotos[section] count];
     }
     return 0;
-    
 }
+
 @end

@@ -102,7 +102,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 
 - (void)handlePhotoStatusAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)isSelected {
     
-    id <UWPhotoDatable> photo = [self.dataManager photoAtIndex:indexPath];
+    id <UWPhotoDatable> photo = [_dataManager photoAtIndex:indexPath];
     UWPhotoCollectionViewCell *cell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
     if (_dataManager.isSingleSelection) { // 单选时，取消上一个图片选中状态，移除所有图片
         UWPhotoCollectionViewCell *selectedCell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:self.selectedIndexPath];
@@ -132,6 +132,26 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     }
     [self calculateCountOfSelectedPhotosByNum:isSelected ? 1 : -1];
     self.selectedIndexPath = indexPath;
+    [self handleEditPhotosAtIndexPath:indexPath];
+}
+
+- (void)handleEditPhotosAtIndexPath:(NSIndexPath *)indexPath {
+    if (_dataManager.editable) {
+        id <UWPhotoDatable> photo = [_dataManager photoAtIndex:indexPath];
+        UWPhotoEditorViewController *editBoard = [[UWPhotoEditorViewController alloc] init];
+        editBoard.currentPhoto = _dataManager.isSingleSelection ? photo : nil;
+        editBoard.dataManager = _dataManager.isSingleSelection ? nil : _dataManager;
+        editBoard.currentIndexPath = indexPath;
+        @weakify(self);
+        editBoard.cropBlock = ^(NSArray *list){
+            @strongify(self)
+            if (self.selectedPhotos) {
+                self.selectedPhotos(list);
+            }
+            [self backAction];
+        };
+        [self.navigationController pushViewController:editBoard animated:YES];
+    }
 }
 
 #pragma mark - event
@@ -201,14 +221,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if (_dataManager.editable) {
-        id <UWPhotoDatable> photo = [_dataManager photoAtIndex:indexPath];
-        UWPhotoEditorViewController *editBoard = [[UWPhotoEditorViewController alloc] initWithPhotoList:@[photo] crop:^(NSArray *list) {
-            if (self.selectedPhotos) {
-                self.selectedPhotos(list);
-            }
-        }];
-        [self.navigationController pushViewController:editBoard animated:YES];
-        
+        [self handleEditPhotosAtIndexPath:indexPath];
     }else {
         UWPhotoBrowserBoard *board = [[UWPhotoBrowserBoard alloc] init];
         board.dataManager = self.dataManager;
