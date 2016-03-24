@@ -80,12 +80,11 @@ static NSInteger buttonWidth = 25;
     [self transformIdentity];
     self.isSelected = _photo.isSelected;
     __weak typeof(&*self) weakself = self;
-    _photo.imageDidFinished = ^(id<UWPhotoDatable> photo) {
+    [_photo loadingImageCompletion:^(id<UWPhotoDatable> photo) {
         if (photo == _photo) {
             weakself.imageView.image = [weakself.photo image];
         }
-    };
-    _imageView.image = [photo image];
+    }];
 }
 
 - (void)setIsSelected:(BOOL)isSelected {

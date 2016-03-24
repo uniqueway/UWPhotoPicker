@@ -16,6 +16,22 @@
     return _asset.localIdentifier;
 }
 
+- (void)loadingImageCompletion:(void (^)(id<UWPhotoDatable>))finished {
+    if (_image) {
+        if (finished) {
+            finished(self);
+        }
+    }else {
+        CGSize size = [UIScreen mainScreen].bounds.size;
+        [self loadImageWithAsset:_asset targetSize:size completion:^(UIImage *result) {
+            _image = result;
+            if (finished) {
+                finished(self);
+            }
+        }];
+    }
+}
+
 - (void)loadImageWithAsset:(PHAsset *)asset targetSize:(CGSize)targetSize completion:(void(^)(UIImage *result))completion{
     PHImageManager *imageManager = [PHImageManager defaultManager];
     PHImageRequestOptions *options = [PHImageRequestOptions new];
@@ -37,9 +53,6 @@
     _date = asset.creationDate.timeIntervalSince1970;
     [self loadImageWithAsset:asset targetSize:CGSizeMake(200, 200) completion:^(UIImage *result) {
         self.image = result;
-        if (self.imageDidFinished) {
-            self.imageDidFinished(self);
-        }
     }];
 }
 
@@ -47,31 +60,6 @@
     return _asset.localIdentifier;
 }
 
-- (UIImage *)image {
-    if (!_image) {
-        CGSize size = [UIScreen mainScreen].bounds.size;
-        [self loadImageWithAsset:_asset targetSize:size completion:^(UIImage *result) {
-            _image = result;
-            if (self.imageDidFinished) {
-                self.imageDidFinished(self);
-            }
-        }];
-    }
-    return _image;
-}
-
-- (UIImage *)thumbnailImage {
-    if (!_thumbnailImage) {
-        CGSize size = [UIScreen mainScreen].bounds.size;
-        [self loadImageWithAsset:_asset targetSize:size completion:^(UIImage *result) {
-            _thumbnailImage = result;
-            if (self.imageDidFinished) {
-                self.imageDidFinished(self);
-            }
-        }];
-    }
-    return _thumbnailImage;
-}
 
 - (CGSize)thumbnailSize {
     if (_thumbnailSize.width == 0) {

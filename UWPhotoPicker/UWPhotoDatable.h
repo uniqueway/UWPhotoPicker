@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <Photos/Photos.h>
+#import "UWPhotoDatable.h"
 
 
 @protocol UWPhotoDatable <NSObject>
@@ -16,7 +17,6 @@
 @property (nonatomic, strong) UIImage *editImage;
 @property (nonatomic, strong) UIImage *thumbnailImage;
 
-@property (nonatomic, copy)   void(^imageDidFinished)(id<UWPhotoDatable> photo);
 @property (nonatomic, assign) BOOL isSelected;
 @property (nonatomic, assign) NSTimeInterval date;
 
@@ -25,6 +25,9 @@
 @property (nonatomic, assign) NSInteger filterIndex; //滤镜
 
 - (NSString *)selectionIdentifier;// 优先imageId > modelId
+
+- (void)loadingImageCompletion:( void(^)( id<UWPhotoDatable>  photo) )finished;
+
 
 
 @end

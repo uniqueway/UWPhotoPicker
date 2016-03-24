@@ -117,11 +117,10 @@
         self.currentPhoto = _list[indexPath.row];
     }
     @weakify(self);
-    self.currentPhoto.imageDidFinished = ^(id<UWPhotoDatable> photo) {
+    [self.currentPhoto loadingImageCompletion:^(id<UWPhotoDatable> photo) {
         @strongify(self);
         [self performFilter];
-    };
-    [self performFilter];
+    }];
 }
 
 - (void)performFilter {
