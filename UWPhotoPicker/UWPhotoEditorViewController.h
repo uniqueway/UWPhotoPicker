@@ -16,7 +16,7 @@ typedef void(^cropBlock)(NSArray *list);
 
 @interface UWPhotoEditorViewController : UIViewController
 
-@property (nonatomic, strong) UWPhotoDataManager *dataManager;
+@property (nonatomic, strong) NSArray *list;
 @property (nonatomic, assign) BOOL isSingle;
 @property (nonatomic, assign) BOOL needFilter;
 @property (nonatomic, assign) CGFloat widthRatio;

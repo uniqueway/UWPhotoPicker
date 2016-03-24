@@ -85,7 +85,7 @@
     if (!self.needFilter) { // 美化推荐背景图
         maskHeight = round(SCREEN_WIDTH/3 * 2);
         topHeight = (SCREEN_HEIGHT - NavigationBarHeight - maskHeight)/2;
-    } else if ( !self.dataManager) { // 美化照片
+    } else if ( self.list.count == 0) { // 美化照片
         self.filterBottomMargin = kFilterHeight + 10;
         maskHeight = SCREEN_WIDTH;
         topHeight = (SCREEN_HEIGHT - NavigationBarHeight - maskHeight - 115)/2;
@@ -107,7 +107,7 @@
 - (void)updateImageAtIndex:(NSIndexPath *)indexPath {
     id <UWPhotoDatable> photo = self.currentPhoto;
     if (!photo) {
-        photo = [_dataManager photoAtIndex:indexPath];
+        photo = _list[indexPath.row];
     }
     [self.imageScrollView displayImage:[photo thumbnailImage]];
     [self.imageScrollView switchFilter:[photo filterIndex]];
@@ -142,17 +142,13 @@
 
 #pragma mark - UICollectionViewDataSource
 
-- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return [self.dataManager numberOfSections];
-}
-
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return [self.dataManager numberOfItemsInSection:section];
+    return _list.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     UWPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"UWPhotoCollectionViewCell" forIndexPath:indexPath];
-    id <UWPhotoDatable> photo = [self.dataManager photoAtIndex:indexPath];
+    id <UWPhotoDatable> photo = _list[indexPath.row];
     cell.photo = photo;
     [cell shouldScale];
     return cell;
@@ -160,7 +156,7 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     [self savePhotoCurrentStatus];
-    self.currentPhoto = [self.dataManager photoAtIndex:indexPath];
+    self.currentPhoto = _list[indexPath.row];
     [self updateImageAtIndex:indexPath];
 }
 #pragma mark - event response
