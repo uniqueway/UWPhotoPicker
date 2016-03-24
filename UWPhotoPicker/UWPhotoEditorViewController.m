@@ -61,10 +61,7 @@
     self.automaticallyAdjustsScrollViewInsets =     NO;
     self.view.clipsToBounds = YES;
     self.filterBottomMargin = 0;
-    [self updateImageAtIndex:self.currentIndexPath];
-    self.filterView.selectedFilterType = ^(NSInteger type){
-        [self.imageScrollView switchFilter:type];
-    };
+    
     [self buildLayer];
 }
 
@@ -97,10 +94,16 @@
     }
     
     self.topMaskLayer.frame = CGRectMake(0, NavigationBarHeight, SCREEN_WIDTH, topHeight);
-    [self.view.layer addSublayer:[self maskLayer:CGRectMake(0, CGRectGetMaxY(self.topMaskLayer.frame), SCREEN_WIDTH, maskHeight)]];
+    [self maskLayer:CGRectMake(0, CGRectGetMaxY(self.topMaskLayer.frame), SCREEN_WIDTH, maskHeight)];
     self.bottomMaskLayer.frame = CGRectMake(0, CGRectGetMaxY(self.maskLayer.frame), SCREEN_WIDTH, topHeight);
     
+    [self updateImageAtIndex:self.currentIndexPath];
+    self.filterView.selectedFilterType = ^(NSInteger type){
+        [self.imageScrollView switchFilter:type];
+    };
+    
     [self.view.layer addSublayer:self.bottomMaskLayer];
+    [self.view.layer addSublayer:self.maskLayer];
     [self.view.layer addSublayer:self.topMaskLayer];
 }
 
