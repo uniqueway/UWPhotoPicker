@@ -36,7 +36,7 @@
     _asset = asset;
     _date = asset.creationDate.timeIntervalSince1970;
     [self loadImageWithAsset:asset targetSize:CGSizeMake(200, 200) completion:^(UIImage *result) {
-        self.thumbnailImage = result;
+        self.image = result;
         if (self.imageDidFinished) {
             self.imageDidFinished(self);
         }
