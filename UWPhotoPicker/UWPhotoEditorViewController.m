@@ -63,7 +63,6 @@
     self.automaticallyAdjustsScrollViewInsets =     NO;
     self.view.clipsToBounds = YES;
     self.filterBottomMargin = 0;
-    
     [self buildLayer];
 }
 
@@ -82,13 +81,16 @@
     CGFloat maskHeight = 0;
     CGFloat topHeight = 0;
     if (!self.needFilter) { // 美化推荐背景图
+        self.navBar.title = nil;
         maskHeight = round(SCREEN_WIDTH/3 * 2);
         topHeight = (SCREEN_HEIGHT - NavigationBarHeight - maskHeight)/2;
     } else if ( self.list.count == 0) { // 美化照片
+        self.navBar.title = @"美化封面";
         self.filterBottomMargin = kFilterHeight + 10;
         maskHeight = SCREEN_WIDTH;
         topHeight = (SCREEN_HEIGHT - NavigationBarHeight - maskHeight - 115)/2;
     }else {
+        self.navBar.title = @"美化照片";
         self.filterBottomMargin = kFilterHeight + 10 + kCollectionViewHeight;
         [self.collectionView reloadData];
         maskHeight = SCREEN_WIDTH;
