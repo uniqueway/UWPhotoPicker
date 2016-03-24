@@ -18,6 +18,10 @@ typedef void(^cropBlock)(NSArray *list);
 
 @property (nonatomic, strong) UWPhotoDataManager *dataManager;
 @property (nonatomic, assign) BOOL isSingle;
+@property (nonatomic, assign) BOOL needFilter;
+@property (nonatomic, assign) CGFloat widthRatio;
+
+
 @property (nonatomic, copy) void(^cropBlock)(NSArray *list);
 
 @property (nonatomic, strong) id <UWPhotoDatable> currentPhoto;

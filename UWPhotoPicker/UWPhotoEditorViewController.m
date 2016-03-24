@@ -45,6 +45,9 @@
 @property (nonatomic, weak) UWFilterView *filterView;
 @property (nonatomic, assign) CGFloat filterBottomMargin;
 
+@property (nonatomic, strong) CALayer *topMaskLayer;
+@property (nonatomic, strong) CALayer *bottomMaskLayer;
+
 @end
 
 @implementation UWPhotoEditorViewController
@@ -65,6 +68,7 @@
     self.filterView.selectedFilterType = ^(NSInteger type){
         [self.imageScrollView switchFilter:type];
     };
+    [self buildLayer];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -75,6 +79,29 @@
 - (void)viewWillDisappear:(BOOL)animated {
     self.navigationController.navigationBarHidden = NO;
     [super viewWillDisappear:animated];
+}
+
+- (void)buildLayer {
+
+    CGFloat maskHeight = 0;
+    CGFloat topHeight = 0;
+    if (!self.needFilter) { // 美化推荐背景图
+        maskHeight = round(SCREEN_WIDTH/3 * 2);
+        topHeight = (SCREEN_HEIGHT - NavigationBarHeight - maskHeight)/2;
+    } else if ( !self.dataManager) { // 美化照片
+        maskHeight = SCREEN_WIDTH;
+        topHeight = (SCREEN_HEIGHT - NavigationBarHeight - maskHeight - 115)/2;
+    }else {
+        maskHeight = SCREEN_WIDTH;
+        topHeight = (SCREEN_HEIGHT - NavigationBarHeight - maskHeight - 115 - 75)/2;
+    }
+    
+    self.topMaskLayer.frame = CGRectMake(0, NavigationBarHeight, SCREEN_WIDTH, topHeight);
+    [self.view.layer addSublayer:[self maskLayer:CGRectMake(0, CGRectGetMaxY(self.topMaskLayer.frame), SCREEN_WIDTH, maskHeight)]];
+    self.bottomMaskLayer.frame = CGRectMake(0, CGRectGetMaxY(self.maskLayer.frame), SCREEN_WIDTH, topHeight);
+    
+    [self.view.layer addSublayer:self.bottomMaskLayer];
+    [self.view.layer addSublayer:self.topMaskLayer];
 }
 
 - (void)updateImageAtIndex:(NSIndexPath *)indexPath {
@@ -112,7 +139,6 @@
     }
     [self backAction];
 }
-
 
 #pragma mark - event response
 
@@ -306,6 +332,23 @@
         _maskLayer = maskLayer;
     }
     return _maskLayer;
+}
+
+- (CALayer *)topMaskLayer {
+    if (!_topMaskLayer) {
+        _topMaskLayer = [CALayer layer];
+        _topMaskLayer.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.3].CGColor;
+        
+    }
+    return _topMaskLayer;
+}
+
+- (CALayer *)bottomMaskLayer {
+    if (!_bottomMaskLayer) {
+        _bottomMaskLayer = [CALayer layer];
+        _bottomMaskLayer.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.3].CGColor;
+    }
+    return _bottomMaskLayer;
 }
 
 - (UWPhotoNavigationView *)navBar {

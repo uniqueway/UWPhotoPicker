@@ -143,6 +143,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
         editBoard.currentPhoto = _dataManager.isSingleSelection ? photo : nil;
         editBoard.dataManager = _dataManager.isSingleSelection ? nil : _dataManager;
         editBoard.currentIndexPath = indexPath;
+        editBoard.needFilter = !(_dataManager.isSingleMenu && _dataManager.isSingleSelection);
         @weakify(self);
         editBoard.cropBlock = ^(NSArray *list){
             @strongify(self)
