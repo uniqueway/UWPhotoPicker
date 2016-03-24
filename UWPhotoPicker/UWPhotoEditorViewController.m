@@ -45,7 +45,7 @@
 
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UIButton *deleteButton;
-@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
+
 
 @end
 
@@ -99,11 +99,12 @@
     [self maskLayer:CGRectMake(0, CGRectGetMaxY(self.topMaskLayer.frame), SCREEN_WIDTH, maskHeight)];
     self.bottomMaskLayer.frame = CGRectMake(0, CGRectGetMaxY(self.maskLayer.frame), SCREEN_WIDTH, topHeight);
     
-    [self updateImageAtIndex:self.currentIndexPath];
-    self.filterView.selectedFilterType = ^(NSInteger type){
-        [self.imageScrollView switchFilter:type];
-    };
-    
+    [self updateImageAtIndex:self.selectedIndexPath];
+    if (self.needFilter) {
+        self.filterView.selectedFilterType = ^(NSInteger type){
+            [self.imageScrollView switchFilter:type];
+        };
+    }
     [self.view.layer addSublayer:self.bottomMaskLayer];
     [self.view.layer addSublayer:self.maskLayer];
     [self.view.layer addSublayer:self.topMaskLayer];
@@ -119,8 +120,6 @@
         @strongify(self);
         [self performFilter];
     };
-    
-    //FIXME: 移动到当前的IndexPath
 }
 
 - (void)performFilter {
@@ -128,7 +127,7 @@
     [self.imageScrollView switchFilter:[self.currentPhoto filterIndex]];
     [self.imageScrollView setZoomScale:[self.currentPhoto scale]];
     [self.imageScrollView setContentOffset:CGPointFromString([self.currentPhoto offset])];
-    self.filterView.currentType = [self.currentPhoto filterIndex];
+    _filterView.currentType = [self.currentPhoto filterIndex];
 }
 
 - (void)contentDidEdit:(BOOL)flag {
@@ -138,7 +137,7 @@
 - (void)savePhotoCurrentStatus {
     
     id <UWPhotoDatable> photo = self.currentPhoto;
-    photo.filterIndex = self.filterView.currentType;
+    photo.filterIndex = _filterView.currentType;
     photo.scale = self.imageScrollView.zoomScale;
     photo.offset = NSStringFromCGPoint(self.imageScrollView.contentOffset);
     photo.image = self.imageScrollView.capture;
@@ -165,6 +164,7 @@
     id <UWPhotoDatable> photo = _list[indexPath.row];
     cell.photo = photo;
     [cell shouldScale];
+    [cell cellShouldHighlight: (self.selectedIndexPath == indexPath)];
     return cell;
 }
 
@@ -415,11 +415,6 @@
         _imageScrollView.scrollDelegate  = self;
         _imageScrollView.clipsToBounds = YES;
         [self.view addSubview:_imageScrollView];
-        [_imageScrollView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.navBar.mas_bottom).offset(0);
-            make.left.right.offset(0);
-            make.bottom.equalTo(self.filterView.mas_top).offset(0);
-        }];
     }
     return _imageScrollView;
 }

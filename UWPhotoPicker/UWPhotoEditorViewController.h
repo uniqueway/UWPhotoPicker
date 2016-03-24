@@ -25,6 +25,6 @@ typedef void(^cropBlock)(NSArray *list);
 @property (nonatomic, copy) void(^cropBlock)(NSArray *list);
 
 @property (nonatomic, strong) id <UWPhotoDatable> currentPhoto;
-@property (nonatomic, strong) NSIndexPath *currentIndexPath;
+@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 
 @end
