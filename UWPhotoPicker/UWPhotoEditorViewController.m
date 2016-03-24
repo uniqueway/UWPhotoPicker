@@ -142,7 +142,7 @@
     photo.filterIndex = _filterView.currentType;
     photo.scale = self.imageScrollView.zoomScale;
     photo.offset = NSStringFromCGPoint(self.imageScrollView.contentOffset);
-    photo.image = self.imageScrollView.capture;
+    photo.editImage = self.imageScrollView.capture;
     [self.resultList addObject:photo];
 }
 
