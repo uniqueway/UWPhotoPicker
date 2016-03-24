@@ -92,18 +92,21 @@
 
 - (void)contentDidEdit:(BOOL)flag {
     self.isEdited = flag;
-    if (flag) {
-        id <UWPhotoDatable> photo = self.currentPhoto;
-        photo.filterIndex = self.filterView.currentType;
-        photo.scale = self.imageScrollView.zoomScale;
-        photo.offset = NSStringFromCGPoint(self.imageScrollView.contentOffset);
-        photo.image = self.imageScrollView.capture;
-        [self.resultList addObject:photo];
-    }
+}
+
+- (void)savePhotoCurrentStatus {
+    
+    id <UWPhotoDatable> photo = self.currentPhoto;
+    photo.filterIndex = self.filterView.currentType;
+    photo.scale = self.imageScrollView.zoomScale;
+    photo.offset = NSStringFromCGPoint(self.imageScrollView.contentOffset);
+    photo.image = self.imageScrollView.capture;
+    [self.resultList addObject:photo];
 }
 
 #pragma mark - event - 
 - (void)finishFix {
+    [self savePhotoCurrentStatus];
     if (self.resultList.count > 0 && self.cropBlock) {
         self.cropBlock([self.resultList allObjects]);
     }
