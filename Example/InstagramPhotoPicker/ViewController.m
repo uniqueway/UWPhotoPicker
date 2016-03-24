@@ -44,7 +44,7 @@
         photoPicker.dataManager.hasRightButton = YES;
         photoPicker.dataManager.countLocation = UWPhotoCountLocationTop;
         photoPicker.dataManager.title = @"选择照片";
-        photoPicker.dataManager.isSingleMenu = NO;
+        photoPicker.dataManager.isSingleMenu = YES;
         photoPicker.selectedPhotos = ^(NSArray <UWPhotoDatable>*list) {
             
         };

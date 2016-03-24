@@ -112,7 +112,10 @@
     if (!photo) {
         photo = _list[indexPath.row];
     }
-    [self.imageScrollView displayImage:[photo thumbnailImage]];
+    
+    photo.imageDidFinished = ^(id<UWPhotoDatable> photo) {
+        [self.imageScrollView displayImage:[photo image]];
+    };
     [self.imageScrollView switchFilter:[photo filterIndex]];
     [self.imageScrollView setZoomScale:[photo scale]];
     [self.imageScrollView setContentOffset:CGPointFromString([photo offset])];

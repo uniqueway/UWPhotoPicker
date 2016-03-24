@@ -270,7 +270,9 @@ static CGRect UWScaleRect(CGRect rect, CGFloat scale)
 }
 
 - (void)switchFilter:(NSInteger)type {
-    
+    if (!self.imageView.image) {
+        return;
+    }
     if ([self.scrollDelegate respondsToSelector:@selector(contentDidEdit:)]) {
         [self.scrollDelegate contentDidEdit:YES];
     }
@@ -282,7 +284,6 @@ static CGRect UWScaleRect(CGRect rect, CGFloat scale)
         }
     }
     [self forceSwitchToNewFilter:type];
-    
 }
 
 - (void)displayImage:(UIImage *)image {
