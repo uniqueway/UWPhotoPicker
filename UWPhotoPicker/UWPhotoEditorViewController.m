@@ -45,6 +45,7 @@
 
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UIButton *deleteButton;
+@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 
 @end
 
@@ -168,6 +169,11 @@
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    UWPhotoCollectionViewCell *selectedCell = (UWPhotoCollectionViewCell *)[collectionView cellForItemAtIndexPath:self.selectedIndexPath];
+    [selectedCell cellShouldHighlight:NO];
+    UWPhotoCollectionViewCell *currentCell = (UWPhotoCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    [currentCell cellShouldHighlight:YES];
+    self.selectedIndexPath = indexPath;
     [self savePhotoCurrentStatus];
     self.currentPhoto = _list[indexPath.row];
     [self updateImageAtIndex:indexPath];
@@ -407,6 +413,7 @@
         _imageScrollView = [[UWImageScrollView alloc] initWithFrame:CGRectMake(0, NavigationBarHeight, SCREEN_WIDTH, SCREEN_HEIGHT - NavigationBarHeight - self.filterBottomMargin)];
         _imageScrollView.backgroundColor = [UIColor blackColor];
         _imageScrollView.scrollDelegate  = self;
+        _imageScrollView.clipsToBounds = YES;
         [self.view addSubview:_imageScrollView];
         [_imageScrollView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.navBar.mas_bottom).offset(0);
