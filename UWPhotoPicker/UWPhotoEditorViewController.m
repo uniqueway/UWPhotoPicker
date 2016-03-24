@@ -18,35 +18,32 @@
 #import "UWPhotoDatable.h"
 #import "UWPhotoNavigationView.h"
 #import "UWFilterView.h"
+#import "UWPhotoCollectionViewCell.h"
 
 
 #define SCREEN_WIDTH CGRectGetWidth([UIScreen mainScreen].bounds)
 #define SCREEN_HEIGHT CGRectGetHeight([UIScreen mainScreen].bounds)
 #define NavigationBarHeight 44
+#define kFilterHeight 105
+#define kCollectionViewHeight 77
 
 @interface UWPhotoEditorViewController()<UICollectionViewDataSource, UICollectionViewDelegate,UWImageScrollViewDelegate>
-@property (nonatomic, strong) NSMutableArray *list;
-@property (nonatomic, strong) NSMutableArray *thumbnailImageList;
-
-
 
 @property (nonatomic, assign) BOOL isEdited;
 @property (nonatomic, strong) UWImageScrollView *imageScrollView;
 @property (nonatomic, assign) NSInteger currentType;
 @property (strong, nonatomic) NSMutableSet *resultList;
-@property (strong, nonatomic) UIButton *nextOrSubmitButton;
-
-@property (nonatomic, strong) UILabel *titleLabel;
-@property (nonatomic, strong) CALayer *maskLayer;
-
-
 
 @property (nonatomic, weak  ) UWPhotoNavigationView *navBar;
-@property (nonatomic, weak) UWFilterView *filterView;
+@property (nonatomic, weak)   UWFilterView *filterView;
 @property (nonatomic, assign) CGFloat filterBottomMargin;
 
 @property (nonatomic, strong) CALayer *topMaskLayer;
 @property (nonatomic, strong) CALayer *bottomMaskLayer;
+@property (nonatomic, strong) CALayer *maskLayer;
+
+@property (nonatomic, strong) UICollectionView *collectionView;
+@property (nonatomic, strong) UIButton *deleteButton;
 
 @end
 
@@ -63,7 +60,7 @@
     self.view.backgroundColor = [UIColor blackColor];
     self.automaticallyAdjustsScrollViewInsets =     NO;
     self.view.clipsToBounds = YES;
-    self.filterBottomMargin = 105;
+    self.filterBottomMargin = 0;
     [self updateImageAtIndex:self.currentIndexPath];
     self.filterView.selectedFilterType = ^(NSInteger type){
         [self.imageScrollView switchFilter:type];
@@ -89,9 +86,12 @@
         maskHeight = round(SCREEN_WIDTH/3 * 2);
         topHeight = (SCREEN_HEIGHT - NavigationBarHeight - maskHeight)/2;
     } else if ( !self.dataManager) { // 美化照片
+        self.filterBottomMargin = kFilterHeight + 10;
         maskHeight = SCREEN_WIDTH;
         topHeight = (SCREEN_HEIGHT - NavigationBarHeight - maskHeight - 115)/2;
     }else {
+        self.filterBottomMargin = kFilterHeight + 10 + kCollectionViewHeight;
+        [self.collectionView reloadData];
         maskHeight = SCREEN_WIDTH;
         topHeight = (SCREEN_HEIGHT - NavigationBarHeight - maskHeight - 115 - 75)/2;
     }
@@ -140,6 +140,29 @@
     [self backAction];
 }
 
+#pragma mark - UICollectionViewDataSource
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    return [self.dataManager numberOfSections];
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    return [self.dataManager numberOfItemsInSection:section];
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    UWPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"UWPhotoCollectionViewCell" forIndexPath:indexPath];
+    id <UWPhotoDatable> photo = [self.dataManager photoAtIndex:indexPath];
+    cell.photo = photo;
+    [cell shouldScale];
+    return cell;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    [self savePhotoCurrentStatus];
+    self.currentPhoto = [self.dataManager photoAtIndex:indexPath];
+    [self updateImageAtIndex:indexPath];
+}
 #pragma mark - event response
 
 - (void)backAction {
@@ -372,7 +395,7 @@
 
 - (UWImageScrollView *)imageScrollView {
     if (!_imageScrollView) {
-        _imageScrollView = [[UWImageScrollView alloc] initWithFrame:[self rectForScrollView]];
+        _imageScrollView = [[UWImageScrollView alloc] initWithFrame:CGRectMake(0, NavigationBarHeight, SCREEN_WIDTH, SCREEN_HEIGHT - NavigationBarHeight - self.filterBottomMargin)];
         _imageScrollView.backgroundColor = [UIColor blackColor];
         _imageScrollView.scrollDelegate  = self;
         [self.view addSubview:_imageScrollView];
@@ -391,16 +414,40 @@
         [self.view addSubview:filterView];
         [filterView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.right.offset(0);
-            make.bottom.offset(-10);
-            make.height.mas_equalTo(self.filterBottomMargin);
+            make.bottom.offset( - 10 - (_collectionView ? kCollectionViewHeight : 0));
+            make.height.mas_equalTo(kFilterHeight);
         }];
         _filterView = filterView;
     }
     return _filterView;
 }
 
-- (CGRect)rectForScrollView {
-    CGRect rect = CGRectMake(0, NavigationBarHeight, SCREEN_WIDTH, SCREEN_HEIGHT - NavigationBarHeight - self.filterBottomMargin);
-    return rect;
+- (UIButton *)deleteButton {
+    if (!_deleteButton ) {
+        _deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _deleteButton.frame = CGRectMake(0, SCREEN_HEIGHT - kCollectionViewHeight, 60, kCollectionViewHeight);
+        [_deleteButton setTitle:@"删除" forState:UIControlStateNormal];
+        [self.view addSubview:_deleteButton];
+    }
+    return _deleteButton;
 }
+
+- (UICollectionView *)collectionView {
+    if ( !_collectionView) {
+        UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
+        flowLayout.itemSize = CGSizeMake(47, 47);
+        flowLayout.minimumInteritemSpacing = 15;
+        flowLayout.minimumLineSpacing= 15 ;
+        flowLayout.sectionInset = UIEdgeInsetsMake(15, 15, 15, 15);
+        flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.deleteButton.frame), CGRectGetMinY(self.deleteButton.frame) , SCREEN_WIDTH - CGRectGetMaxX(self.deleteButton.frame), CGRectGetHeight(self.deleteButton.frame)) collectionViewLayout:flowLayout];
+        _collectionView.delegate = self;
+        _collectionView.dataSource = self;
+        _collectionView.showsHorizontalScrollIndicator = NO;
+        [_collectionView registerClass:[UWPhotoCollectionViewCell class] forCellWithReuseIdentifier:@"UWPhotoCollectionViewCell"];
+        [self.view addSubview:_collectionView];
+    }
+    return _collectionView;
+}
+
 @end
