@@ -13,6 +13,7 @@
 #import "UWPhotoImageItem.h"
 #import <SVProgressHUD.h>
 #import <Masonry.h>
+#import <EXTScope.h>
 
 #import <mach/mach_time.h>
 #import "UWPhotoDatable.h"
@@ -108,19 +109,25 @@
 }
 
 - (void)updateImageAtIndex:(NSIndexPath *)indexPath {
-    id <UWPhotoDatable> photo = self.currentPhoto;
-    if (!photo) {
-        photo = _list[indexPath.row];
+    if (!self.currentPhoto) {
+        self.currentPhoto = _list[indexPath.row];
     }
-    
-    photo.imageDidFinished = ^(id<UWPhotoDatable> photo) {
-        [self.imageScrollView displayImage:[photo image]];
+    [self performFilter];
+    @weakify(self);
+    self.currentPhoto.imageDidFinished = ^(id<UWPhotoDatable> photo) {
+        @strongify(self);
+        [self performFilter];
     };
-    [self.imageScrollView switchFilter:[photo filterIndex]];
-    [self.imageScrollView setZoomScale:[photo scale]];
-    [self.imageScrollView setContentOffset:CGPointFromString([photo offset])];
-    self.filterView.currentType = [photo filterIndex];
+    
     //FIXME: 移动到当前的IndexPath
+}
+
+- (void)performFilter {
+    [self.imageScrollView displayImage:[self.currentPhoto image]];
+    [self.imageScrollView switchFilter:[self.currentPhoto filterIndex]];
+    [self.imageScrollView setZoomScale:[self.currentPhoto scale]];
+    [self.imageScrollView setContentOffset:CGPointFromString([self.currentPhoto offset])];
+    self.filterView.currentType = [self.currentPhoto filterIndex];
 }
 
 - (void)contentDidEdit:(BOOL)flag {
