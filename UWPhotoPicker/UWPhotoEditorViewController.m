@@ -116,12 +116,12 @@
     if (!self.currentPhoto) {
         self.currentPhoto = _list[indexPath.row];
     }
-    [self performFilter];
     @weakify(self);
     self.currentPhoto.imageDidFinished = ^(id<UWPhotoDatable> photo) {
         @strongify(self);
         [self performFilter];
     };
+    [self performFilter];
 }
 
 - (void)performFilter {
