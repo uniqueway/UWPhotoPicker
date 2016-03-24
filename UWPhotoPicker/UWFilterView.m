@@ -23,7 +23,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = UWHEX(0x12110f);
-        self.currentType = 0;
+        _currentType = 0;
         self.filterList   = @[@{@"name":@"normal", @"index":@0},
                               @{@"name":@"inkwell", @"index":@1},
                               @{@"name":@"earlybird", @"index":@2},

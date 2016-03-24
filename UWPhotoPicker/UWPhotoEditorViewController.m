@@ -101,12 +101,12 @@
     [self maskLayer:CGRectMake(0, CGRectGetMaxY(self.topMaskLayer.frame), SCREEN_WIDTH, maskHeight)];
     self.bottomMaskLayer.frame = CGRectMake(0, CGRectGetMaxY(self.maskLayer.frame), SCREEN_WIDTH, topHeight);
     
-    [self updateImageAtIndex:self.selectedIndexPath];
     if (self.needFilter) {
         self.filterView.selectedFilterType = ^(NSInteger type){
             [self.imageScrollView switchFilter:type];
         };
     }
+    [self updateImageAtIndex:self.selectedIndexPath];
     [self.view.layer addSublayer:self.bottomMaskLayer];
     [self.view.layer addSublayer:self.maskLayer];
     [self.view.layer addSublayer:self.topMaskLayer];
