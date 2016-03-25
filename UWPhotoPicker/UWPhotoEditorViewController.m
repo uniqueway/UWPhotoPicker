@@ -117,14 +117,14 @@
         self.currentPhoto = _list[indexPath.row];
     }
     @weakify(self);
-    [self.currentPhoto loadingImageCompletion:^(id<UWPhotoDatable> photo) {
+    [self.currentPhoto loadPortraitImageCompletion:^(id<UWPhotoDatable> photo) {
         @strongify(self);
         [self performFilter];
     }];
 }
 
 - (void)performFilter {
-    [self.imageScrollView displayImage:[self.currentPhoto image]];
+    [self.imageScrollView displayImage:[self.currentPhoto portraitImage]];
     [self.imageScrollView switchFilter:[self.currentPhoto filterIndex]];
     [self.imageScrollView setZoomScale:[self.currentPhoto scale]];
     [self.imageScrollView setContentOffset:CGPointFromString([self.currentPhoto offset])];
@@ -141,7 +141,7 @@
     photo.filterIndex = _filterView.currentType;
     photo.scale = self.imageScrollView.zoomScale;
     photo.offset = NSStringFromCGPoint(self.imageScrollView.contentOffset);
-    photo.editImage = self.imageScrollView.capture;
+    photo.editedImage = self.imageScrollView.capture;
     [self.resultList addObject:photo];
 }
 

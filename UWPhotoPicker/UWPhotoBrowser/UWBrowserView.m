@@ -44,7 +44,7 @@ static NSString *UWBrowserCellIndentifier = @"UWBrowserCellIndentifier";
     
     UWPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:UWBrowserCellIndentifier forIndexPath:indexPath];
     id <UWPhotoDatable> photo = [self.dataManager photoAtIndex:indexPath];
-    cell.photo = photo;
+    [cell loadPhoto:photo thumbnail:NO];
     [cell shouldScale];
     return cell;
 }

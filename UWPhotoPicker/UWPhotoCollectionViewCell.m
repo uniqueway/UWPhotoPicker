@@ -74,17 +74,29 @@ static NSInteger buttonWidth = 25;
     sender.scale = 1;
 }
 
-#pragma mark - set/get
-- (void)setPhoto:(id <UWPhotoDatable>)photo {
+- (void)loadPhoto:(id<UWPhotoDatable>)photo thumbnail:(BOOL)isThumbnail {
     _photo = photo;
     [self transformIdentity];
     self.isSelected = _photo.isSelected;
     __weak typeof(&*self) weakself = self;
-    [_photo loadingImageCompletion:^(id<UWPhotoDatable> photo) {
-        if (photo == _photo) {
-            weakself.imageView.image = [weakself.photo image];
-        }
-    }];
+    if (isThumbnail) {
+        [_photo loadThumbnailImageCompletion:^(id<UWPhotoDatable> photo) {
+            if (photo == _photo) {
+                weakself.imageView.image = [weakself.photo thumbnailImage];
+            }
+        }];
+    }else {
+        [_photo loadPortraitImageCompletion:^(id<UWPhotoDatable> photo) {
+            if (photo == _photo) {
+                weakself.imageView.image = [weakself.photo portraitImage];
+            }
+        }];
+    }
+}
+
+#pragma mark - set/get
+- (void)setPhoto:(id <UWPhotoDatable>)photo {
+    [self loadPhoto:photo thumbnail:YES];
 }
 
 - (void)setIsSelected:(BOOL)isSelected {

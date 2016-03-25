@@ -13,9 +13,9 @@
 
 @protocol UWPhotoDatable <NSObject>
 
-@property (nonatomic, strong) UIImage *image;
-@property (nonatomic, strong) UIImage *editImage;
 @property (nonatomic, strong) UIImage *thumbnailImage;
+@property (nonatomic, strong) UIImage *editedImage;
+@property (nonatomic, strong) UIImage *portraitImage;
 
 @property (nonatomic, assign) BOOL isSelected;
 @property (nonatomic, assign) NSTimeInterval date;
@@ -26,8 +26,11 @@
 
 - (NSString *)selectionIdentifier;// 优先imageId > modelId
 
-- (void)loadingImageCompletion:( void(^)( id<UWPhotoDatable>  photo) )finished;
 
+- (void)loadThumbnailImageCompletion:( void(^)(id <UWPhotoDatable> photo) )completion;
+- (void)loadEditedImageCompletion:( void(^)(id <UWPhotoDatable> photo) )completion;
+- (void)loadPortraitImageCompletion:( void(^)( id<UWPhotoDatable> photo) )completion;
+- (void)loadSourceImageCompletion:( void(^)( UIImage *image))completion;
 
 
 @end

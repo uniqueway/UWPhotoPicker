@@ -29,4 +29,6 @@ typedef NS_ENUM(NSInteger, SelectedStyle) {
 
 - (void)shouldScale;
 
+- (void)loadPhoto:(id<UWPhotoDatable>)photo thumbnail:(BOOL)isThumbnail;
+
 @end
