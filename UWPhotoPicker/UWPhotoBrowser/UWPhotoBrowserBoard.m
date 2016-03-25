@@ -54,6 +54,10 @@
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
 }
 
+- (BOOL)prefersStatusBarHidden{
+    return YES;
+}
+
 - (SelectedStyle)selectedStyle {
     return SelectedStyleBoth;
 }

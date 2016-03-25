@@ -76,6 +76,10 @@
     [super viewWillDisappear:animated];
 }
 
+- (BOOL)prefersStatusBarHidden{
+    return YES;
+}
+
 - (void)buildLayer {
 
     CGFloat maskHeight = 0;
