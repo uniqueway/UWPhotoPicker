@@ -125,7 +125,7 @@
 
 - (NSInteger)numberOfItemsInSection:(NSInteger)section {
     if (!_hasSectionTitle) {
-        return self.allPhotosTitles.count;
+        return self.allPhotos.count;
     }
     if (_menuIndex == UWMenuIndexAll) {
         return [self.allPhotos[section] count];
