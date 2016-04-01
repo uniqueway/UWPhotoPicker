@@ -101,6 +101,7 @@
     }
     
     self.navBar.backgroundColor = [UIColor blackColor];
+    self.navBar.titleColor = [UIColor whiteColor];
     [self.navBar.rightButton setTitle:@"已选" forState:UIControlStateNormal];
     [self.navBar.rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.navBar.backButton setImage:[UIImage imageNamed:@"UWNavigationBarWhiteBack"] forState:UIControlStateNormal];

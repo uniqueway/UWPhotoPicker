@@ -14,6 +14,7 @@
 @property (nonatomic, assign) NSUInteger count;
 @property (nonatomic, weak) UIButton *backButton;
 @property (nonatomic, weak) UIButton *rightButton;
+@property (nonatomic, strong) UIColor *titleColor;
 
 
 @end

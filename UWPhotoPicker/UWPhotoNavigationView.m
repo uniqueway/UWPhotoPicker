@@ -42,6 +42,11 @@ static const CGFloat NavBarHeight = 44;
     }
 }
 
+- (void)setTitleColor:(UIColor *)titleColor {
+    _titleColor = titleColor;
+    self.titleLabel.textColor = titleColor;
+}
+
 #pragma mark - getter
 - (UILabel *)titleLabel {
     if (!_titleLabel) {
