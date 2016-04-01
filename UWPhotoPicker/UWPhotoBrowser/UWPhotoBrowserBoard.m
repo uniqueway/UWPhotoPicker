@@ -70,6 +70,7 @@
 - (void)calculateCountOfSelectedPhotosByNum:(NSUInteger)count {
     self.dataManager.selectedCount += count;
     self.navBar.count = self.dataManager.selectedCount;
+    [self updateTitle];
 }
 
 - (void)scrollToIndexPath:(NSIndexPath *)indexPath {
