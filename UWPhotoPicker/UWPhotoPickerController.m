@@ -225,6 +225,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     }else {
         UWPhotoBrowserBoard *board = [[UWPhotoBrowserBoard alloc] init];
         board.dataManager = self.dataManager;
+        board.selectedIndexPath = indexPath;
         [self.navigationController pushViewController:board animated:YES];
     }
 }

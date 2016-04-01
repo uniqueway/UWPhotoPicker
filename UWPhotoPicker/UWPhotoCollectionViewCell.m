@@ -79,6 +79,7 @@ static NSInteger buttonWidth = 25;
     [self transformIdentity];
     self.isSelected = _photo.isSelected;
     __weak typeof(&*self) weakself = self;
+    _imageView.image = [_photo thumbnailImage];
     if (isThumbnail) {
         [_photo loadThumbnailImageCompletion:^(id<UWPhotoDatable> photo) {
             if (photo == _photo) {

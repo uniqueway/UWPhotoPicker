@@ -26,9 +26,8 @@ typedef NS_ENUM(NSInteger, SelectedStyle) {
 @property (nonatomic, assign) SelectedStyle selectedStyle;
 
 - (void)cellShouldHighlight:(BOOL)isHighlight;
-
 - (void)shouldScale;
-
 - (void)loadPhoto:(id<UWPhotoDatable>)photo thumbnail:(BOOL)isThumbnail;
+
 
 @end
