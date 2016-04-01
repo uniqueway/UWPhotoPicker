@@ -67,6 +67,11 @@
     [self calculateCountOfSelectedPhotosByNum: (isSelected ? 1 : -1) ];
 }
 
+- (void)calculateCountOfSelectedPhotosByNum:(NSUInteger)count {
+    self.dataManager.selectedCount += count;
+    self.navBar.count = self.dataManager.selectedCount;
+}
+
 - (void)scrollToIndexPath:(NSIndexPath *)indexPath {
     [self.browserView scrollToIndexPath:indexPath];
     UWPhotoCollectionViewCell *selectedCell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:self.selectedIndexPath];
