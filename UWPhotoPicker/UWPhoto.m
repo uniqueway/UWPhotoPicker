@@ -54,7 +54,7 @@
             completion(self);
         }
     }else {
-        CGSize size = [UIScreen mainScreen].bounds.size;
+        CGSize size = [UIScreen mainScreen].bounds.size ;
         size = CGSizeMake(size.width*2, size.height*2);
         [self loadImageWithAsset:_asset targetSize:size completion:^(UIImage *result) {
             _portraitImage = result;
@@ -73,10 +73,10 @@
     PHImageManager *imageManager = [PHImageManager defaultManager];
     PHImageRequestOptions *options = [PHImageRequestOptions new];
     options.networkAccessAllowed = YES;
-    options.resizeMode =  PHImageRequestOptionsResizeModeNone;
+    options.resizeMode =  PHImageRequestOptionsResizeModeFast;
     options.deliveryMode =  PHImageRequestOptionsDeliveryModeHighQualityFormat;
     options.synchronous = NO;
-    [imageManager requestImageForAsset:asset targetSize:targetSize contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+    [imageManager requestImageForAsset:asset targetSize:targetSize contentMode:PHImageContentModeAspectFill options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (completion) {
                 completion(result);
@@ -97,9 +97,10 @@
 - (CGSize)imageSize {
     static CGSize itemSize;
     if (itemSize.width == 0) {
-        CGFloat width = [UIScreen mainScreen].bounds.size.width;
+        CGFloat width = [UIScreen mainScreen].bounds.size.width * 1.5;
+        CGFloat scale = [UIScreen mainScreen].scale;
         CGFloat itemWidth =  floorf((width - (4 - 1) * 2) / 4);
-        itemSize = CGSizeMake(itemWidth*2, itemWidth*2);
+        itemSize = CGSizeMake(itemWidth*scale, itemWidth*scale);
     }
     return itemSize;
 }
