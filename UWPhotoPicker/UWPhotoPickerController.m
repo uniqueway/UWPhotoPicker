@@ -113,9 +113,9 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
         }else {
             cell.isSelected = YES;
         }
-        if (!_dataManager.hasRightButton) { // 没有「确定」按钮时，选择即返回
-            [self confirmSelectedImages];
-        }
+//        if (!_dataManager.hasRightButton) { // 没有「确定」按钮时，选择即返回
+//            [self confirmSelectedImages];
+//        }
     }
     
     // 单选时，不包含就选移出所有，再添加新的；多选的时候包含当前model，移出当前model，改的只有是否选中状态，并且成对出现，第二次出现时，并未对此model做修改
