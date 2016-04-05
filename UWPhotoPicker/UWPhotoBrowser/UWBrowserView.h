@@ -12,6 +12,7 @@
 @interface UWBrowserView : UIView
 
 @property (nonatomic, strong) UWPhotoDataManager    *dataManager;
+@property (nonatomic, strong) NSIndexPath *defaultIndex;
 @property (nonatomic, copy) void(^scrollIndexPath)(NSIndexPath *indexPath);
 
 - (void)scrollToIndexPath:(NSIndexPath *)indexPath;

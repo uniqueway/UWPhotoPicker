@@ -45,7 +45,6 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self calculateCountOfSelectedPhotosByNum:0];
-    [self scrollToIndexPath:self.selectedIndexPath];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -63,7 +62,7 @@
 
 - (void)handlePhotoStatusAtIndexPath:(NSIndexPath *)indexPath selected:(BOOL)isSelected {
     
-    [self scrollToIndexPath:indexPath];
+    [self scrollToIndexPath:indexPath animated:YES];
     [self calculateCountOfSelectedPhotosByNum: (isSelected ? 1 : -1) ];
 }
 
@@ -73,12 +72,12 @@
     [self updateTitle];
 }
 
-- (void)scrollToIndexPath:(NSIndexPath *)indexPath {
+- (void)scrollToIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated{
     [self.browserView scrollToIndexPath:indexPath];
     UWPhotoCollectionViewCell *selectedCell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:self.selectedIndexPath];
     [selectedCell cellShouldHighlight:NO];
     self.selectedIndexPath = indexPath;
-    [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
+    [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:animated];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.17 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         UWPhotoCollectionViewCell *currentCell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
         [currentCell cellShouldHighlight:YES];
@@ -113,6 +112,9 @@
     [self createCollectionView];
     [self createLine];
     self.browserView.dataManager = self.dataManager;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self scrollToIndexPath:self.selectedIndexPath animated:NO];
+    });
 }
 
 - (void)createCollectionView {
@@ -162,7 +164,7 @@
 
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    [self scrollToIndexPath:indexPath];
+    [self scrollToIndexPath:indexPath animated:YES];
 }
 
 #pragma mark - getter -
@@ -190,7 +192,7 @@
     if (!_browserView) {
         UWBrowserView *browserView = [[UWBrowserView alloc] init];
         browserView.scrollIndexPath = ^(NSIndexPath *indexPath) {
-            [self scrollToIndexPath:indexPath];
+            [self scrollToIndexPath:indexPath animated:YES];
         };
         [self.view addSubview:browserView];
         [browserView mas_makeConstraints:^(MASConstraintMaker *make) {
