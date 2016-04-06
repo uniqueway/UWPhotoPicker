@@ -142,11 +142,22 @@
 - (void)savePhotoCurrentStatus {
     
     id <UWPhotoDatable> photo = self.currentPhoto;
-    photo.filterIndex = _filterView.currentType;
-    photo.scale = self.imageScrollView.zoomScale;
-    photo.offset = NSStringFromCGPoint(self.imageScrollView.contentOffset);
-    photo.editedImage = self.imageScrollView.capture;
-    [self.resultList addObject:photo];
+    if (_list.count == 1) {
+        UWPhoto *object = [[UWPhoto alloc] init];
+        object.filterIndex = _filterView.currentType;
+        object.scale = self.imageScrollView.zoomScale;
+        object.offset = NSStringFromCGPoint(self.imageScrollView.contentOffset);
+        object.editedImage = self.imageScrollView.capture;
+        [self.resultList addObject:object];
+        
+    }else {
+        photo.filterIndex = _filterView.currentType;
+        photo.scale = self.imageScrollView.zoomScale;
+        photo.offset = NSStringFromCGPoint(self.imageScrollView.contentOffset);
+        photo.editedImage = self.imageScrollView.capture;
+        [self.resultList addObject:photo];
+    }
+    
 }
 
 #pragma mark - event - 
