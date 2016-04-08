@@ -10,6 +10,7 @@
 @property (nonatomic, strong) UIImage *thumbnailImage;
 @property (nonatomic, strong) UIImage *editedImage;
 @property (nonatomic, strong) UIImage *portraitImage;
+@property (nonatomic, strong) NSString *url;
 
 @property (nonatomic, assign) NSTimeInterval date;
 

@@ -111,11 +111,8 @@
         };
     }
     [self updateImageAtIndex:self.selectedIndexPath];
-    [self.view.layer addSublayer:self.bottomMaskLayer];
-    [self.view.layer addSublayer:self.maskLayer];
-    [self.view.layer addSublayer:self.topMaskLayer];
 }
-
+ 
 - (void)updateImageAtIndex:(NSIndexPath *)indexPath {
     if (!self.currentPhoto) {
         self.currentPhoto = _list[indexPath.row];
@@ -133,6 +130,12 @@
     [self.imageScrollView setZoomScale:[self.currentPhoto scale]];
     [self.imageScrollView setContentOffset:CGPointFromString([self.currentPhoto offset])];
     _filterView.currentType = [self.currentPhoto filterIndex];
+    
+    if (!self.topMaskLayer.superlayer) {
+        [self.view.layer addSublayer:self.bottomMaskLayer];
+        [self.view.layer addSublayer:self.maskLayer];
+        [self.view.layer addSublayer:self.topMaskLayer];
+    }
 }
 
 - (void)contentDidEdit:(BOOL)flag {
@@ -144,6 +147,7 @@
     id <UWPhotoDatable> photo = self.currentPhoto;
     if (_list.count == 1) {
         UWPhoto *object = [[UWPhoto alloc] init];
+        object.url = [photo url];
         object.filterIndex = _filterView.currentType;
         object.scale = self.imageScrollView.zoomScale;
         object.offset = NSStringFromCGPoint(self.imageScrollView.contentOffset);
@@ -409,6 +413,7 @@
     if (!_navBar) {
         UWPhotoNavigationView *navBar = [[UWPhotoNavigationView alloc] init];
         navBar.backgroundColor = [UIColor blackColor];
+        navBar.titleColor = [UIColor whiteColor];
         [navBar.backButton setImage:[UIImage imageNamed:@"UWNavigationBarWhiteBack"] forState:UIControlStateNormal];
         [navBar.backButton addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
         [navBar.rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
