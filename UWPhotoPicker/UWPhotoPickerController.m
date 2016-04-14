@@ -184,6 +184,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     id<UWPhotoDatable> photo = [self.dataManager photoAtIndex:indexPath];
     static NSString *CellIdentifier = @"UWPhotoCollectionViewCell";
     UWPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CellIdentifier forIndexPath:indexPath];
+    [cell cellShouldHighlight:NO];
     cell.selectedStyle =  [self selectedStyle];
     cell.photo = photo;
     cell.indexPath = indexPath;
