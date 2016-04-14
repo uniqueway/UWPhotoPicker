@@ -107,6 +107,7 @@ static const CGFloat NavBarHeight = 44;
         countLabel.backgroundColor = UWHEX(0x00a2a0);
         countLabel.textAlignment = NSTextAlignmentCenter;
         countLabel.font = [UIFont boldSystemFontOfSize:12];
+        countLabel.adjustsFontSizeToFitWidth =  YES;
         countLabel.textColor = [UIColor whiteColor];
         countLabel.alpha = 0;
         countLabel.layer.cornerRadius = width/2;
