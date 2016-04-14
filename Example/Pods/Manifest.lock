@@ -35,8 +35,8 @@ PODS:
     - libextobjc/RuntimeExtensions
   - libextobjc/RuntimeExtensions (0.4.1)
   - libextobjc/UmbrellaHeader (0.4.1)
-  - Masonry (0.6.4)
-  - SVProgressHUD (2.0)
+  - Masonry (1.0.0)
+  - SVProgressHUD (2.0.3)
   - UWPhotoPicker (1.0.5):
     - libextobjc
     - UWPhotoPicker/SegmentControl (= 1.0.5)
@@ -59,8 +59,8 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   GPUImage: 733a5f0fab92df9de1c37ba9df520a833ccb406d
   libextobjc: a650fc1bf489a3d3a9bc2e621efa3e1006fc5471
-  Masonry: 281802d04d787ea2973179ee8bcb50500579ede2
-  SVProgressHUD: e9e7c893686a20da55a28015ed384d9425e15479
+  Masonry: b529bb169217897b6354d4b56b1fada6d475b13d
+  SVProgressHUD: b0830714205bea1317ea1a2ebc71e5633af334d4
   UWPhotoPicker: 85d6c1f909bcbd2db0e2ff4b39ddf53b65d7a26a
 
 COCOAPODS: 0.39.0

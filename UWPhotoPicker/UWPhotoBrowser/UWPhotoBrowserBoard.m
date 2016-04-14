@@ -69,7 +69,6 @@
 - (void)calculateCountOfSelectedPhotosByNum:(NSUInteger)count {
     self.dataManager.selectedCount += count;
     self.navBar.count = self.dataManager.selectedCount;
-    [self updateTitle];
 }
 
 - (void)scrollToIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated{
@@ -81,6 +80,7 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.17 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         UWPhotoCollectionViewCell *currentCell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
         [currentCell cellShouldHighlight:YES];
+        [self updateTitleToIndexPath:self.selectedIndexPath];
     });
 }
 
@@ -108,7 +108,7 @@
         make.height.mas_equalTo(44);
     }];
 
-    [self updateTitle];
+    [self updateTitleToIndexPath:self.selectedIndexPath];
     [self createCollectionView];
     [self createLine];
     self.browserView.dataManager = self.dataManager;
@@ -141,10 +141,17 @@
     self.collectionView = collectionView;
 }
 
-- (void)updateTitle {
-    NSString *title = [NSString stringWithFormat:@"%@/%@", @(self.dataManager.selectedCount), @(_totalCount)];
+- (void)updateTitleToIndexPath:(NSIndexPath *)indexPath {
+    NSInteger index = 1;
+    for (NSInteger section = 0 ; section < indexPath.section; section++) {
+        index += [self.dataManager numberOfItemsInSection:section];
+    }
+    index += indexPath.row;
+    
+    NSString *title = [NSString stringWithFormat:@"%@/%@", @(index), @(_totalCount)];
     self.navBar.title = title;
 }
+
 
 - (void)createLine {
     UIView *line = [[UIView alloc] init];

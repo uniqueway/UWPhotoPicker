@@ -40,8 +40,7 @@
         
         UWPhotoPickerController *photoPicker = [[UWPhotoPickerController alloc] init];
         [photoPicker.dataManager loadPhotosWithAll:result recommendPhotos:result singleSelection:NO hasSectionTitle:YES];
-        photoPicker.dataManager.editable = YES;
-        photoPicker.dataManager.hasRightButton = NO;
+        photoPicker.dataManager.hasRightButton = YES;
         photoPicker.dataManager.countLocation = UWPhotoCountLocationTop;
         photoPicker.dataManager.title = @"选择照片";
         photoPicker.dataManager.isSingleMenu = YES;
@@ -79,9 +78,6 @@
         [self presentViewController:navCon animated:YES completion:NULL];
         
     });
-    
-
-
 }
 
 - (NSArray *)groupPhotosBy1Day:(NSArray < PHAsset *> *)photos {
