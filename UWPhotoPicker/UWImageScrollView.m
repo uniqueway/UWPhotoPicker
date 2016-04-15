@@ -333,7 +333,7 @@ static CGRect UWScaleRect(CGRect rect, CGFloat scale)
 - (void)setMaxMinZoomScalesForCurrentBounds
 {
     self.minimumZoomScale = 1.0;
-    self.maximumZoomScale = 2.0;
+    self.maximumZoomScale = 4.0;
 }
 
 #pragma mark - UIScrollViewDelegate

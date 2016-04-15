@@ -104,7 +104,12 @@
     self.topMaskLayer.frame = CGRectMake(0, NavigationBarHeight, SCREEN_WIDTH, topHeight);
     [self maskLayer:CGRectMake(0, CGRectGetMaxY(self.topMaskLayer.frame), SCREEN_WIDTH, maskHeight)];
     self.bottomMaskLayer.frame = CGRectMake(0, CGRectGetMaxY(self.maskLayer.frame), SCREEN_WIDTH, topHeight);
-    
+    self.imageScrollView.frame = CGRectMake(0, CGRectGetMaxY(self.topMaskLayer.frame), SCREEN_WIDTH, maskHeight);
+
+    [self.view.layer addSublayer:self.bottomMaskLayer];
+    [self.view.layer addSublayer:self.maskLayer];
+    [self.view.layer addSublayer:self.topMaskLayer];
+
     if (self.needFilter) {
         self.filterView.selectedFilterType = ^(NSInteger type){
             [self.imageScrollView switchFilter:type];
@@ -118,24 +123,32 @@
         self.currentPhoto = _list[indexPath.row];
     }
     @weakify(self);
-    [self.currentPhoto loadPortraitImageCompletion:^(id<UWPhotoDatable> photo) {
+    [self.currentPhoto loadThumbnailImageCompletion:^(id<UWPhotoDatable> photo) {
         @strongify(self);
-        [self performFilter];
+        [self.imageScrollView displayImage:[self.currentPhoto thumbnailImage]];
     }];
+    [self.currentPhoto loadSourceImageCompletion:^(UIImage *image) {
+        @strongify(self);
+        [self performFilter:image];
+    }];
+    
 }
 
-- (void)performFilter {
-    [self.imageScrollView displayImage:[self.currentPhoto portraitImage]];
+- (void)performFilter:(UIImage *)image {
+    if (image) {
+        [self.imageScrollView displayImage:image];
+    }else {
+        [self.imageScrollView displayImage:[self.currentPhoto portraitImage]];
+    }
     [self.imageScrollView switchFilter:[self.currentPhoto filterIndex]];
     [self.imageScrollView setZoomScale:[self.currentPhoto scale]];
-    [self.imageScrollView setContentOffset:CGPointFromString([self.currentPhoto offset])];
+    if ([self.currentPhoto offset]) {
+        [self.imageScrollView setContentOffset:CGPointFromString([self.currentPhoto offset])];
+    }
+    
     _filterView.currentType = [self.currentPhoto filterIndex];
     
-    if (!self.topMaskLayer.superlayer) {
-        [self.view.layer addSublayer:self.bottomMaskLayer];
-        [self.view.layer addSublayer:self.maskLayer];
-        [self.view.layer addSublayer:self.topMaskLayer];
-    }
+    
 }
 
 - (void)contentDidEdit:(BOOL)flag {
@@ -395,7 +408,7 @@
 - (CALayer *)topMaskLayer {
     if (!_topMaskLayer) {
         _topMaskLayer = [CALayer layer];
-        _topMaskLayer.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.3].CGColor;
+        _topMaskLayer.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5].CGColor;
         
     }
     return _topMaskLayer;
@@ -404,7 +417,7 @@
 - (CALayer *)bottomMaskLayer {
     if (!_bottomMaskLayer) {
         _bottomMaskLayer = [CALayer layer];
-        _bottomMaskLayer.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.3].CGColor;
+        _bottomMaskLayer.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5].CGColor;
     }
     return _bottomMaskLayer;
 }
@@ -434,8 +447,9 @@
         _imageScrollView = [[UWImageScrollView alloc] initWithFrame:CGRectMake(0, NavigationBarHeight, SCREEN_WIDTH, SCREEN_HEIGHT - NavigationBarHeight - self.filterBottomMargin)];
         _imageScrollView.backgroundColor = [UIColor blackColor];
         _imageScrollView.scrollDelegate  = self;
-        _imageScrollView.clipsToBounds = YES;
         [self.view addSubview:_imageScrollView];
+        [self.view sendSubviewToBack:_imageScrollView];
+        
     }
     return _imageScrollView;
 }

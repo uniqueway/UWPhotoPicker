@@ -23,7 +23,7 @@
     UIScrollView *v = [[UIScrollView alloc] initWithFrame:self.view.bounds];
     [self.view addSubview:v];
 //    NSMutableArray *imageList = [@[] mutableCopy];
-    __block CGFloat y = 50;
+    
     
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -40,13 +40,13 @@
         
         UWPhotoPickerController *photoPicker = [[UWPhotoPickerController alloc] init];
         UWPhotoDataManager *dataManager = [[UWPhotoDataManager alloc] init];
-        [dataManager loadPhotosWithAll:result recommendPhotos:result singleSelection:NO hasSectionTitle:YES];
+        [dataManager loadPhotosWithAll:result recommendPhotos:result singleSelection:YES hasSectionTitle:YES];
         dataManager.hasRightButton = YES;
+        dataManager.editable = YES;
         dataManager.countLocation = UWPhotoCountLocationTop;
         dataManager.title = @"选择照片";
         dataManager.isSingleMenu = YES;
         photoPicker.dataManager = dataManager;
-        photoPicker.showLoading = YES;
         photoPicker.selectedPhotos = ^(NSArray <UWPhotoDatable>*list) {
             
         };
