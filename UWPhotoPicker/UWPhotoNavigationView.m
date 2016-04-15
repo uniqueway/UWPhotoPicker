@@ -24,6 +24,7 @@ static const CGFloat NavBarHeight = 44;
 
 #pragma mark - setter 
 - (void)setTitle:(NSString *)title {
+    _title = title;
     self.titleLabel.text = title;
 }
 
@@ -54,6 +55,7 @@ static const CGFloat NavBarHeight = 44;
         titleLabel.textAlignment = NSTextAlignmentCenter;
         titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.textColor = [UIColor blackColor];
+        titleLabel.text = _title;
         titleLabel.font = [UIFont boldSystemFontOfSize:18.0f];
         [self addSubview:titleLabel];
         [titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
