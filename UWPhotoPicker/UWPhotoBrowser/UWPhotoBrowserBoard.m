@@ -86,12 +86,8 @@
 
 #pragma mark - UI -
 - (void)buildUI {
-    [self.view.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([obj isKindOfClass:[UISegmentedControl class]]) {
-            [obj removeFromSuperview];
-        }
-    }];
-    
+    [self.segmentedControl removeFromSuperview];
+    self.segmentedControl = nil;
     _totalCount = 0;
     NSInteger section = [self.dataManager numberOfSections];
     for (NSInteger i = 0; i < section; i++) {

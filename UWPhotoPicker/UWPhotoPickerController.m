@@ -28,7 +28,6 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 @interface UWPhotoPickerController ()
 
 @property (nonatomic, assign) UWPickerStatus status;
-@property (nonatomic, strong) SDSegmentedControl *segmentedControl;
 
 @property (nonatomic, assign) BOOL preNavbarHiddenStatus;
 
@@ -148,7 +147,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     self.dataManager.selectedCount += count;
     if (!_dataManager.isSingleSelection) {
         if (_dataManager.countLocation == UWPhotoCountLocationBottom) {
-            self.segmentedControl.countOfImages = _dataManager.selectedCount;
+            _segmentedControl.countOfImages = _dataManager.selectedCount;
         }else {
             self.navBar.count = self.dataManager.selectedCount;
         }

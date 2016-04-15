@@ -11,6 +11,7 @@
 #import "UWPhotoDatable.h"
 
 #import "UWPhotoCollectionViewCell.h"
+#import "SDSegmentedControl.h"
 
 
 @class UWPhotoNavigationView, UWPhotoCollectionViewCell;
@@ -30,6 +31,7 @@ typedef NS_ENUM(NSInteger, UWPickerStatus) {
 
 @property (nonatomic, weak  ) UICollectionView      *collectionView;
 @property (nonatomic, weak  ) UWPhotoNavigationView *navBar;
+@property (nonatomic, strong) SDSegmentedControl *segmentedControl;
 
 @property (nonatomic, strong) NSMutableSet *modelChangedList;
 @property (nonatomic, strong) NSIndexPath *selectedIndexPath;
