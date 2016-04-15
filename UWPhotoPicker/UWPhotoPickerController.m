@@ -44,16 +44,8 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     self.navigationController.navigationBarHidden =  YES;
     self.automaticallyAdjustsScrollViewInsets = NO;
     [self.view setBackgroundColor:[UIColor whiteColor]];
-    
-    self.navBar.title = _dataManager.title;
-
     self.modelChangedList = [[NSMutableSet alloc] init];
-    __weak __typeof(&*self)weakSelf = self;
-    _dataManager.finishedLoading = ^{
-        [weakSelf calculateCountOfSelectedPhotosByNum:0];
-        [weakSelf.collectionView reloadData];
-    };
-
+    
     [self buildUI];
 }
 
@@ -78,11 +70,6 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     [collectionView registerClass:[UWPhotoReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:NSStringFromClass([UWPhotoReusableView class])];
     [self.view addSubview:collectionView];
     _collectionView = collectionView;
-    [_collectionView reloadData];
-    
-    if (!_dataManager.isSingleMenu) {
-        [self.view addSubview:self.segmentedControl];
-    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -94,6 +81,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 
 - (void)viewWillDisappear:(BOOL)animated {
     self.navigationController.navigationBarHidden = _preNavbarHiddenStatus;
+    [SVProgressHUD dismiss];
     [super viewWillDisappear:animated];
 }
 
@@ -261,13 +249,6 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 }
 #pragma mark - getters & setters
 
-- (UWPhotoDataManager *)dataManager {
-    if (!_dataManager) {
-        _dataManager = [[UWPhotoDataManager alloc] init];
-    }
-    return _dataManager;
-}
-
 - (SDSegmentedControl *)segmentedControl {
     if (!_segmentedControl) {
         _segmentedControl = [[SDSegmentedControl alloc] initWithTitles:@[@"推荐", @"所有照片"] width:kSegmentItemWidth];
@@ -295,4 +276,28 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     return _navBar;
 }
 
+
+- (void)setShowLoading:(BOOL)showLoading {
+    _showLoading = showLoading;
+    if (_showLoading) {
+        [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeNone];
+        [SVProgressHUD showWithStatus:@"请求图片"];
+    }else {
+        [SVProgressHUD dismiss];
+    }
+}
+
+- (void)setDataManager:(UWPhotoDataManager *)dataManager {
+    _dataManager = dataManager;
+    self.navBar.title = _dataManager.title;
+    __weak __typeof(&*self)weakSelf = self;
+    _dataManager.finishedLoading = ^{
+        [weakSelf calculateCountOfSelectedPhotosByNum:0];
+        [weakSelf.collectionView reloadData];
+    };
+    if (!_dataManager.isSingleMenu) {
+        [self.view addSubview:self.segmentedControl];
+    }
+    [_collectionView reloadData];
+}
 @end

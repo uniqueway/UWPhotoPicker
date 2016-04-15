@@ -34,6 +34,8 @@ typedef NS_ENUM(NSInteger, UWPickerStatus) {
 @property (nonatomic, strong) NSMutableSet *modelChangedList;
 @property (nonatomic, strong) NSIndexPath *selectedIndexPath;
 
+@property (nonatomic, assign) BOOL showLoading;
+
 /**
  *  @brief 子类重写，选择的样子，无，对勾，线框，对勾和线框
  */
