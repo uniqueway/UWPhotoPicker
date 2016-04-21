@@ -28,9 +28,8 @@
                               @{@"name":@"inkwell", @"index":@1},
                               @{@"name":@"earlybird", @"index":@2},
                               @{@"name":@"xproii", @"index":@3},
-                              @{@"name":@"lomofi", @"index":@4},
-                              @{@"name":@"hudson", @"index":@5},
-                              @{@"name":@"toaster", @"index":@6}];
+                              @{@"name":@"lomofi", @"index":@4}
+                              ];
         [self.collectionView reloadData];
     }
     return self;
