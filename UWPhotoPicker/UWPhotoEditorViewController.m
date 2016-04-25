@@ -188,6 +188,22 @@
     [self backAction];
 }
 
+- (void)deleteCurrentImage {
+    if (self.deleteModel) {
+        self.deleteModel(self.selectedIndexPath);
+    }
+    NSMutableArray *temp = _list.mutableCopy;
+    [temp removeObjectAtIndex:self.selectedIndexPath.row];
+    if (temp.count == 0) {
+        [self backAction];
+    }else {
+        NSInteger index = self.selectedIndexPath.row == 0 ? 0 : self.selectedIndexPath.row - 1;
+        self.selectedIndexPath = [NSIndexPath indexPathForRow:index inSection:self.selectedIndexPath.section];
+        _list = temp.copy;
+        [self.collectionView reloadData];
+    }
+}
+
 #pragma mark - UICollectionViewDataSource
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
@@ -209,10 +225,6 @@
     return cell;
 }
 
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-}
-
 - (void)handleSelectedCellStatus:(BOOL)isSelected atIndexPath:(NSIndexPath *)indexPath {
     UWPhotoCollectionViewCell *selectedCell = (UWPhotoCollectionViewCell *)[_collectionView cellForItemAtIndexPath:self.selectedIndexPath];
     [selectedCell cellShouldHighlight:NO];
@@ -226,7 +238,11 @@
 #pragma mark - event response
 
 - (void)backAction {
-  [self.navigationController popViewControllerAnimated:YES];
+    if (self.navigationController.viewControllers.count > 1) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }else {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 + (UIImage *)imageWithCGColor:(CGColorRef)cgColor_
@@ -486,6 +502,7 @@
         _deleteButton.backgroundColor = [UIColor blackColor];
         _deleteButton.frame = CGRectMake(0, SCREEN_HEIGHT - kCollectionViewHeight, 60, kCollectionViewHeight);
         [_deleteButton setTitle:@"删除" forState:UIControlStateNormal];
+        [_deleteButton addTarget:self action:@selector(deleteCurrentImage) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:_deleteButton];
     }
     return _deleteButton;
