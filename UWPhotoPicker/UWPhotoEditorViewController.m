@@ -94,13 +94,13 @@
         self.navBar.title = @"美化封面";
         self.filterBottomMargin = kFilterHeight + 10;
         maskHeight = SCREEN_WIDTH;
-        topHeight = (SCREEN_HEIGHT - NavigationBarHeight - maskHeight - 115)/2;
+        topHeight = (SCREEN_HEIGHT - NavigationBarHeight - maskHeight - kFilterHeight)/2;
     }else {
         self.navBar.title = @"美化照片";
         self.filterBottomMargin = kFilterHeight + 10 + kCollectionViewHeight;
         [self.collectionView reloadData];
         maskHeight = SCREEN_WIDTH;
-        topHeight = (SCREEN_HEIGHT - NavigationBarHeight - maskHeight - 115 - 75)/2;
+        topHeight = (SCREEN_HEIGHT - NavigationBarHeight - maskHeight - kFilterHeight - 75)/2;
     }
     
     self.topMaskLayer.frame = CGRectMake(0, NavigationBarHeight, SCREEN_WIDTH, topHeight);
@@ -199,14 +199,24 @@
     id <UWPhotoDatable> photo = _list[indexPath.row];
     cell.photo = photo;
     [cell shouldScale];
+    cell.indexPath = indexPath;
     [cell cellShouldHighlight: (self.selectedIndexPath == indexPath)];
+    @weakify(self);
+    cell.selectedBlock = ^(BOOL isSelected, NSIndexPath *indexPath){
+        @strongify(self);
+        [self handleSelectedCellStatus:isSelected atIndexPath:indexPath];
+    };
     return cell;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    UWPhotoCollectionViewCell *selectedCell = (UWPhotoCollectionViewCell *)[collectionView cellForItemAtIndexPath:self.selectedIndexPath];
+    
+}
+
+- (void)handleSelectedCellStatus:(BOOL)isSelected atIndexPath:(NSIndexPath *)indexPath {
+    UWPhotoCollectionViewCell *selectedCell = (UWPhotoCollectionViewCell *)[_collectionView cellForItemAtIndexPath:self.selectedIndexPath];
     [selectedCell cellShouldHighlight:NO];
-    UWPhotoCollectionViewCell *currentCell = (UWPhotoCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    UWPhotoCollectionViewCell *currentCell = (UWPhotoCollectionViewCell *)[_collectionView cellForItemAtIndexPath:indexPath];
     [currentCell cellShouldHighlight:YES];
     self.selectedIndexPath = indexPath;
     [self savePhotoCurrentStatus];
@@ -462,7 +472,7 @@
         [self.view addSubview:filterView];
         [filterView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.right.offset(0);
-            make.bottom.offset( - 10 - (_collectionView ? kCollectionViewHeight : 0));
+            make.bottom.offset(  - (_collectionView ? kCollectionViewHeight : 0));
             make.height.mas_equalTo(kFilterHeight);
         }];
         _filterView = filterView;
@@ -473,6 +483,7 @@
 - (UIButton *)deleteButton {
     if (!_deleteButton ) {
         _deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _deleteButton.backgroundColor = [UIColor blackColor];
         _deleteButton.frame = CGRectMake(0, SCREEN_HEIGHT - kCollectionViewHeight, 60, kCollectionViewHeight);
         [_deleteButton setTitle:@"删除" forState:UIControlStateNormal];
         [self.view addSubview:_deleteButton];

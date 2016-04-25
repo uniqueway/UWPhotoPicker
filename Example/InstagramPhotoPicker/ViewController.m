@@ -10,6 +10,7 @@
 #import "UWPhotoPickerController.h"
 #import "UWPhoto.h"
 #import "UWPhotoHelper.h"
+#import "UWPhotoEditorViewController.h"
 
 @interface ViewController ()
 @property (strong, nonatomic) IBOutlet UIImageView *imageView;
@@ -37,19 +38,36 @@
             }
         }];
         NSArray *result = [self groupPhotosBy1Day:temp];
-        
-        UWPhotoPickerController *photoPicker = [[UWPhotoPickerController alloc] init];
-        UWPhotoDataManager *dataManager = [[UWPhotoDataManager alloc] init];
-        [dataManager loadPhotosWithAll:result recommendPhotos:result singleSelection:YES hasSectionTitle:YES];
-        dataManager.hasRightButton = YES;
-        dataManager.editable = YES;
-        dataManager.countLocation = UWPhotoCountLocationTop;
-        dataManager.title = @"选择照片";
-        dataManager.isSingleMenu = YES;
-        photoPicker.dataManager = dataManager;
-        photoPicker.selectedPhotos = ^(NSArray <UWPhotoDatable>*list) {
+        BOOL isEdit = YES;
+        if (isEdit) {
+            UWPhotoEditorViewController *editBoard = [[UWPhotoEditorViewController alloc] init];
+            editBoard.needFilter = YES;
+            editBoard.isSingle = YES;
+            editBoard.selectedIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+            editBoard.list = result[0];
+            UINavigationController *navCon = [[UINavigationController alloc] initWithRootViewController:editBoard];
+            [navCon setNavigationBarHidden:YES];
+            [self presentViewController:navCon animated:YES completion:NULL];
+        }else {
+            UWPhotoPickerController *photoPicker = [[UWPhotoPickerController alloc] init];
+            UWPhotoDataManager *dataManager = [[UWPhotoDataManager alloc] init];
+            [dataManager loadPhotosWithAll:result recommendPhotos:result singleSelection:NO hasSectionTitle:YES];
+            dataManager.hasRightButton = YES;
+            dataManager.editable = YES;
+            dataManager.countLocation = UWPhotoCountLocationBottom;
+            dataManager.title = @"选择照片";
+            photoPicker.dataManager = dataManager;
+            photoPicker.selectedPhotos = ^(NSArray <UWPhotoDatable>*list) {
+                
+            };
+            UINavigationController *navCon = [[UINavigationController alloc] initWithRootViewController:photoPicker];
+            [navCon setNavigationBarHidden:YES];
             
-        };
+            [self presentViewController:navCon animated:YES completion:NULL];
+        }
+    
+        
+        
 //        photoPicker.cropBlock = ^(NSArray *list) {
 //            CGFloat size = [[UIScreen mainScreen] bounds].size.width;
 //            NSInteger index = 0;
@@ -75,10 +93,7 @@
 //            list = nil;
 //        };
         
-        UINavigationController *navCon = [[UINavigationController alloc] initWithRootViewController:photoPicker];
-        [navCon setNavigationBarHidden:YES];
         
-        [self presentViewController:navCon animated:YES completion:NULL];
         
     });
 }

@@ -66,7 +66,7 @@
 }
 
 - (void)loadSourceImageCompletion:( void(^)( UIImage *image))completion {
-    [self loadImageWithAsset:_asset targetSize:PHImageManagerMaximumSize completion:completion];
+    [self loadImageWithAsset:_asset targetSize:CGSizeMake(1500, 1500) completion:completion];
 }
 
 - (void)loadImageWithAsset:(PHAsset *)asset targetSize:(CGSize)targetSize completion:(void(^)(UIImage *result))completion{
