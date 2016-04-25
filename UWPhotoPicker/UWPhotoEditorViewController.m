@@ -192,14 +192,11 @@
     if (self.deleteModel) {
         self.deleteModel(self.selectedIndexPath);
     }
-    NSMutableArray *temp = _list.mutableCopy;
-    [temp removeObjectAtIndex:self.selectedIndexPath.row];
-    if (temp.count == 0) {
+    if (_list.count == 0) {
         [self backAction];
     }else {
         NSInteger index = self.selectedIndexPath.row == 0 ? 0 : self.selectedIndexPath.row - 1;
         self.selectedIndexPath = [NSIndexPath indexPathForRow:index inSection:self.selectedIndexPath.section];
-        _list = temp.copy;
         [self.collectionView reloadData];
     }
 }
