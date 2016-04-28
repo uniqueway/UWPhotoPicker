@@ -97,7 +97,7 @@
 - (CGSize)imageSize {
     static CGSize itemSize;
     if (itemSize.width == 0) {
-        CGFloat width = [UIScreen mainScreen].bounds.size.width * 1.5;
+        CGFloat width = [UIScreen mainScreen].bounds.size.width;
         CGFloat scale = [UIScreen mainScreen].scale;
         CGFloat itemWidth =  floorf((width - (4 - 1) * 2) / 4);
         itemSize = CGSizeMake(itemWidth*scale, itemWidth*scale);
