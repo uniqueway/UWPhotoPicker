@@ -213,7 +213,7 @@
     cell.photo = photo;
     [cell shouldScale];
     cell.indexPath = indexPath;
-    [cell cellShouldHighlight: (self.selectedIndexPath == indexPath)];
+    [cell showLineWithHeight: (self.selectedIndexPath == indexPath)];
     @weakify(self);
     cell.selectedBlock = ^(BOOL isSelected, NSIndexPath *indexPath){
         @strongify(self);

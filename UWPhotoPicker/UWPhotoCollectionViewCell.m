@@ -54,7 +54,12 @@ static NSInteger buttonWidth = 25;
 }
 
 - (void)cellShouldHighlight:(BOOL)isHighlight {
-    self.lineButton.selected = isHighlight;
+    _lineButton.selected = isHighlight;
+}
+
+- (void)showLineWithHeight:(BOOL)isHightlight {
+    _selectedStyle = SelectedStyleLine;
+    self.lineButton.selected = isHightlight;
 }
 
 - (void)shouldScale {
