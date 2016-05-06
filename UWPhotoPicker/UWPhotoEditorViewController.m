@@ -195,7 +195,10 @@
     if (_list.count == 0) {
         [self backAction];
     }else {
-        NSInteger index = self.selectedIndexPath.row == 0 ? 0 : self.selectedIndexPath.row - 1;
+        NSInteger index = self.selectedIndexPath.row;
+        if (_list.count == self.selectedIndexPath.row) {
+            index -= 1;
+        }
         self.selectedIndexPath = [NSIndexPath indexPathForRow:index inSection:self.selectedIndexPath.section];
         [self.collectionView reloadData];
     }

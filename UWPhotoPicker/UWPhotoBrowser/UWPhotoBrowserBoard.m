@@ -165,7 +165,6 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     [self scrollToIndexPath:indexPath animated:YES];
 }

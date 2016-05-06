@@ -38,7 +38,7 @@
             }
         }];
         NSArray *result = [self groupPhotosBy1Day:temp];
-        BOOL isEdit = YES;
+        BOOL isEdit = NO;
         if (isEdit) {
             UWPhotoEditorViewController *editBoard = [[UWPhotoEditorViewController alloc] init];
             editBoard.needFilter = YES;
