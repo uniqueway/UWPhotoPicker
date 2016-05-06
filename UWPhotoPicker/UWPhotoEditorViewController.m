@@ -200,6 +200,7 @@
             index -= 1;
         }
         self.selectedIndexPath = [NSIndexPath indexPathForRow:index inSection:self.selectedIndexPath.section];
+        [self handleSelectedCellStatus:YES atIndexPath:self.selectedIndexPath];
         [self.collectionView reloadData];
     }
 }
