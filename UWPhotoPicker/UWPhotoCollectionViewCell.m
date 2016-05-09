@@ -21,6 +21,7 @@ static NSInteger buttonWidth = 25;
 @property (strong, nonatomic) UIImageView *imageView;
 @property (nonatomic, strong) UIButton *selectedButton;
 @property (nonatomic, strong) UIButton *lineButton;
+@property (nonatomic, strong) UIScrollView *scrollView;
 
 @end
 
@@ -33,10 +34,8 @@ static NSInteger buttonWidth = 25;
         self.imageView = [[UIImageView alloc] initWithFrame:self.bounds];
         self.imageView.contentMode = UIViewContentModeScaleAspectFill;
         [self.contentView addSubview:self.imageView];
-
-        [self.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.left.bottom.right.offset(0);
-        }];
+        self.imageView.frame = self.bounds;
+        
     }
     return self;
 }
@@ -63,21 +62,46 @@ static NSInteger buttonWidth = 25;
 }
 
 - (void)shouldScale {
-    if (self.imageView.gestureRecognizers.count == 0) {
-        UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(scaleImage:)];
-        self.imageView.userInteractionEnabled = YES;
-        [self.imageView addGestureRecognizer:pinch];
+    if (!_scrollView) {
+        self.contentView.backgroundColor = [UIColor blackColor];
+        [self.scrollView addSubview:self.imageView];
+        self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        [self adjustImage];
     }
 }
 
-- (void)transformIdentity {
-    self.imageView.transform = CGAffineTransformIdentity;
+- (void)adjustImage {
+    CGFloat scale = [UIScreen mainScreen].scale;
+    CGSize size = self.imageView.image.size;
+    size.height = size.height/scale;
+    size.width  = size.width/scale;
+    CGRect rect = CGRectZero;
+    if (size.height > self.bounds.size.height || size.width > self.bounds.size.width) {
+        CGFloat ratio = size.width/self.bounds.size.width;
+        CGFloat height = size.height * ratio;
+        rect.size.width = self.bounds.size.width;
+        rect.size.height = height;
+    }else {
+        rect = self.bounds;
+    }
+    _scrollView.contentSize = rect.size;
+    if (self.frame.size.height < rect.size.height) {
+        _scrollView.contentOffset = CGPointMake(0, (rect.size.height-self.frame.size.height)/2);
+    }
+    
+    
+    
+//    CGFloat imageRatio = size.width/size.height;
+//    CGFloat height = self.frame.size.height / imageRatio;
+//    CGFloat y = (self.frame.size.height - height)/2;
+    
+    self.imageView.frame = rect;
 }
 
-- (void)scaleImage:(UIPinchGestureRecognizer *)sender {
-    sender.view.transform = CGAffineTransformScale(sender.view.transform, sender.scale, sender.scale);
-    sender.scale = 1;
+- (void)transformIdentity {
+    _scrollView.zoomScale = _scrollView.minimumZoomScale;
 }
+
 
 - (void)loadPhoto:(id<UWPhotoDatable>)photo thumbnail:(BOOL)isThumbnail {
     _photo = photo;
@@ -95,9 +119,18 @@ static NSInteger buttonWidth = 25;
         [_photo loadPortraitImageCompletion:^(id<UWPhotoDatable> photo) {
             if (photo == _photo) {
                 weakself.imageView.image = [weakself.photo portraitImage];
+                if (_scrollView) {
+                    [self adjustImage];
+                }
             }
         }];
     }
+}
+
+#pragma mark - UIScrollViewDelegate
+
+- (nullable UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
+    return self.imageView;
 }
 
 #pragma mark - set/get
@@ -148,6 +181,22 @@ static NSInteger buttonWidth = 25;
         }];
     }
     return _lineButton;
+}
+
+- (UIScrollView *)scrollView {
+    if (!_scrollView) {
+        _scrollView = [[UIScrollView alloc] init];
+        _scrollView.showsVerticalScrollIndicator = NO;
+        _scrollView.showsHorizontalScrollIndicator = NO;
+        _scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
+        _scrollView.delegate = self;
+        _scrollView.minimumZoomScale = 1;
+        _scrollView.maximumZoomScale = 3.0;
+        _scrollView.frame = self.bounds;
+        [self.contentView addSubview:_scrollView];
+        
+    }
+    return _scrollView;
 }
 
 @end

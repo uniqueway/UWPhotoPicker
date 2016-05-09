@@ -53,7 +53,7 @@
             UWPhotoDataManager *dataManager = [[UWPhotoDataManager alloc] init];
             [dataManager loadPhotosWithAll:result recommendPhotos:result singleSelection:NO hasSectionTitle:YES];
             dataManager.hasRightButton = YES;
-            dataManager.editable = YES;
+            dataManager.editable = NO;
             dataManager.countLocation = UWPhotoCountLocationBottom;
             dataManager.title = @"选择照片";
             photoPicker.dataManager = dataManager;

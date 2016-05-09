@@ -55,8 +55,10 @@
         }
     }else {
         CGSize size = [UIScreen mainScreen].bounds.size ;
-        size = CGSizeMake(size.width*2, size.height*2);
+        CGFloat scale = [UIScreen mainScreen].scale;
+        size = CGSizeMake(size.width*scale, (size.height-0)*scale);
         [self loadImageWithAsset:_asset targetSize:size completion:^(UIImage *result) {
+
             _portraitImage = result;
             if (completion) {
                 completion(self);
@@ -76,7 +78,7 @@
     options.resizeMode =  PHImageRequestOptionsResizeModeFast;
     options.deliveryMode =  PHImageRequestOptionsDeliveryModeHighQualityFormat;
     options.synchronous = NO;
-    [imageManager requestImageForAsset:asset targetSize:targetSize contentMode:PHImageContentModeAspectFill options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+    [imageManager requestImageForAsset:asset targetSize:targetSize contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (completion) {
                 completion(result);
