@@ -10,6 +10,7 @@
 #import "UWPhotoHelper.h"
 #import "UWPhotoDatable.h"
 #import <Masonry.h>
+#import "UWZoomingScrollView.h"
 
 #define DEFAULT_COLOR [UIColor clearColor]
 #define SELECTED_COLOR [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5]
@@ -21,7 +22,7 @@ static NSInteger buttonWidth = 25;
 @property (strong, nonatomic) UIImageView *imageView;
 @property (nonatomic, strong) UIButton *selectedButton;
 @property (nonatomic, strong) UIButton *lineButton;
-@property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, strong) UWZoomingScrollView *scrollView;
 
 @end
 
@@ -62,40 +63,7 @@ static NSInteger buttonWidth = 25;
 }
 
 - (void)shouldScale {
-    if (!_scrollView) {
-        self.contentView.backgroundColor = [UIColor blackColor];
-        [self.scrollView addSubview:self.imageView];
-        self.imageView.contentMode = UIViewContentModeScaleAspectFit;
-        [self adjustImage];
-    }
-}
-
-- (void)adjustImage {
-    CGFloat scale = [UIScreen mainScreen].scale;
-    CGSize size = self.imageView.image.size;
-    size.height = size.height/scale;
-    size.width  = size.width/scale;
-    CGRect rect = CGRectZero;
-    if (size.height > self.bounds.size.height || size.width > self.bounds.size.width) {
-        CGFloat ratio = size.width/self.bounds.size.width;
-        CGFloat height = size.height * ratio;
-        rect.size.width = self.bounds.size.width;
-        rect.size.height = height;
-    }else {
-        rect = self.bounds;
-    }
-    _scrollView.contentSize = rect.size;
-    if (self.frame.size.height < rect.size.height) {
-        _scrollView.contentOffset = CGPointMake(0, (rect.size.height-self.frame.size.height)/2);
-    }
-    
-    
-    
-//    CGFloat imageRatio = size.width/size.height;
-//    CGFloat height = self.frame.size.height / imageRatio;
-//    CGFloat y = (self.frame.size.height - height)/2;
-    
-    self.imageView.frame = rect;
+    self.scrollView.photo = self.photo;
 }
 
 - (void)transformIdentity {
@@ -119,9 +87,6 @@ static NSInteger buttonWidth = 25;
         [_photo loadPortraitImageCompletion:^(id<UWPhotoDatable> photo) {
             if (photo == _photo) {
                 weakself.imageView.image = [weakself.photo portraitImage];
-                if (_scrollView) {
-                    [self adjustImage];
-                }
             }
         }];
     }
@@ -131,6 +96,11 @@ static NSInteger buttonWidth = 25;
 
 - (nullable UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
     return self.imageView;
+}
+
+- (void)scrollViewDidZoom:(UIScrollView *)scrollView {
+    [self setNeedsLayout];
+    [self layoutIfNeeded];
 }
 
 #pragma mark - set/get
@@ -183,16 +153,10 @@ static NSInteger buttonWidth = 25;
     return _lineButton;
 }
 
-- (UIScrollView *)scrollView {
+- (UWZoomingScrollView *)scrollView {
     if (!_scrollView) {
-        _scrollView = [[UIScrollView alloc] init];
-        _scrollView.showsVerticalScrollIndicator = NO;
-        _scrollView.showsHorizontalScrollIndicator = NO;
-        _scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
-        _scrollView.delegate = self;
-        _scrollView.minimumZoomScale = 1;
-        _scrollView.maximumZoomScale = 3.0;
-        _scrollView.frame = self.bounds;
+        _scrollView = [[UWZoomingScrollView alloc] init];
+        _scrollView.frame = [UIScreen mainScreen].bounds;
         [self.contentView addSubview:_scrollView];
         
     }

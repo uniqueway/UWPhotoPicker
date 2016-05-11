@@ -9,13 +9,14 @@
 #import "UWPhotoNavigationView.h"
 #import "Masonry.h"
 #import "UWPhotoHelper.h"
+#import "BWMarginLabel.h"
 
 static const CGFloat NavBarHeight = 44;
 
 @interface UWPhotoNavigationView ()
 
 @property (nonatomic, weak) UILabel *titleLabel;
-@property (nonatomic, weak) UILabel *countLabel;
+@property (nonatomic, weak) BWMarginLabel *countLabel;
 
 @end
 
@@ -31,7 +32,9 @@ static const CGFloat NavBarHeight = 44;
 - (void)setCount:(NSUInteger)count {
     
     self.countLabel.text = @(count).stringValue;
+    [self.countLabel layoutIfNeeded];
     [self.countLabel uw_scaleAnimation];
+    
     if (count == 0 ) {
         [UIView animateWithDuration:0.3 animations:^{
             self.countLabel.alpha = 0;
@@ -102,23 +105,24 @@ static const CGFloat NavBarHeight = 44;
     return _rightButton;
 }
 
-- (UILabel *)countLabel {
+- (BWMarginLabel *)countLabel {
     if (!_countLabel) {
         CGFloat width = 22;
-        UILabel *countLabel = [[UILabel alloc] init];
+        BWMarginLabel *countLabel = [[BWMarginLabel alloc] init];
         countLabel.backgroundColor = UWHEX(0x00a2a0);
         countLabel.textAlignment = NSTextAlignmentCenter;
         countLabel.font = [UIFont boldSystemFontOfSize:12];
-        countLabel.adjustsFontSizeToFitWidth =  YES;
         countLabel.textColor = [UIColor whiteColor];
         countLabel.alpha = 0;
-        countLabel.layer.cornerRadius = width/2;
+        countLabel.layer.cornerRadius = 10;
         countLabel.layer.masksToBounds = YES;
+        countLabel.marginLeft = 4;
+        countLabel.marginRight = 4;
         [self addSubview:countLabel];
         [countLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.equalTo(self.titleLabel.mas_centerY).offset(0);
-            make.size.mas_equalTo(CGSizeMake(width, width));
             make.right.equalTo(self.rightButton.mas_left).offset(-5);
+            make.height.mas_equalTo(20);
         }];
         _countLabel = countLabel;
     }
