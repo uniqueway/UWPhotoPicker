@@ -123,6 +123,7 @@ static const CGFloat NavBarHeight = 44;
             make.centerY.equalTo(self.titleLabel.mas_centerY).offset(0);
             make.right.equalTo(self.rightButton.mas_left).offset(-5);
             make.height.mas_equalTo(20);
+            make.width.greaterThanOrEqualTo(countLabel.mas_height);
         }];
         _countLabel = countLabel;
     }
