@@ -54,7 +54,7 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   UWPhotoPicker:
-    :path: "../"
+    :path: ../
 
 SPEC CHECKSUMS:
   GPUImage: 733a5f0fab92df9de1c37ba9df520a833ccb406d
