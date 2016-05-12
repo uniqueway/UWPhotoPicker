@@ -99,10 +99,11 @@
     self.navBar.titleColor = [UIColor whiteColor];
     [self.navBar.rightButton setTitle:@"已选" forState:UIControlStateNormal];
     [self.navBar.rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [self.navBar.backButton setImage:[UIImage imageNamed:@"NavigationBar_White"] forState:UIControlStateNormal];
+    [self.navBar.backButton setImage:[UIImage imageNamed:@"UWNavigationBarWhiteBack"] forState:UIControlStateNormal];
     [self.navBar mas_updateConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(44);
     }];
+    
 
     [self updateTitleToIndexPath:self.selectedIndexPath];
     [self createCollectionView];
