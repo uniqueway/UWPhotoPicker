@@ -456,7 +456,7 @@
         UWPhotoNavigationView *navBar = [[UWPhotoNavigationView alloc] init];
         navBar.backgroundColor = [UIColor blackColor];
         navBar.titleColor = [UIColor whiteColor];
-        [navBar.backButton setImage:[UIImage imageNamed:@"UWNavigationBarWhiteBack"] forState:UIControlStateNormal];
+        [navBar.backButton setImage:[UIImage imageNamed:@"NavigationBar_White"] forState:UIControlStateNormal];
         [navBar.backButton addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
         [navBar.rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [navBar.rightButton setTitle:@"完成" forState:UIControlStateNormal];
