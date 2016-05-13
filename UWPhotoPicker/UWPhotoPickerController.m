@@ -229,7 +229,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
 - (void)backAction {
     if (!_dataManager.isSingleSelection) {
         [self.modelChangedList enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(id  <UWPhotoDatable> obj, BOOL * _Nonnull stop) {
-            [obj setIsSelected:[obj isSelected]];
+            [obj setIsSelected:![obj isSelected]];
         }];
     }
     if (self.navigationController.viewControllers.count > 1) {
@@ -244,7 +244,11 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
         NSArray *tmp = [NSArray arrayWithArray:[self.modelChangedList allObjects]];
         self.selectedPhotos(tmp);
     }
-    [self backAction];
+    if (self.navigationController.viewControllers.count > 1) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }else {
+        [self dismissViewControllerAnimated:YES completion:NULL];
+    }
 }
 
 - (void)segmentValueChanged:(SDSegmentedControl *)sender {

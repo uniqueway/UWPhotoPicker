@@ -215,7 +215,7 @@
     UWPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"UWPhotoCollectionViewCell" forIndexPath:indexPath];
     id <UWPhotoDatable> photo = _list[indexPath.row];
     cell.photo = photo;
-    [cell shouldScale];
+//    [cell shouldScale];
     cell.indexPath = indexPath;
     [cell showLineWithHeight: (self.selectedIndexPath == indexPath)];
     @weakify(self);
