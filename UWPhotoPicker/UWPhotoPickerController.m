@@ -148,14 +148,14 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     if (!_dataManager.isSingleSelection) {
         if (_dataManager.countLocation == UWPhotoCountLocationBottom) {
             _segmentedControl.countOfImages = _dataManager.selectedCount;
-        }else {
-            self.navBar.count = self.dataManager.selectedCount;
             if (self.dataManager.selectedCount == 0 && !self.dataManager.isSingleMenu) {
                 UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"照片为空，将会删除当前故事哦" preferredStyle:UIAlertControllerStyleAlert];
                 UIAlertAction *action = [UIAlertAction actionWithTitle:@"知道了" style:UIAlertActionStyleDestructive handler:nil];
                 [alert addAction:action];
                 [self presentViewController:alert animated:YES completion:nil];
             }
+        }else {
+            self.navBar.count = self.dataManager.selectedCount;
         }
     }
 }
