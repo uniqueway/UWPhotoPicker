@@ -151,7 +151,7 @@
     }
     // Vertically
     if (frameToCenter.size.height < boundsSize.height) {
-        frameToCenter.origin.y = floorf((boundsSize.height - frameToCenter.size.height) / 2.0);
+        frameToCenter.origin.y = floorf((boundsSize.height - frameToCenter.size.height) / 2.0) - 44;
     } else {
         frameToCenter.origin.y = (boundsSize.height - frameToCenter.size.height) / 2.0;
     }
