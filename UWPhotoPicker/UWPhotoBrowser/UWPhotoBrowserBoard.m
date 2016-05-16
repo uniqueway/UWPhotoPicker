@@ -68,7 +68,11 @@
 
 - (void)calculateCountOfSelectedPhotosByNum:(NSUInteger)count {
     self.dataManager.selectedCount += count;
-    self.navBar.count = self.dataManager.selectedCount;
+    if (self.dataManager.selectedCount >= 0) {
+        self.navBar.count = self.dataManager.selectedCount;
+    }else {
+        self.dataManager.selectedCount = 0;
+    }
 }
 
 - (void)scrollToIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated{
@@ -77,11 +81,10 @@
     [selectedCell cellShouldHighlight:NO];
     self.selectedIndexPath = indexPath;
     [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:animated];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.17 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        UWPhotoCollectionViewCell *currentCell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-        [currentCell cellShouldHighlight:YES];
-        [self updateTitleToIndexPath:self.selectedIndexPath];
-    });
+    UWPhotoCollectionViewCell *currentCell = (UWPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+    [currentCell cellShouldHighlight:YES];
+    [self updateTitleToIndexPath:self.selectedIndexPath];
+
 }
 
 #pragma mark - UI -
@@ -109,8 +112,11 @@
     [self createCollectionView];
     [self createLine];
     self.browserView.dataManager = self.dataManager;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self scrollToIndexPath:self.selectedIndexPath animated:NO];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self scrollToIndexPath:self.selectedIndexPath animated:NO];
+        [UIView animateWithDuration:0.1 delay:0.2 options:nil animations:^{
+            self.collectionView.alpha = 1;
+        } completion:nil];
     });
 }
 
@@ -135,6 +141,7 @@
         make.left.bottom.right.offset(0);
         make.height.mas_equalTo(width+30);
     }];
+    collectionView.alpha = 0;
     self.collectionView = collectionView;
 }
 
@@ -168,6 +175,14 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     [self scrollToIndexPath:indexPath animated:YES];
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    UWPhotoCollectionViewCell *cell = [super collectionView:self.collectionView cellForItemAtIndexPath:indexPath];
+    cell.selectedStyle = SelectedStyleBoth;
+    BOOL isEqual = self.selectedIndexPath.section == indexPath.section && self.selectedIndexPath.row == indexPath.row;
+    [cell cellShouldHighlight:isEqual];
+    return cell;
 }
 
 #pragma mark - getter -
