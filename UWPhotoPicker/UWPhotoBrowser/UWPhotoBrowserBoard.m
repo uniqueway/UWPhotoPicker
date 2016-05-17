@@ -89,6 +89,7 @@
 
 #pragma mark - UI -
 - (void)buildUI {
+    self.view.backgroundColor = [UIColor blackColor];
     [self.segmentedControl removeFromSuperview];
     self.segmentedControl = nil;
     _totalCount = 0;
