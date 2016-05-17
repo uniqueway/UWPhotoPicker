@@ -32,5 +32,6 @@
 - (void)loadPortraitImageCompletion:( void(^)( id<UWPhotoDatable> photo) )completion;
 - (void)loadSourceImageCompletion:( void(^)( UIImage *image))completion;
 
-
+@optional
+- (void)cancelImageRequest;
 @end

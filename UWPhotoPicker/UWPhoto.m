@@ -9,7 +9,11 @@
 #import "UWPhoto.h"
 #import "UWPhotoHelper.h"
 
+@interface UWPhoto ()
 
+@property (nonatomic, assign) PHImageRequestID imageRequestId;
+
+@end
 
 
 @implementation UWPhoto
@@ -78,7 +82,7 @@
     options.resizeMode =  PHImageRequestOptionsResizeModeFast;
     options.deliveryMode =  PHImageRequestOptionsDeliveryModeHighQualityFormat;
     options.synchronous = NO;
-    [imageManager requestImageForAsset:asset targetSize:targetSize contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+    _imageRequestId = [imageManager requestImageForAsset:asset targetSize:targetSize contentMode:PHImageContentModeAspectFit options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (completion) {
                 completion(result);
@@ -107,4 +111,7 @@
     return itemSize;
 }
 
+- (void)cancelImageRequest {
+    [[PHImageManager defaultManager] cancelImageRequest:_imageRequestId];
+}
 @end

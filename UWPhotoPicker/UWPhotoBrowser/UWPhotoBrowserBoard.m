@@ -185,6 +185,11 @@
     return cell;
 }
 
+- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(nonnull UICollectionViewCell *)cell forItemAtIndexPath:(nonnull NSIndexPath *)indexPath {
+    UWPhotoCollectionViewCell *hideCell = (UWPhotoCollectionViewCell *)cell;
+    [hideCell.photo cancelImageRequest];
+}
+
 #pragma mark - getter -
 - (UIScrollView *)scrollView {
     if (!_scrollView) {
