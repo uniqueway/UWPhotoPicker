@@ -154,7 +154,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
                 [alert addAction:action];
                 [self presentViewController:alert animated:YES completion:nil];
             }
-        }else {
+        }else if(_dataManager.countLocation == UWPhotoCountLocationTop){
             self.navBar.count = self.dataManager.selectedCount;
         }
     }
