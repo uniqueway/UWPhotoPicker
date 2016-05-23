@@ -75,7 +75,7 @@ static const CGFloat NavBarHeight = 44;
 - (UIButton *)backButton {
     if (!_backButton) {
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-        [button setImage:[UIImage imageNamed:@"UWNavigationBarBlackBack"] forState:UIControlStateNormal];
+        [button setImage:[UIImage imageNamed:@"NavigationBar_black"] forState:UIControlStateNormal];
         button.adjustsImageWhenHighlighted = NO;
         [self addSubview:button];
         [button mas_makeConstraints:^(MASConstraintMaker *make) {
