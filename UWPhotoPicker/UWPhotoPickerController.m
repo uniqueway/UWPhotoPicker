@@ -69,6 +69,7 @@ static NSInteger MAX_SELECTION_COUNT = INFINITY;
     [collectionView registerClass:[UWPhotoReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:NSStringFromClass([UWPhotoReusableView class])];
     [self.view addSubview:collectionView];
     _collectionView = collectionView;
+    self.navBar.title = _dataManager.title;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
